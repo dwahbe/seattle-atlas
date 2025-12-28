@@ -162,6 +162,11 @@ export function MapGL({
     setHoverState(null);
   }, []);
 
+  // Handle drag start (clears tooltip on mobile when panning)
+  const handleDragStart = useCallback(() => {
+    setHoverState(null);
+  }, []);
+
   // Setup event listeners
   useEffect(() => {
     if (!map.current || !isLoaded) return;
@@ -170,16 +175,18 @@ export function MapGL({
 
     map.current.on('click', handleClick);
     map.current.on('mousemove', handleMouseMove);
+    map.current.on('dragstart', handleDragStart);
     canvas.addEventListener('mouseleave', handleMouseLeave);
 
     return () => {
       if (map.current) {
         map.current.off('click', handleClick);
         map.current.off('mousemove', handleMouseMove);
+        map.current.off('dragstart', handleDragStart);
         canvas.removeEventListener('mouseleave', handleMouseLeave);
       }
     };
-  }, [isLoaded, handleClick, handleMouseMove, handleMouseLeave]);
+  }, [isLoaded, handleClick, handleMouseMove, handleMouseLeave, handleDragStart]);
 
   // Get the layer config for the hovered feature
   const hoveredLayerConfig = hoverState
