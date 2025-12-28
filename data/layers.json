@@ -1,0 +1,329 @@
+[
+  {
+    "id": "zoning",
+    "name": "What Can Be Built",
+    "group": "base",
+    "tileset": "mapbox://dwahbe.seattle-zoning",
+    "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
+    "type": "fill",
+    "defaultVisible": true,
+    "description": "See what types of buildings are allowed across Seattle — from single-family homes to high-rises.",
+    "colorProperty": "CATEGORY_DESC",
+    "legend": [
+      {
+        "label": "Houses Only",
+        "color": "#FDE68A",
+        "value": "Residential Small Lot",
+        "percentage": 2.3
+      },
+      {
+        "label": "Houses Only",
+        "color": "#FDE68A",
+        "value": "Neighborhood Residential",
+        "percentage": 61.1
+      },
+      {
+        "label": "Small Apartments",
+        "color": "#FB923C",
+        "value": "Lowrise Multi-Family",
+        "percentage": 10.4
+      },
+      {
+        "label": "Taller Apartments",
+        "color": "#DC2626",
+        "value": "High-Density Multi-Family",
+        "percentage": 1.3
+      },
+      {
+        "label": "Mixed: Shops + Housing",
+        "color": "#A78BFA",
+        "value": "Neighborhood Commercial",
+        "percentage": 5.1
+      },
+      {
+        "label": "Mixed: Shops + Housing",
+        "color": "#A78BFA",
+        "value": "Commercial",
+        "percentage": 2.7
+      },
+      {
+        "label": "Mixed: Shops + Housing",
+        "color": "#A78BFA",
+        "value": "Seattle Mixed",
+        "percentage": 1.4
+      },
+      {
+        "label": "Downtown",
+        "color": "#6366F1",
+        "value": "Downtown",
+        "percentage": 1.7
+      },
+      {
+        "label": "Industrial / Institutions",
+        "color": "#6B7280",
+        "value": "Industrial",
+        "percentage": 11.8
+      },
+      {
+        "label": "Industrial / Institutions",
+        "color": "#6B7280",
+        "value": "Major Institutions",
+        "percentage": 2.2
+      }
+    ],
+    "filters": [
+      {
+        "id": "housing_type",
+        "label": "Filter by Type",
+        "property": "CATEGORY_DESC",
+        "type": "multiselect",
+        "options": [
+          {
+            "label": "Houses Only",
+            "value": "Residential Small Lot"
+          },
+          {
+            "label": "Small Apartments (1-3 stories)",
+            "value": "Lowrise Multi-Family"
+          },
+          {
+            "label": "Taller Apartments (4+ stories)",
+            "value": "High-Density Multi-Family"
+          },
+          {
+            "label": "Mixed-Use (Shops + Housing)",
+            "value": "Neighborhood Commercial"
+          },
+          {
+            "label": "Downtown",
+            "value": "Downtown"
+          }
+        ]
+      }
+    ],
+    "paint": {
+      "fill-opacity": 0.75,
+      "fill-outline-color": "#374151"
+    },
+    "source": "City of Seattle",
+    "updated": "2025"
+  },
+  {
+    "id": "zoning_detailed",
+    "name": "Zoning Codes (Technical)",
+    "group": "base",
+    "tileset": "mapbox://dwahbe.seattle-zoning",
+    "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
+    "type": "fill",
+    "defaultVisible": false,
+    "description": "Full zoning designations using official Seattle Municipal Code terminology.",
+    "colorProperty": "ZONELUT",
+    "legend": [
+      {
+        "label": "RSL - Residential Small Lot",
+        "color": "#FCD34D",
+        "value": "RSL",
+        "percentage": 2.3
+      },
+      {
+        "label": "NR1 - Neighborhood Residential 1",
+        "color": "#D9F99D",
+        "value": "NR1",
+        "percentage": 4.4
+      },
+      {
+        "label": "NR2 - Neighborhood Residential 2",
+        "color": "#BEF264",
+        "value": "NR2",
+        "percentage": 19.8
+      },
+      {
+        "label": "NR3 - Neighborhood Residential 3",
+        "color": "#A3E635",
+        "value": "NR3",
+        "percentage": 36.9
+      },
+      {
+        "label": "LR1 - Lowrise 1",
+        "color": "#FED7AA",
+        "value": "LR1",
+        "percentage": 2.7
+      },
+      {
+        "label": "LR2 - Lowrise 2",
+        "color": "#FDBA74",
+        "value": "LR2",
+        "percentage": 3.2
+      },
+      {
+        "label": "LR3 - Lowrise 3",
+        "color": "#FB923C",
+        "value": "LR3",
+        "percentage": 4.5
+      },
+      {
+        "label": "MR - Midrise",
+        "color": "#EA580C",
+        "value": "MR",
+        "percentage": 1.1
+      },
+      {
+        "label": "HR - Highrise",
+        "color": "#DC2626",
+        "value": "HR",
+        "percentage": 0.2
+      },
+      {
+        "label": "NC1 - Neighborhood Commercial 1",
+        "color": "#E9D5FF",
+        "value": "NC1",
+        "percentage": 0.5
+      },
+      {
+        "label": "NC2 - Neighborhood Commercial 2",
+        "color": "#C4B5FD",
+        "value": "NC2",
+        "percentage": 1.9
+      },
+      {
+        "label": "NC3 - Neighborhood Commercial 3",
+        "color": "#A78BFA",
+        "value": "NC3",
+        "percentage": 2.7
+      },
+      {
+        "label": "C1 - Commercial 1",
+        "color": "#F472B6",
+        "value": "C1",
+        "percentage": 1.6
+      },
+      {
+        "label": "C2 - Commercial 2",
+        "color": "#EC4899",
+        "value": "C2",
+        "percentage": 1.1
+      },
+      {
+        "label": "SM - Seattle Mixed",
+        "color": "#60A5FA",
+        "value": "SM",
+        "percentage": 1.4
+      },
+      {
+        "label": "PSM - Pike/Pine Seattle Mixed",
+        "color": "#38BDF8",
+        "value": "PSM",
+        "percentage": 0.2
+      },
+      {
+        "label": "DMC - Downtown Mixed Commercial",
+        "color": "#6366F1",
+        "value": "DMC",
+        "percentage": 0.4
+      },
+      {
+        "label": "DMR - Downtown Mixed Residential",
+        "color": "#818CF8",
+        "value": "DMR",
+        "percentage": 0.3
+      },
+      {
+        "label": "DOC1 - Downtown Office Core 1",
+        "color": "#4338CA",
+        "value": "DOC1",
+        "percentage": 0.2
+      },
+      {
+        "label": "DOC2 - Downtown Office Core 2",
+        "color": "#3730A3",
+        "value": "DOC2",
+        "percentage": 0.1
+      },
+      {
+        "label": "DRC - Downtown Retail Core",
+        "color": "#5B21B6",
+        "value": "DRC",
+        "percentage": 0
+      },
+      {
+        "label": "MIO - Major Institution Overlay",
+        "color": "#2DD4BF",
+        "value": "MIO",
+        "percentage": 2.2
+      },
+      {
+        "label": "IC - Industrial Commercial",
+        "color": "#6B7280",
+        "value": "IC",
+        "percentage": 0.3
+      },
+      {
+        "label": "IB - Industrial Buffer",
+        "color": "#9CA3AF",
+        "value": "IB",
+        "percentage": 0
+      },
+      {
+        "label": "MML - Maritime Manufacturing/Logistics",
+        "color": "#475569",
+        "value": "MML",
+        "percentage": 9.9
+      },
+      {
+        "label": "II - Industry & Innovation",
+        "color": "#64748B",
+        "value": "II",
+        "percentage": 0.8
+      },
+      {
+        "label": "UX - Urban Center/Village",
+        "color": "#0EA5E9",
+        "value": "UX",
+        "percentage": 0.8
+      },
+      {
+        "label": "DH1 - Downtown Harborfront 1",
+        "color": "#1E3A5F",
+        "value": "DH1",
+        "percentage": 0.2
+      },
+      {
+        "label": "DH2 - Downtown Harborfront 2",
+        "color": "#1E40AF",
+        "value": "DH2",
+        "percentage": 0
+      },
+      {
+        "label": "IDM - Industrial/Commercial",
+        "color": "#78716C",
+        "value": "IDM",
+        "percentage": 0.1
+      },
+      {
+        "label": "IDR - Industrial/Residential",
+        "color": "#A8A29E",
+        "value": "IDR",
+        "percentage": 0
+      },
+      {
+        "label": "MPC - Master Planned Community",
+        "color": "#84CC16",
+        "value": "MPC",
+        "percentage": 0.1
+      },
+      {
+        "label": "PMM - Port Maritime Manufacturing",
+        "color": "#334155",
+        "value": "PMM",
+        "percentage": 0
+      }
+    ],
+    "filters": [],
+    "paint": {
+      "fill-opacity": 0.75,
+      "fill-outline-color": "#1f2937"
+    },
+    "source": "City of Seattle",
+    "updated": "2025"
+  }
+]

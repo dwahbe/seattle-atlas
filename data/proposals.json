@@ -1,0 +1,113 @@
+[
+  {
+    "id": "station_central",
+    "name": "Central Station Area Rezone",
+    "status": "Draft",
+    "summary": "Proposed zoning changes around Central Link Light Rail stations to allow higher density mixed-use development within a quarter-mile of station entrances. This proposal aims to maximize transit-oriented development opportunities and increase housing supply near high-capacity transit.",
+    "links": [
+      {
+        "title": "Draft Environmental Impact Statement",
+        "url": "https://www.seattle.gov/opcd/ongoing-initiatives/station-area-planning"
+      },
+      {
+        "title": "Public Comment Portal",
+        "url": "https://www.seattle.gov/opcd/public-comment"
+      },
+      {
+        "title": "Staff Report",
+        "url": "https://www.seattle.gov/documents/Departments/OPCD/station-area-rezone.pdf"
+      }
+    ],
+    "layers": ["proposal_station_area"],
+    "effectiveDate": null,
+    "jurisdiction": "City of Seattle"
+  },
+  {
+    "id": "adu_citywide",
+    "name": "Citywide ADU Policy Update",
+    "status": "Public Comment",
+    "summary": "Proposed updates to accessory dwelling unit (ADU) regulations to allow two ADUs per single-family lot, remove owner-occupancy requirements, and reduce parking minimums. The goal is to expand gentle density options and provide more housing choices across Seattle neighborhoods.",
+    "links": [
+      {
+        "title": "Proposed Ordinance Text",
+        "url": "https://www.seattle.gov/council/issues/adu-legislation"
+      },
+      {
+        "title": "Economic Impact Analysis",
+        "url": "https://www.seattle.gov/documents/Departments/OPCD/adu-impact-analysis.pdf"
+      },
+      {
+        "title": "FAQ Document",
+        "url": "https://www.seattle.gov/opcd/ongoing-initiatives/adu-faq"
+      }
+    ],
+    "layers": ["proposal_adu"],
+    "effectiveDate": null,
+    "jurisdiction": "City of Seattle"
+  },
+  {
+    "id": "comprehensive_plan_2044",
+    "name": "Seattle Comprehensive Plan 2044",
+    "status": "Under Review",
+    "summary": "Major update to Seattle's Comprehensive Plan setting land use and growth policies through 2044. Includes proposals for expanding urban villages, increasing allowed density in transit corridors, and updating neighborhood plans. This update is required under Washington State's Growth Management Act.",
+    "links": [
+      {
+        "title": "Draft Plan Document",
+        "url": "https://www.seattle.gov/opcd/one-seattle-plan"
+      },
+      {
+        "title": "Growth Strategy Alternatives",
+        "url": "https://www.seattle.gov/opcd/one-seattle-plan/growth-strategy"
+      },
+      {
+        "title": "Community Engagement Summary",
+        "url": "https://www.seattle.gov/opcd/one-seattle-plan/engagement"
+      },
+      {
+        "title": "Environmental Review",
+        "url": "https://www.seattle.gov/opcd/one-seattle-plan/eis"
+      }
+    ],
+    "layers": ["proposal_station_area", "urban_villages"],
+    "effectiveDate": "2025-06-01",
+    "jurisdiction": "City of Seattle"
+  },
+  {
+    "id": "ballard_light_rail",
+    "name": "Ballard Link Extension Station Planning",
+    "status": "Draft",
+    "summary": "Early planning for zoning and land use around future Ballard Link Light Rail extension stations. Sound Transit's expansion will add new stations in Interbay, Smith Cove, and Ballard, requiring updates to local zoning to support transit-oriented development.",
+    "links": [
+      {
+        "title": "Sound Transit Project Page",
+        "url": "https://www.soundtransit.org/system-expansion/ballard-link-extension"
+      },
+      {
+        "title": "City of Seattle Station Planning",
+        "url": "https://www.seattle.gov/opcd/ongoing-initiatives/ballard-station-planning"
+      }
+    ],
+    "layers": ["proposal_station_area"],
+    "effectiveDate": null,
+    "jurisdiction": "City of Seattle / Sound Transit"
+  },
+  {
+    "id": "industrial_maritime",
+    "name": "Industrial & Maritime Strategy Update",
+    "status": "Adopted",
+    "summary": "Updated policies for Seattle's industrial and maritime zones to balance job preservation with flexibility for compatible uses. Includes provisions for limited residential development in designated areas while protecting core industrial lands.",
+    "links": [
+      {
+        "title": "Adopted Ordinance",
+        "url": "https://www.seattle.gov/council/industrial-maritime-ordinance"
+      },
+      {
+        "title": "Implementation Guidelines",
+        "url": "https://www.seattle.gov/sdci/industrial-zones"
+      }
+    ],
+    "layers": [],
+    "effectiveDate": "2024-07-01",
+    "jurisdiction": "City of Seattle"
+  }
+]

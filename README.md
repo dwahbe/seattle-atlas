@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Civic Atlas – Seattle
 
-## Getting Started
+An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.
 
-First, run the development server:
+## Project Structure
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+atlas/
+├── app/                    # Next.js App Router pages
+│   ├── map/               # Main map view
+│   ├── methodology/       # Data methodology page
+│   └── about/             # About page
+├── components/
+│   ├── map/               # Map components (MapGL, MapLayers, etc.)
+│   ├── panels/            # Panel components (Control, Inspect, Share)
+│   ├── controls/          # Layer controls (Toggle, Filter, Legend)
+│   ├── search/            # Search components
+│   └── ui/                # Reusable UI components
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility functions and configs
+├── data/                  # JSON data files
+│   ├── layers.json        # Layer configurations
+│   └── proposals.json     # Proposal metadata
+└── types/                 # TypeScript type definitions
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Interactive Map**: Full-screen Mapbox GL map with pan, zoom, and rotation
+- **Layer Management**: Toggle layers, filter data, and view legends
+- **Feature Inspection**: Click any feature to see detailed properties and related proposals
+- **Search**: Find addresses and neighborhoods using Mapbox Geocoding
+- **Shareable URLs**: Every map state generates a unique URL
+- **Dark/Light Mode**: Automatic theme detection with manual override
+- **Responsive Design**: Works on desktop and mobile devices
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Data Configuration
 
-## Learn More
+### Adding Layers
 
-To learn more about Next.js, take a look at the following resources:
+Edit `data/layers.json` to add new map layers. Each layer requires:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```json
+{
+  "id": "unique-layer-id",
+  "name": "Display Name",
+  "group": "base|transit|proposals|derived",
+  "tileset": "mapbox://username.tileset-id",
+  "sourceLayer": "layer-name-in-tileset",
+  "type": "fill|line|circle|symbol",
+  "defaultVisible": true,
+  "legend": [{ "label": "Category", "color": "#hex", "value": "data-value" }],
+  "source": "Data source attribution",
+  "updated": "2025-01-01"
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Adding Proposals
 
-## Deploy on Vercel
+Edit `data/proposals.json` to add tracked proposals:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```json
+{
+  "id": "proposal-id",
+  "name": "Proposal Name",
+  "status": "Draft|Public Comment|Under Review|Adopted|Rejected",
+  "summary": "Brief description...",
+  "links": [{ "title": "Link Text", "url": "https://..." }],
+  "layers": ["related-layer-ids"],
+  "jurisdiction": "City of Seattle"
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## URL Parameters
+
+The map state is fully serialized in the URL:
+
+| Parameter | Description                     | Example                  |
+| --------- | ------------------------------- | ------------------------ |
+| `lat`     | Latitude                        | `47.6062`                |
+| `lng`     | Longitude                       | `-122.3321`              |
+| `z`       | Zoom level                      | `12`                     |
+| `layers`  | Active layers (comma-separated) | `zoning,transit_stops`   |
+| `filters` | Active filters                  | `zoning.zone_type:SF,MF` |
+| `inspect` | Inspected feature ID            | `parcel_123`             |
+| `compare` | Compare mode enabled            | `true`                   |
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push to GitHub
+2. Import project in Vercel
+3. Add `NEXT_PUBLIC_MAPBOX_TOKEN` environment variable
+4. Deploy
+
+### Other Platforms
+
+```bash
+bun run build
+bun start
+```
+
+## Scripts
+
+| Command            | Description               |
+| ------------------ | ------------------------- |
+| `bun dev`          | Start development server  |
+| `bun build`        | Build for production      |
+| `bun start`        | Start production server   |
+| `bun lint`         | Run ESLint                |
+| `bun format`       | Format code with Prettier |
+| `bun format:check` | Check formatting          |
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS 4
+- **Maps**: Mapbox GL JS
+- **State**: URL-based state with nuqs
+- **Deployment**: Vercel
+
+## License
+
+MIT
