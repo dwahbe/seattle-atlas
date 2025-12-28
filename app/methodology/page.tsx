@@ -63,7 +63,7 @@ export default function MethodologyPage() {
                   </div>
                 </dl>
                 <p className="text-sm text-[rgb(var(--text-secondary))] mt-4">
-                  Zoning boundaries are sourced from Seattle's official GIS data. Zone
+                  Zoning boundaries are sourced from Seattle&apos;s official GIS data. Zone
                   classifications follow the Seattle Municipal Code Title 23 designations. We
                   process raw shapefiles into vector tiles for efficient rendering.
                 </p>
@@ -109,8 +109,9 @@ export default function MethodologyPage() {
                   </div>
                 </dl>
                 <p className="text-sm text-[rgb(var(--text-secondary))] mt-4">
-                  Neighborhood boundaries reflect the City's official district map used for planning
-                  purposes. These boundaries may differ from commonly used neighborhood names.
+                  Neighborhood boundaries reflect the City&apos;s official district map used for
+                  planning purposes. These boundaries may differ from commonly used neighborhood
+                  names.
                 </p>
               </div>
             </div>
@@ -123,8 +124,8 @@ export default function MethodologyPage() {
 
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                The "Transit-Rich, Low Density" layer is a derived dataset created by Civic Atlas.
-                It identifies parcels that meet both of the following criteria:
+                The &quot;Transit-Rich, Low Density&quot; layer is a derived dataset created by
+                Civic Atlas. It identifies parcels that meet both of the following criteria:
               </p>
               <ol className="list-decimal list-inside space-y-2 ml-4">
                 <li>
@@ -201,8 +202,8 @@ export default function MethodologyPage() {
                   Seattle Department of Construction & Inspections for official determinations.
                 </li>
                 <li>
-                  Data may not reflect the most recent changes. Check the "Last Updated" date for
-                  each layer.
+                  Data may not reflect the most recent changes. Check the &quot;Last Updated&quot;
+                  date for each layer.
                 </li>
                 <li>
                   Boundary accuracy is limited by source data resolution. Parcel-level

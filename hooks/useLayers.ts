@@ -2,7 +2,7 @@
 
 import { useMemo, useCallback } from 'react';
 import { getLayers, getLayerGroups, getLayerById, validateLayerIds } from '@/lib/layers';
-import type { LayerConfig, LayerGroup } from '@/types';
+import type { LayerConfig } from '@/types';
 
 interface UseLayersProps {
   activeLayers: string[];

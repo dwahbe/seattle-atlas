@@ -28,7 +28,6 @@ export function MapContainer() {
     shareableUrl,
     setViewState: setUrlViewState,
     setActiveLayers: setUrlActiveLayers,
-    setFilter,
     setInspectedFeatureId,
   } = useUrlState();
 
@@ -99,11 +98,11 @@ export function MapContainer() {
   );
 
   // Base layer change handler (mutually exclusive)
-  const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
   const handleBaseLayerChange = useCallback(
     (layerId: string | null) => {
+      const baseLayerIds = ['zoning', 'zoning_detailed'];
       // Remove all base layers first
-      const withoutBaseLayers = activeLayers.filter((id) => !BASE_LAYER_IDS.includes(id));
+      const withoutBaseLayers = activeLayers.filter((id) => !baseLayerIds.includes(id));
       // Add the new base layer if specified
       if (layerId) {
         setUrlActiveLayers([layerId, ...withoutBaseLayers]);

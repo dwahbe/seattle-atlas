@@ -30,7 +30,7 @@ for (const feature of geojson.features) {
     if (zonelut) {
       areaByZonelut[zonelut] = (areaByZonelut[zonelut] || 0) + area;
     }
-  } catch (e) {
+  } catch {
     // Skip invalid geometries
   }
 }

@@ -4,7 +4,6 @@ import { useQueryStates, parseAsFloat, parseAsString, parseAsBoolean } from 'nuq
 import { useCallback, useMemo } from 'react';
 import {
   SEATTLE_CENTER,
-  DEFAULT_LAYERS,
   parseLayersParam,
   serializeLayersParam,
   parseFiltersParam,

@@ -38,7 +38,7 @@ export default function AboutPage() {
             About Civic Atlas
           </h1>
           <p className="text-lg text-[rgb(var(--text-secondary))] mb-8">
-            An open platform for understanding Seattle's land use, zoning, and transit systems.
+            An open platform for understanding Seattle&apos;s land use, zoning, and transit systems.
           </p>
 
           <section className="mb-12">
@@ -47,15 +47,15 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Civic Atlas exists to make Seattle's land use and transit data accessible,
+                Civic Atlas exists to make Seattle&apos;s land use and transit data accessible,
                 understandable, and useful for everyone—residents, policymakers, journalists,
                 researchers, and advocates alike.
               </p>
               <p>
                 We believe that informed civic participation requires access to clear, accurate
                 information about how our city is shaped. Zoning codes and transit plans are public
-                documents, but they're often difficult to interpret without specialized knowledge.
-                Civic Atlas bridges that gap.
+                documents, but they&apos;re often difficult to interpret without specialized
+                knowledge. Civic Atlas bridges that gap.
               </p>
             </div>
           </section>
@@ -82,8 +82,8 @@ export default function AboutPage() {
                   Current Zoning
                 </h3>
                 <p className="text-sm text-[rgb(var(--text-secondary))]">
-                  Interactive visualization of Seattle's zoning designations, from single-family
-                  zones to downtown cores.
+                  Interactive visualization of Seattle&apos;s zoning designations, from
+                  single-family zones to downtown cores.
                 </p>
               </div>
 

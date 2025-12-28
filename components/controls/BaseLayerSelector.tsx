@@ -1,7 +1,5 @@
 'use client';
 
-import type { LayerConfig } from '@/types';
-
 interface BaseLayerOption {
   id: string;
   label: string;

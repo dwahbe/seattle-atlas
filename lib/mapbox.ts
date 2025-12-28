@@ -96,6 +96,7 @@ function buildColorExpression(layer: LayerConfig): mapboxgl.Expression | string 
 }
 
 // Get layer layout properties
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getLayerLayout(layer: LayerConfig): mapboxgl.AnyLayout {
   return {
     visibility: 'visible',

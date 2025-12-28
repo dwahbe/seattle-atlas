@@ -113,17 +113,20 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
   // Clean up sources and layers when unmounting
   useEffect(() => {
+    const layersRef = addedLayers.current;
+    const sourcesRef = addedSources.current;
+
     return () => {
       if (!map) return;
 
       try {
-        for (const layerId of addedLayers.current) {
+        for (const layerId of layersRef) {
           if (map.getLayer(layerId)) {
             map.removeLayer(layerId);
           }
         }
 
-        for (const sourceId of addedSources.current) {
+        for (const sourceId of sourcesRef) {
           if (map.getSource(sourceId)) {
             map.removeSource(sourceId);
           }
@@ -132,8 +135,8 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
         // Map may have been destroyed already
       }
 
-      addedLayers.current.clear();
-      addedSources.current.clear();
+      layersRef.clear();
+      sourcesRef.clear();
     };
   }, [map]);
 
