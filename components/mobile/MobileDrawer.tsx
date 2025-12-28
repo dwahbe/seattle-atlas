@@ -6,13 +6,11 @@ import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { SearchBar } from '@/components/search/SearchBar';
 import type {
   LayerConfig,
   LayerGroup as LayerGroupType,
   InspectedFeature,
   Proposal,
-  SearchResult,
 } from '@/types';
 import Link from 'next/link';
 
@@ -41,8 +39,6 @@ interface MobileDrawerProps {
   proposals: Proposal[];
   onCloseInspect: () => void;
   layerConfigs: LayerConfig[];
-  // Search
-  onSearchSelect: (result: SearchResult) => void;
 }
 
 export function MobileDrawer({
@@ -55,7 +51,6 @@ export function MobileDrawer({
   proposals,
   onCloseInspect,
   layerConfigs,
-  onSearchSelect,
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
 
@@ -95,15 +90,6 @@ export function MobileDrawer({
     return String(value);
   };
 
-  // When a feature is inspected, expand the drawer
-  const handleSearchSelect = useCallback(
-    (result: SearchResult) => {
-      onSearchSelect(result);
-      setSnap(SNAP_POINT_PEEK); // Collapse after search
-    },
-    [onSearchSelect]
-  );
-
   // Auto-expand when inspecting a feature
   const isInspecting = inspectedFeature !== null;
 
@@ -132,17 +118,18 @@ export function MobileDrawer({
             />
           </div>
 
-          {/* Header with search */}
-          <div className="flex-none px-4 pb-3">
-            <div className="flex items-center justify-between mb-3">
-              <Link href="/" className="group">
+          {/* Header */}
+          <div className="flex-none px-4 pb-2">
+            <div className="flex items-center justify-between">
+              <Link href="/" className="group flex items-center min-h-[36px]">
                 <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
                   Civic Atlas
                 </h1>
               </Link>
-              <ThemeToggle />
+              <div className="flex items-center">
+                <ThemeToggle />
+              </div>
             </div>
-            <SearchBar onSelect={handleSearchSelect} placeholder="Search Seattle..." />
           </div>
 
           {/* Scrollable content area */}

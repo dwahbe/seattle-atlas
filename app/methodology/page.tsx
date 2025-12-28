@@ -11,17 +11,17 @@ export default function MethodologyPage() {
     <div className="min-h-screen bg-[rgb(var(--panel-bg))]">
       {/* Header */}
       <header className="border-b border-[rgb(var(--border-color))]">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/map" className="group">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-start justify-between gap-4">
+          <Link href="/map" className="group shrink-0">
             <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
               Civic Atlas
             </h1>
             <p className="text-xs text-[rgb(var(--text-secondary))]">Seattle</p>
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 pt-0.5">
             <Link
               href="/map"
-              className="text-sm text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
+              className="text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--text-primary))] transition-colors whitespace-nowrap"
             >
               ← Back to Map
             </Link>
@@ -31,7 +31,7 @@ export default function MethodologyPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article className="prose prose-slate dark:prose-invert max-w-none">
           <h1 className="text-3xl font-bold text-[rgb(var(--text-primary))] mb-2">Methodology</h1>
           <p className="text-lg text-[rgb(var(--text-secondary))] mb-8">
@@ -220,8 +220,8 @@ export default function MethodologyPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[rgb(var(--border-color))] mt-12">
-        <div className="max-w-4xl mx-auto px-6 py-8">
+      <footer className="border-t border-[rgb(var(--border-color))] mt-8 sm:mt-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-[rgb(var(--text-secondary))]">Civic Atlas – Seattle</p>
             <div className="flex gap-6 text-sm">

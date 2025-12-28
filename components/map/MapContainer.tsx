@@ -143,6 +143,13 @@ export function MapContainer() {
       {isMobile ? (
         /* Mobile Layout */
         <>
+          {/* Floating Search Bar */}
+          <div className="absolute top-0 left-0 right-0 z-20 p-3 pt-[env(safe-area-inset-top)]">
+            <div className="pt-3">
+              <SearchBar onSelect={handleSearchSelect} placeholder="Search Seattle..." />
+            </div>
+          </div>
+
           <MobileDrawer
             layers={layers}
             layerGroups={layerGroups}
@@ -153,7 +160,6 @@ export function MapContainer() {
             proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
             onCloseInspect={clearInspection}
             layerConfigs={activeLayerConfigs}
-            onSearchSelect={handleSearchSelect}
           />
         </>
       ) : (

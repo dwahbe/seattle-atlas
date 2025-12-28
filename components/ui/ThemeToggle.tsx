@@ -8,7 +8,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <button
-        className="p-2 rounded-md bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-secondary))]"
+        className="w-9 h-9 flex items-center justify-center rounded-md bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-secondary))]"
         aria-label="Toggle theme"
       >
         <span className="w-4 h-4 block" />
@@ -66,7 +66,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-md bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-hover))] transition-colors"
+      className="w-9 h-9 flex items-center justify-center rounded-md bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-hover))] transition-colors"
       aria-label={`Current theme: ${theme}. Click to toggle.`}
       title={`Theme: ${theme}`}
     >
