@@ -57,7 +57,7 @@ export function MobileDrawer({
   layerConfigs,
   onSearchSelect,
 }: MobileDrawerProps) {
-  const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_PEEK);
+  const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
 
   // Determine which base layer is active
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;

@@ -35,6 +35,7 @@ export function MapGL({
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const isInitialized = useRef(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
 
   // Initialize map
@@ -72,6 +73,7 @@ export function MapGL({
 
     mapInstance.on('load', () => {
       map.current = mapInstance;
+      setIsLoaded(true);
       onMapLoad(mapInstance);
     });
 
@@ -90,6 +92,7 @@ export function MapGL({
       mapInstance.remove();
       map.current = null;
       isInitialized.current = false;
+      setIsLoaded(false);
     };
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -161,7 +164,7 @@ export function MapGL({
 
   // Setup event listeners
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !isLoaded) return;
 
     const canvas = map.current.getCanvas();
 
@@ -176,7 +179,7 @@ export function MapGL({
         canvas.removeEventListener('mouseleave', handleMouseLeave);
       }
     };
-  }, [handleClick, handleMouseMove, handleMouseLeave]);
+  }, [isLoaded, handleClick, handleMouseMove, handleMouseLeave]);
 
   // Get the layer config for the hovered feature
   const hoveredLayerConfig = hoverState

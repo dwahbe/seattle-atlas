@@ -80,4 +80,3 @@ export function HoverTooltip({ x, y, properties, layerConfig }: HoverTooltipProp
     </div>
   );
 }
-
