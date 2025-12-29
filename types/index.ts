@@ -45,6 +45,7 @@ export interface LayerConfig {
   legend: LegendItem[];
   filters?: LayerFilter[];
   paint?: Record<string, unknown>;
+  layout?: Record<string, unknown>;
   colorProperty?: string;
   source: string;
   updated: string;

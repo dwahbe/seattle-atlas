@@ -325,5 +325,75 @@
     },
     "source": "City of Seattle",
     "updated": "2025"
+  },
+  {
+    "id": "transit_routes",
+    "name": "Transit Routes",
+    "group": "transit",
+    "tileset": "mapbox://dwahbe.j2qu5fbbqr1o",
+    "sourceLayer": "b0ad40aff03e052736ca",
+    "type": "line",
+    "defaultVisible": false,
+    "description": "King County Metro and Sound Transit bus and ferry routes.",
+    "colorProperty": "color",
+    "legend": [],
+    "filters": [
+      {
+        "id": "route_type",
+        "label": "Transit Type",
+        "property": "route_type",
+        "type": "multiselect",
+        "options": [
+          { "label": "Bus", "value": "bus" },
+          { "label": "Ferry", "value": "ferry" }
+        ]
+      }
+    ],
+    "paint": {
+      "line-color": [
+        "match",
+        ["get", "route_type"],
+        "streetcar",
+        "#C25D12",
+        "ferry",
+        "#0077A8",
+        "rail",
+        "#4A8C32",
+        "subway",
+        "#4A8C32",
+        "bus",
+        "#B8860B",
+        "#666666"
+      ],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 14, 1.5, 18, 2.5],
+      "line-opacity": 1
+    },
+    "layout": {
+      "line-cap": "round",
+      "line-join": "round"
+    },
+    "source": "King County Metro (GTFS)",
+    "updated": "2025"
+  },
+  {
+    "id": "transit_stops",
+    "name": "Transit Stops",
+    "group": "transit",
+    "tileset": "mapbox://dwahbe.lw4mlxkatzoh",
+    "sourceLayer": "a1f2c2b7eac573530777",
+    "type": "circle",
+    "defaultVisible": false,
+    "description": "Bus stops and transit stations across Seattle.",
+    "legend": [],
+    "minZoom": 13,
+    "paint": {
+      "circle-color": "#ffffff",
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 13, 2, 16, 4, 18, 6],
+      "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 13, 1, 16, 1.5, 18, 2],
+      "circle-stroke-color": "#374151",
+      "circle-opacity": 0.9
+    },
+    "source": "King County Metro (GTFS)",
+    "updated": "2025"
   }
 ]

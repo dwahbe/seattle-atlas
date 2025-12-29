@@ -71,9 +71,19 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
 
 // Build a Mapbox expression for data-driven coloring
 function buildColorExpression(layer: LayerConfig): mapboxgl.Expression | string {
+  // If colorProperty is specified but no legend, use the property value directly
+  // This enables data-driven coloring from GeoJSON properties (e.g., transit route colors)
+  if (layer.colorProperty && layer.legend.length === 0) {
+    return ['get', layer.colorProperty] as mapboxgl.Expression;
+  }
+
   if (layer.legend.length === 0) {
-    // Use paint fill-color if specified, otherwise default
-    return (layer.paint?.['fill-color'] as string) || '#888888';
+    // Use paint fill-color/line-color if specified, otherwise default
+    return (
+      (layer.paint?.['fill-color'] as string) ||
+      (layer.paint?.['line-color'] as string) ||
+      '#888888'
+    );
   }
 
   if (layer.legend.length === 1) {
@@ -96,11 +106,11 @@ function buildColorExpression(layer: LayerConfig): mapboxgl.Expression | string 
 }
 
 // Get layer layout properties
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getLayerLayout(layer: LayerConfig): mapboxgl.AnyLayout {
   return {
     visibility: 'visible',
-  };
+    ...(layer.layout || {}),
+  } as mapboxgl.AnyLayout;
 }
 
 // Build filter expression from filter state

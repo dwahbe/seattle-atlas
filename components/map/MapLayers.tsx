@@ -23,7 +23,17 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
     const handleStyleLoad = () => {
       // Remove layers that are no longer active
       for (const layerId of addedLayers.current) {
+        // Skip casing layers - they're managed with their parent
+        if (layerId.endsWith('-casing')) continue;
+
         if (!activeLayers.includes(layerId)) {
+          // Remove casing layer first if it exists
+          const casingId = `${layerId}-casing`;
+          if (map.getLayer(casingId)) {
+            map.removeLayer(casingId);
+            addedLayers.current.delete(casingId);
+          }
+
           if (map.getLayer(layerId)) {
             map.removeLayer(layerId);
           }
@@ -48,6 +58,37 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
         // Add layer if not already added
         if (!addedLayers.current.has(layerId) && !map.getLayer(layerId)) {
+          // For line layers (transit routes), add a subtle casing layer for legibility
+          if (config.type === 'line') {
+            const casingId = `${layerId}-casing`;
+            if (!map.getLayer(casingId)) {
+              const casingSpec: mapboxgl.AnyLayer = {
+                id: casingId,
+                type: 'line',
+                source: sourceId,
+                'source-layer': config.sourceLayer,
+                paint: {
+                  'line-color': 'rgba(255, 255, 255, 0.5)', // Subtle white casing
+                  'line-width': ['interpolate', ['linear'], ['zoom'], 10, 1.8, 14, 2.5, 18, 4],
+                  'line-opacity': 1,
+                },
+                layout: {
+                  'line-cap': 'round',
+                  'line-join': 'round',
+                },
+              };
+              if (config.minZoom !== undefined) casingSpec.minzoom = config.minZoom;
+              if (config.maxZoom !== undefined) casingSpec.maxzoom = config.maxZoom;
+
+              try {
+                map.addLayer(casingSpec);
+                addedLayers.current.add(casingId);
+              } catch (error) {
+                console.error(`[MapLayers] Failed to add casing: ${casingId}`, error);
+              }
+            }
+          }
+
           const layerSpec: mapboxgl.AnyLayer = {
             id: layerId,
             type: config.type,
@@ -65,8 +106,12 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
             layerSpec.maxzoom = config.maxZoom;
           }
 
-          map.addLayer(layerSpec);
-          addedLayers.current.add(layerId);
+          try {
+            map.addLayer(layerSpec);
+            addedLayers.current.add(layerId);
+          } catch (error) {
+            console.error(`[MapLayers] Failed to add layer: ${layerId}`, error);
+          }
         }
       }
     };
