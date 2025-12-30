@@ -3,7 +3,8 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export const metadata = {
   title: 'Methodology',
-  description: 'Data sources, methodology, and technical documentation for Seattle Atlas – Seattle.',
+  description:
+    'Data sources, methodology, and technical documentation for Seattle Atlas – Seattle.',
 };
 
 export default function MethodologyPage() {

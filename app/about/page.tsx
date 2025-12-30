@@ -177,8 +177,8 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Seattle Atlas is built with open-source technology and our code is publicly available.
-                We believe civic tools should be transparent and auditable.
+                Seattle Atlas is built with open-source technology and our code is publicly
+                available. We believe civic tools should be transparent and auditable.
               </p>
               <p>
                 The data visualization layers, analysis methodology, and application code can be
@@ -221,8 +221,8 @@ export default function AboutPage() {
                 on our GitHub repository or contact us via email.
               </p>
               <p>
-                Seattle Atlas is not affiliated with the City of Seattle, King County, Sound Transit,
-                or any government agency.
+                Seattle Atlas is not affiliated with the City of Seattle, King County, Sound
+                Transit, or any government agency.
               </p>
             </div>
           </section>
