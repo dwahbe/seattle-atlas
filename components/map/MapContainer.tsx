@@ -144,7 +144,7 @@ export function MapContainer() {
         /* Mobile Layout */
         <>
           {/* Floating Search Bar */}
-          <div className="absolute top-0 left-0 right-0 z-20 p-3 pt-[env(safe-area-inset-top)]">
+          <div className="absolute top-0 left-0 right-0 z-[5] p-3 pt-[env(safe-area-inset-top)]">
             <div className="pt-3">
               <SearchBar onSelect={handleSearchSelect} placeholder="Search Seattle..." />
             </div>
@@ -166,7 +166,7 @@ export function MapContainer() {
         /* Desktop Layout */
         <>
           {/* Search Bar (top) */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-md px-4">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[5] w-full max-w-md px-4">
             <SearchBar onSelect={handleSearchSelect} />
           </div>
 

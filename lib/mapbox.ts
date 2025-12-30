@@ -189,6 +189,7 @@ interface MapboxGeocodingFeature {
   place_type: string[];
   center: number[];
   bbox?: number[];
+  context?: Array<{ id: string; text: string }>;
 }
 
 export interface GeocodingResult {
@@ -208,5 +209,58 @@ function mapFeatureType(type: string): 'address' | 'neighborhood' | 'place' {
       return 'neighborhood';
     default:
       return 'place';
+  }
+}
+
+/**
+ * Reverse geocode a point to get an address or place name.
+ */
+export async function reverseGeocode(
+  lng: number,
+  lat: number
+): Promise<{ address: string; neighborhood?: string } | null> {
+  if (!MAPBOX_TOKEN) {
+    return null;
+  }
+
+  const url = new URL(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json`);
+  url.searchParams.set('access_token', MAPBOX_TOKEN);
+  url.searchParams.set('limit', '1');
+  url.searchParams.set('types', 'address,neighborhood');
+
+  try {
+    const response = await fetch(url.toString());
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    if (!data.features || data.features.length === 0) {
+      return null;
+    }
+
+    const feature = data.features[0] as MapboxGeocodingFeature;
+
+    // Extract just the street address (first part before the city)
+    const placeName = feature.place_name;
+    const addressParts = placeName.split(',');
+    const shortAddress = addressParts[0]?.trim() || placeName;
+
+    // Try to find neighborhood from context
+    let neighborhood: string | undefined;
+    if (feature.context) {
+      const neighborhoodContext = (feature.context as Array<{ id: string; text: string }>).find(
+        (c) => c.id.startsWith('neighborhood')
+      );
+      neighborhood = neighborhoodContext?.text;
+    }
+
+    return {
+      address: shortAddress,
+      neighborhood,
+    };
+  } catch (error) {
+    console.error('Reverse geocoding error:', error);
+    return null;
   }
 }

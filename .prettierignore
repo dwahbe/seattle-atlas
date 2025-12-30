@@ -1,0 +1,10 @@
+node_modules/
+.next/
+out/
+build/
+
+# Bun lockfiles (generated)
+bun.lock
+bun.lockb
+
+

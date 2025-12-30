@@ -1,16 +1,22 @@
 'use client';
 
 import { Drawer } from 'vaul';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info';
+import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
+import { getRepresentativePoint } from '@/lib/spatial';
+import { reverseGeocode } from '@/lib/mapbox';
 import type {
   LayerConfig,
   LayerGroup as LayerGroupType,
   InspectedFeature,
   Proposal,
+  WalkScoreData,
+  PermitsData,
 } from '@/types';
 import Link from 'next/link';
 
@@ -53,6 +59,11 @@ export function MobileDrawer({
   layerConfigs,
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
+  const [walkScore, setWalkScore] = useState<WalkScoreData | null>(null);
+  const [permits, setPermits] = useState<PermitsData | null>(null);
+  const [location, setLocation] = useState<{ address: string; neighborhood?: string } | null>(null);
+  const [isLoadingWalkScore, setIsLoadingWalkScore] = useState(false);
+  const [isLoadingPermits, setIsLoadingPermits] = useState(false);
 
   // Determine which base layer is active
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;
@@ -75,6 +86,19 @@ export function MobileDrawer({
     [layerConfigs]
   );
 
+  // Get zone info if this is a zoning layer
+  const zoneInfo = useMemo<ZoneInfo | null>(() => {
+    if (!inspectedFeature || !isZoningLayer(inspectedFeature.layerId)) return null;
+    const zoneCode = inspectedFeature.properties.ZONELUT as string;
+    return getZoneInfo(zoneCode);
+  }, [inspectedFeature]);
+
+  // Get representative point for API calls
+  const featurePoint = useMemo<[number, number] | null>(() => {
+    if (!inspectedFeature?.geometry) return null;
+    return getRepresentativePoint(inspectedFeature.geometry);
+  }, [inspectedFeature?.geometry]);
+
   // Related proposals for inspected feature
   const relatedProposals = useMemo(
     () =>
@@ -82,16 +106,57 @@ export function MobileDrawer({
     [inspectedFeature, proposals]
   );
 
-  // Format property values
-  const formatValue = (value: unknown): string => {
-    if (value === null || value === undefined) return '—';
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    if (typeof value === 'number') return value.toLocaleString();
-    return String(value);
-  };
+  // Fetch Walk Score when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(inspectedFeature?.layerId || '')) {
+      setWalkScore(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    setIsLoadingWalkScore(true);
+
+    fetch(`/api/walkscore?lat=${lat}&lng=${lng}`)
+      .then((res) => res.json())
+      .then((data) => setWalkScore(data))
+      .catch(() => setWalkScore(null))
+      .finally(() => setIsLoadingWalkScore(false));
+  }, [featurePoint, inspectedFeature?.layerId]);
+
+  // Fetch permits when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(inspectedFeature?.layerId || '')) {
+      setPermits(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    setIsLoadingPermits(true);
+
+    fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=3`)
+      .then((res) => res.json())
+      .then((data) => setPermits(data))
+      .catch(() => setPermits(null))
+      .finally(() => setIsLoadingPermits(false));
+  }, [featurePoint, inspectedFeature?.layerId]);
+
+  // Fetch location (reverse geocode) when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(inspectedFeature?.layerId || '')) {
+      setLocation(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    reverseGeocode(lng, lat)
+      .then((result) => setLocation(result))
+      .catch(() => setLocation(null));
+  }, [featurePoint, inspectedFeature?.layerId]);
 
   // Auto-expand when inspecting a feature
   const isInspecting = inspectedFeature !== null;
+  const isZoning = inspectedFeature ? isZoningLayer(inspectedFeature.layerId) : false;
+  const isTransit = inspectedFeature ? isTransitLayer(inspectedFeature.layerId) : false;
 
   return (
     <Drawer.Root
@@ -110,6 +175,7 @@ export function MobileDrawer({
             maxHeight: `${SNAP_POINT_FULL * 100}%`,
           }}
         >
+          <Drawer.Title className="sr-only">Seattle Atlas Controls</Drawer.Title>
           {/* Drag handle */}
           <div className="flex-none pt-3 pb-2 px-4">
             <div
@@ -123,7 +189,7 @@ export function MobileDrawer({
             <div className="flex items-center justify-between">
               <Link href="/" className="group flex items-center min-h-[36px]">
                 <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-                  Civic Atlas
+                  Seattle Atlas
                 </h1>
               </Link>
               <div className="flex items-center">
@@ -134,7 +200,7 @@ export function MobileDrawer({
 
           {/* Scrollable content area */}
           <div className="flex-1 overflow-y-auto overscroll-contain">
-            {isInspecting ? (
+            {isInspecting && inspectedFeature ? (
               /* Inspect Mode */
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
                 {/* Inspect Header */}
@@ -144,7 +210,7 @@ export function MobileDrawer({
                       {getLayerName(inspectedFeature.layerId)}
                     </div>
                     <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))]">
-                      Feature Details
+                      {isZoning && zoneInfo ? zoneInfo.name : 'Feature Details'}
                     </h2>
                   </div>
                   <button
@@ -164,27 +230,216 @@ export function MobileDrawer({
                   </button>
                 </div>
 
-                {/* Properties */}
-                <div className="p-4 border-b border-[rgb(var(--border-color))]">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
-                    Properties
-                  </h3>
-                  <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
-                    {Object.entries(inspectedFeature.properties)
-                      .filter(([key]) => !key.startsWith('_') && key !== 'id')
-                      .slice(0, 8)
-                      .map(([key, value]) => (
-                        <div key={key}>
-                          <dt className="text-xs text-[rgb(var(--text-secondary))] capitalize truncate">
-                            {key.replace(/_/g, ' ')}
-                          </dt>
-                          <dd className="text-sm font-medium text-[rgb(var(--text-primary))] truncate">
-                            {formatValue(value)}
-                          </dd>
+                {/* Zoning Summary */}
+                {isZoning && zoneInfo && (
+                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <p className="text-sm text-[rgb(var(--text-primary))] mb-3">
+                      {zoneInfo.summary}
+                    </p>
+
+                    {/* Quick stats grid */}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-2">
+                        <div className="text-xs text-[rgb(var(--text-secondary))]">Max Height</div>
+                        <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                          {zoneInfo.maxHeight}
                         </div>
-                      ))}
-                  </dl>
-                </div>
+                      </div>
+                      {zoneInfo.aduAllowed > 0 ? (
+                        <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-2">
+                          <div className="text-xs text-[rgb(var(--text-secondary))]">ADUs</div>
+                          <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                            {zoneInfo.aduAllowed} allowed
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-2">
+                          <div className="text-xs text-[rgb(var(--text-secondary))]">Category</div>
+                          <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                            {getCategoryLabel(zoneInfo.category)}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Location indicator */}
+                    {location && (
+                      <div className="mt-2 flex items-center gap-1 text-xs text-[rgb(var(--text-secondary))]">
+                        <svg
+                          className="w-3 h-3 shrink-0"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        >
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                          <circle cx="12" cy="10" r="3" />
+                        </svg>
+                        <span className="truncate">Near {location.address}</span>
+                      </div>
+                    )}
+
+                    {/* Walk Score */}
+                    {(isLoadingWalkScore || walkScore) && (
+                      <div className="mt-3 pt-3 border-t border-[rgb(var(--border-color))]">
+                        {isLoadingWalkScore ? (
+                          <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                            <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                            Loading scores...
+                          </div>
+                        ) : walkScore && !walkScore.error ? (
+                          <div>
+                            <div className="flex gap-3">
+                              {walkScore.walkscore !== null && (
+                                <ScoreBadge label="Walk" score={walkScore.walkscore} />
+                              )}
+                              {walkScore.transit_score !== null && (
+                                <ScoreBadge label="Transit" score={walkScore.transit_score} />
+                              )}
+                              {walkScore.bike_score !== null && (
+                                <ScoreBadge label="Bike" score={walkScore.bike_score} />
+                              )}
+                            </div>
+                            <a
+                              href={walkScore.more_info_link || 'https://www.walkscore.com'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-block mt-2 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+                            >
+                              Scores by Walk Score®
+                            </a>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Transit Info */}
+                {isTransit && (
+                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <TransitInfo feature={inspectedFeature} />
+                  </div>
+                )}
+
+                {/* Development Rules (Zoning only) */}
+                {isZoning && zoneInfo && (
+                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+                      Development Rules
+                    </h3>
+                    <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                      <div>
+                        <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+                          Zone Code
+                          <InfoTooltip text="Official zoning designation from Seattle Municipal Code." />
+                        </dt>
+                        <dd className="font-medium text-[rgb(var(--text-primary))]">
+                          {zoneInfo.code}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+                          Lot Coverage
+                          <InfoTooltip text="Max % of lot that can be covered by buildings." />
+                        </dt>
+                        <dd className="font-medium text-[rgb(var(--text-primary))]">
+                          {zoneInfo.lotCoverage}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+                          FAR
+                          <InfoTooltip text="Floor Area Ratio: total floor area ÷ lot size. FAR 1.0 = floor area equal to lot." />
+                        </dt>
+                        <dd className="font-medium text-[rgb(var(--text-primary))]">
+                          {zoneInfo.far}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="text-[rgb(var(--text-secondary))]">Code</dt>
+                        <dd>
+                          <a
+                            href={zoneInfo.smcLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[rgb(var(--accent))] font-medium"
+                          >
+                            SMC {zoneInfo.smcSection} →
+                          </a>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                )}
+
+                {/* Raw Properties (non-zoning) */}
+                {!isZoning && (
+                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+                      Properties
+                    </h3>
+                    <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
+                      {getDisplayProperties(inspectedFeature.layerId, inspectedFeature.properties)
+                        .slice(0, 8)
+                        .map(({ key, label, value }) => (
+                          <div key={key}>
+                            <dt className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                              {label}
+                            </dt>
+                            <dd className="text-sm font-medium text-[rgb(var(--text-primary))] truncate">
+                              {value}
+                            </dd>
+                          </div>
+                        ))}
+                    </dl>
+                  </div>
+                )}
+
+                {/* Nearby Permits */}
+                {isZoning && (
+                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+                      Nearby Activity
+                    </h3>
+                    {isLoadingPermits ? (
+                      <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                        <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                        Loading...
+                      </div>
+                    ) : permits && permits.permits.length > 0 ? (
+                      <div className="space-y-2">
+                        <p className="text-xs text-[rgb(var(--text-secondary))]">
+                          {permits.total} permit{permits.total !== 1 ? 's' : ''} nearby (2yr)
+                        </p>
+                        {permits.permits.slice(0, 2).map((permit) => (
+                          <div
+                            key={permit.permit_number}
+                            className="p-2 bg-[rgb(var(--secondary-bg))] rounded-lg"
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <span className="text-xs font-medium text-[rgb(var(--text-primary))] line-clamp-1">
+                                {permit.permit_type}
+                              </span>
+                              {permit.issue_date && (
+                                <span className="text-xs text-[rgb(var(--text-secondary))] shrink-0">
+                                  {new Date(permit.issue_date).toLocaleDateString('en-US', {
+                                    month: 'short',
+                                    year: '2-digit',
+                                  })}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-[rgb(var(--text-secondary))]">
+                        No recent permits nearby
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Related Proposals */}
                 {relatedProposals.length > 0 && (
@@ -202,22 +457,7 @@ export function MobileDrawer({
                             <h4 className="text-sm font-medium text-[rgb(var(--text-primary))] line-clamp-1">
                               {proposal.name}
                             </h4>
-                            <span
-                              className={`
-                                text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap shrink-0
-                                ${
-                                  proposal.status === 'Adopted'
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
-                                    : proposal.status === 'Draft'
-                                      ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300'
-                                      : proposal.status === 'Public Comment'
-                                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300'
-                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'
-                                }
-                              `}
-                            >
-                              {proposal.status}
-                            </span>
+                            <StatusBadge status={proposal.status} />
                           </div>
                           <p className="text-xs text-[rgb(var(--text-secondary))] mt-1 line-clamp-2">
                             {proposal.summary}
@@ -290,5 +530,109 @@ export function MobileDrawer({
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>
+  );
+}
+
+// ============================================================================
+// Sub-components
+// ============================================================================
+
+function ScoreBadge({ label, score }: { label: string; score: number }) {
+  const getColor = (s: number) => {
+    if (s >= 90) return 'bg-green-500';
+    if (s >= 70) return 'bg-green-400';
+    if (s >= 50) return 'bg-yellow-400';
+    if (s >= 25) return 'bg-orange-400';
+    return 'bg-red-400';
+  };
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <div
+        className={`w-7 h-7 rounded-full ${getColor(score)} flex items-center justify-center text-xs font-bold text-white`}
+      >
+        {score}
+      </div>
+      <span className="text-xs text-[rgb(var(--text-secondary))]">{label}</span>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: Proposal['status'] }) {
+  const colors: Record<string, string> = {
+    Adopted: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+    Draft: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+    'Public Comment': 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300',
+    'Under Review': 'bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300',
+    Rejected: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
+  };
+
+  return (
+    <span
+      className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap shrink-0 ${colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300'}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+function TransitInfo({ feature }: { feature: InspectedFeature }) {
+  const props = feature.properties;
+
+  if (feature.layerId === 'transit_stops') {
+    return (
+      <div>
+        <h3 className="text-base font-semibold text-[rgb(var(--text-primary))] mb-1">
+          {String(props.stop_name || 'Transit Stop')}
+        </h3>
+        {props.routes != null && (
+          <p className="text-sm text-[rgb(var(--text-secondary))]">
+            Routes: {String(props.routes)}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (feature.layerId === 'transit_routes') {
+    return (
+      <div>
+        <h3 className="text-base font-semibold text-[rgb(var(--text-primary))] mb-1">
+          Route {String(props.route_short_name || props.route_id || '')}
+        </h3>
+        {props.route_long_name != null && (
+          <p className="text-sm text-[rgb(var(--text-secondary))]">
+            {String(props.route_long_name)}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  return (
+    <span className="relative inline-block">
+      <button
+        type="button"
+        className="w-3.5 h-3.5 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-[10px] font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+        aria-label="More information"
+      >
+        ?
+      </button>
+      {isVisible && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 p-2 text-xs text-[rgb(var(--text-primary))] bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg z-50">
+          {text}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[rgb(var(--border-color))]" />
+        </div>
+      )}
+    </span>
   );
 }

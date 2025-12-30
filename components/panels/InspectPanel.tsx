@@ -1,6 +1,11 @@
 'use client';
 
-import type { InspectedFeature, Proposal, LayerConfig } from '@/types';
+import { useState, useEffect, useMemo } from 'react';
+import type { InspectedFeature, Proposal, LayerConfig, WalkScoreData, PermitsData } from '@/types';
+import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info';
+import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
+import { getRepresentativePoint } from '@/lib/spatial';
+import { reverseGeocode } from '@/lib/mapbox';
 
 interface InspectPanelProps {
   feature: InspectedFeature | null;
@@ -17,26 +22,101 @@ export function InspectPanel({
   isOpen,
   layerConfigs,
 }: InspectPanelProps) {
-  if (!isOpen || !feature) return null;
+  const [walkScore, setWalkScore] = useState<WalkScoreData | null>(null);
+  const [permits, setPermits] = useState<PermitsData | null>(null);
+  const [location, setLocation] = useState<{ address: string; neighborhood?: string } | null>(null);
+  const [isLoadingWalkScore, setIsLoadingWalkScore] = useState(false);
+  const [isLoadingPermits, setIsLoadingPermits] = useState(false);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['rules']));
 
-  const layerConfig = layerConfigs.find((l) => l.id === feature.layerId);
-  const layerName = layerConfig?.name || feature.layerId;
+  const layerConfig = useMemo(
+    () => layerConfigs.find((l) => l.id === feature?.layerId),
+    [layerConfigs, feature?.layerId]
+  );
+  const layerName = layerConfig?.name || feature?.layerId || '';
 
-  // Find related proposals
-  const relatedProposals = proposals.filter((p) => p.layers.includes(feature.layerId));
+  // Get zone info if this is a zoning layer
+  const zoneInfo = useMemo<ZoneInfo | null>(() => {
+    if (!feature || !isZoningLayer(feature.layerId)) return null;
+    const zoneCode = feature.properties.ZONELUT as string;
+    return getZoneInfo(zoneCode);
+  }, [feature]);
 
-  // Format property values for display
-  const formatValue = (value: unknown): string => {
-    if (value === null || value === undefined) return '—';
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    if (typeof value === 'number') return value.toLocaleString();
-    return String(value);
+  // Get representative point for API calls
+  const featurePoint = useMemo<[number, number] | null>(() => {
+    if (!feature?.geometry) return null;
+    return getRepresentativePoint(feature.geometry);
+  }, [feature?.geometry]);
+
+  // Related proposals
+  const relatedProposals = useMemo(
+    () => (feature ? proposals.filter((p) => p.layers.includes(feature.layerId)) : []),
+    [proposals, feature]
+  );
+
+  // Fetch Walk Score when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(feature?.layerId || '')) {
+      setWalkScore(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    setIsLoadingWalkScore(true);
+
+    fetch(`/api/walkscore?lat=${lat}&lng=${lng}`)
+      .then((res) => res.json())
+      .then((data) => setWalkScore(data))
+      .catch(() => setWalkScore(null))
+      .finally(() => setIsLoadingWalkScore(false));
+  }, [featurePoint, feature?.layerId]);
+
+  // Fetch permits when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(feature?.layerId || '')) {
+      setPermits(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    setIsLoadingPermits(true);
+
+    fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=5`)
+      .then((res) => res.json())
+      .then((data) => setPermits(data))
+      .catch(() => setPermits(null))
+      .finally(() => setIsLoadingPermits(false));
+  }, [featurePoint, feature?.layerId]);
+
+  // Fetch location (reverse geocode) when feature changes
+  useEffect(() => {
+    if (!featurePoint || !isZoningLayer(feature?.layerId || '')) {
+      setLocation(null);
+      return;
+    }
+
+    const [lng, lat] = featurePoint;
+    reverseGeocode(lng, lat)
+      .then((result) => setLocation(result))
+      .catch(() => setLocation(null));
+  }, [featurePoint, feature?.layerId]);
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
   };
 
-  // Get key properties to display
-  const propertyEntries = Object.entries(feature.properties)
-    .filter(([key]) => !key.startsWith('_') && key !== 'id')
-    .slice(0, 12);
+  if (!isOpen || !feature) return null;
+
+  const isZoning = isZoningLayer(feature.layerId);
+  const isTransit = isTransitLayer(feature.layerId);
 
   return (
     <div
@@ -57,7 +137,7 @@ export function InspectPanel({
             {layerName}
           </div>
           <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mt-1">
-            Feature Details
+            {isZoning && zoneInfo ? zoneInfo.name : 'Feature Details'}
           </h2>
         </div>
         <button
@@ -79,53 +159,210 @@ export function InspectPanel({
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        {/* Properties */}
-        <div className="p-4 border-b border-[rgb(var(--border-color))]">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
-            Properties
-          </h3>
-          <dl className="space-y-2">
-            {propertyEntries.map(([key, value]) => (
-              <div key={key} className="flex justify-between gap-4">
-                <dt className="text-sm text-[rgb(var(--text-secondary))] capitalize">
-                  {key.replace(/_/g, ' ')}
-                </dt>
-                <dd className="text-sm font-medium text-[rgb(var(--text-primary))] text-right truncate max-w-[60%]">
-                  {formatValue(value)}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        {/* Layer info */}
-        {layerConfig && (
+        {/* Zoning Summary - Only for zoning layers */}
+        {isZoning && zoneInfo && (
           <div className="p-4 border-b border-[rgb(var(--border-color))]">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
-              Layer Information
-            </h3>
-            <div className="space-y-2 text-sm">
-              {layerConfig.description && (
-                <p className="text-[rgb(var(--text-secondary))]">{layerConfig.description}</p>
+            {/* Summary sentence */}
+            <p className="text-sm text-[rgb(var(--text-primary))] mb-4">{zoneInfo.summary}</p>
+
+            {/* Quick stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-3">
+                <div className="text-xs text-[rgb(var(--text-secondary))] mb-1">Max Height</div>
+                <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                  {zoneInfo.maxHeight}
+                </div>
+              </div>
+              {zoneInfo.aduAllowed > 0 && (
+                <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-3">
+                  <div className="text-xs text-[rgb(var(--text-secondary))] mb-1">ADUs Allowed</div>
+                  <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                    {zoneInfo.aduAllowed}
+                  </div>
+                </div>
               )}
-              <div className="flex justify-between">
-                <span className="text-[rgb(var(--text-secondary))]">Source</span>
-                <span className="text-[rgb(var(--text-primary))]">{layerConfig.source}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[rgb(var(--text-secondary))]">Last Updated</span>
-                <span className="text-[rgb(var(--text-primary))]">{layerConfig.updated}</span>
-              </div>
+              {zoneInfo.aduAllowed === 0 && (
+                <div className="bg-[rgb(var(--secondary-bg))] rounded-lg p-3">
+                  <div className="text-xs text-[rgb(var(--text-secondary))] mb-1">Category</div>
+                  <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+                    {getCategoryLabel(zoneInfo.category)}
+                  </div>
+                </div>
+              )}
             </div>
+
+            {/* Location indicator */}
+            {location && (
+              <div className="mt-3 flex items-center gap-1.5 text-xs text-[rgb(var(--text-secondary))]">
+                <svg
+                  className="w-3.5 h-3.5 shrink-0"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span className="truncate">
+                  Near {location.address}
+                  {location.neighborhood && `, ${location.neighborhood}`}
+                </span>
+              </div>
+            )}
+
+            {/* Walk Score */}
+            {(isLoadingWalkScore || walkScore) && (
+              <div className="mt-4 pt-4 border-t border-[rgb(var(--border-color))]">
+                {isLoadingWalkScore ? (
+                  <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                    <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                    Loading scores...
+                  </div>
+                ) : walkScore && !walkScore.error ? (
+                  <div>
+                    <div className="flex gap-4">
+                      {walkScore.walkscore !== null && (
+                        <ScoreBadge label="Walk" score={walkScore.walkscore} />
+                      )}
+                      {walkScore.transit_score !== null && (
+                        <ScoreBadge label="Transit" score={walkScore.transit_score} />
+                      )}
+                      {walkScore.bike_score !== null && (
+                        <ScoreBadge label="Bike" score={walkScore.bike_score} />
+                      )}
+                    </div>
+                    <a
+                      href={walkScore.more_info_link || 'https://www.walkscore.com'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+                    >
+                      Scores by Walk Score®
+                    </a>
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
         )}
 
-        {/* Related proposals */}
-        {relatedProposals.length > 0 && (
-          <div className="p-4">
+        {/* Transit Info - Only for transit layers */}
+        {isTransit && (
+          <div className="p-4 border-b border-[rgb(var(--border-color))]">
+            <TransitInfo feature={feature} />
+          </div>
+        )}
+
+        {/* Development Rules - Collapsible */}
+        {isZoning && zoneInfo && (
+          <CollapsibleSection
+            title="Development Rules"
+            isExpanded={expandedSections.has('rules')}
+            onToggle={() => toggleSection('rules')}
+          >
+            <dl className="space-y-3">
+              <RuleRow
+                label="Zone Code"
+                value={zoneInfo.code}
+                tooltip="The official zoning designation from Seattle Municipal Code. This code determines what can be built."
+              />
+              <RuleRow
+                label="Lot Coverage"
+                value={zoneInfo.lotCoverage}
+                tooltip="Maximum percentage of the lot that can be covered by buildings and structures."
+              />
+              <RuleRow
+                label="Floor Area Ratio"
+                value={zoneInfo.far}
+                tooltip="FAR is the ratio of total building floor area to lot size. A FAR of 1.0 means you can build floor area equal to the lot size."
+              />
+              <RuleRow
+                label="Municipal Code"
+                value={`SMC ${zoneInfo.smcSection}`}
+                link={zoneInfo.smcLink}
+              />
+            </dl>
+          </CollapsibleSection>
+        )}
+
+        {/* Raw Properties - For non-zoning layers or as fallback */}
+        {!isZoning && (
+          <div className="p-4 border-b border-[rgb(var(--border-color))]">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
-              Related Proposals
+              Properties
             </h3>
+            <dl className="space-y-2">
+              {getDisplayProperties(feature.layerId, feature.properties).map(
+                ({ key, label, value }) => (
+                  <div key={key} className="flex justify-between gap-4">
+                    <dt className="text-sm text-[rgb(var(--text-secondary))]">{label}</dt>
+                    <dd className="text-sm font-medium text-[rgb(var(--text-primary))] text-right truncate max-w-[60%]">
+                      {value}
+                    </dd>
+                  </div>
+                )
+              )}
+            </dl>
+          </div>
+        )}
+
+        {/* Nearby Permits - Only for zoning */}
+        {isZoning && (
+          <CollapsibleSection
+            title="Nearby Activity"
+            isExpanded={expandedSections.has('permits')}
+            onToggle={() => toggleSection('permits')}
+          >
+            {isLoadingPermits ? (
+              <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                Loading permits...
+              </div>
+            ) : permits && permits.permits.length > 0 ? (
+              <div className="space-y-3">
+                <p className="text-xs text-[rgb(var(--text-secondary))]">
+                  {permits.total} permit{permits.total !== 1 ? 's' : ''} in last 2 years within 300m
+                </p>
+                {permits.permits.slice(0, 3).map((permit) => (
+                  <div
+                    key={permit.permit_number}
+                    className="p-3 bg-[rgb(var(--secondary-bg))] rounded-lg"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-xs font-medium text-[rgb(var(--text-primary))]">
+                        {permit.permit_type}
+                      </span>
+                      {permit.issue_date && (
+                        <span className="text-xs text-[rgb(var(--text-secondary))]">
+                          {new Date(permit.issue_date).toLocaleDateString('en-US', {
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-[rgb(var(--text-secondary))] mt-1 line-clamp-2">
+                      {permit.description || permit.address}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-[rgb(var(--text-secondary))]">
+                No recent permits found nearby
+              </p>
+            )}
+          </CollapsibleSection>
+        )}
+
+        {/* Related Proposals */}
+        {relatedProposals.length > 0 && (
+          <CollapsibleSection
+            title="Related Proposals"
+            isExpanded={expandedSections.has('proposals')}
+            onToggle={() => toggleSection('proposals')}
+          >
             <div className="space-y-3">
               {relatedProposals.map((proposal) => (
                 <div key={proposal.id} className="p-3 bg-[rgb(var(--secondary-bg))] rounded-lg">
@@ -133,22 +370,7 @@ export function InspectPanel({
                     <h4 className="text-sm font-medium text-[rgb(var(--text-primary))]">
                       {proposal.name}
                     </h4>
-                    <span
-                      className={`
-                        text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap
-                        ${
-                          proposal.status === 'Adopted'
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                            : proposal.status === 'Draft'
-                              ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                              : proposal.status === 'Public Comment'
-                                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                                : 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'
-                        }
-                      `}
-                    >
-                      {proposal.status}
-                    </span>
+                    <StatusBadge status={proposal.status} />
                   </div>
                   <p className="text-xs text-[rgb(var(--text-secondary))] mt-2 line-clamp-3">
                     {proposal.summary}
@@ -171,23 +393,203 @@ export function InspectPanel({
                 </div>
               ))}
             </div>
-          </div>
+          </CollapsibleSection>
         )}
 
-        {/* Explain section */}
-        <div className="p-4 bg-[rgb(var(--secondary-bg))]">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
-            Understanding This Location
-          </h3>
-          <p className="text-sm text-[rgb(var(--text-secondary))]">
-            This feature is part of the <strong>{layerName}</strong> layer.
-            {layerConfig?.description && ` ${layerConfig.description}`}
-          </p>
-          <p className="text-xs text-[rgb(var(--text-tertiary))] mt-2">
-            Data sourced from {layerConfig?.source || 'public records'}.
-          </p>
-        </div>
+        {/* Layer Info */}
+        {layerConfig && (
+          <div className="p-4 bg-[rgb(var(--secondary-bg))]">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+              About This Layer
+            </h3>
+            <p className="text-sm text-[rgb(var(--text-secondary))]">{layerConfig.description}</p>
+            <p className="text-xs text-[rgb(var(--text-tertiary))] mt-2">
+              Source: {layerConfig.source} · Updated {layerConfig.updated}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
+}
+
+// ============================================================================
+// Sub-components
+// ============================================================================
+
+function ScoreBadge({ label, score }: { label: string; score: number }) {
+  const getColor = (s: number) => {
+    if (s >= 90) return 'bg-green-500';
+    if (s >= 70) return 'bg-green-400';
+    if (s >= 50) return 'bg-yellow-400';
+    if (s >= 25) return 'bg-orange-400';
+    return 'bg-red-400';
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <div
+        className={`w-8 h-8 rounded-full ${getColor(score)} flex items-center justify-center text-xs font-bold text-white`}
+      >
+        {score}
+      </div>
+      <span className="text-xs text-[rgb(var(--text-secondary))]">{label}</span>
+    </div>
+  );
+}
+
+function StatusBadge({ status }: { status: Proposal['status'] }) {
+  const colors: Record<string, string> = {
+    Adopted: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    Draft: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+    'Public Comment': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    'Under Review': 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+    Rejected: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  };
+
+  return (
+    <span
+      className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${colors[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200'}`}
+    >
+      {status}
+    </span>
+  );
+}
+
+function CollapsibleSection({
+  title,
+  isExpanded,
+  onToggle,
+  children,
+}: {
+  title: string;
+  isExpanded: boolean;
+  onToggle: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="border-b border-[rgb(var(--border-color))]">
+      <button
+        onClick={onToggle}
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-[rgb(var(--secondary-bg))] transition-colors"
+      >
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+          {title}
+        </h3>
+        <svg
+          className={`w-4 h-4 text-[rgb(var(--text-secondary))] transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+      {isExpanded && <div className="px-4 pb-4">{children}</div>}
+    </div>
+  );
+}
+
+function RuleRow({
+  label,
+  value,
+  link,
+  tooltip,
+}: {
+  label: string;
+  value: string;
+  link?: string;
+  tooltip?: string;
+}) {
+  return (
+    <div className="flex justify-between gap-4">
+      <dt className="text-sm text-[rgb(var(--text-secondary))] flex items-center gap-1">
+        {label}
+        {tooltip && <InfoTooltip text={tooltip} />}
+      </dt>
+      <dd className="text-sm font-medium text-[rgb(var(--text-primary))] text-right">
+        {link ? (
+          <a
+            href={link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[rgb(var(--accent))] hover:underline"
+          >
+            {value} →
+          </a>
+        ) : (
+          value
+        )}
+      </dd>
+    </div>
+  );
+}
+
+function InfoTooltip({ text }: { text: string }) {
+  const [isVisible, setIsVisible] = useState(false);
+
+  return (
+    <span className="relative inline-block">
+      <button
+        type="button"
+        className="w-4 h-4 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-xs font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors"
+        onMouseEnter={() => setIsVisible(true)}
+        onMouseLeave={() => setIsVisible(false)}
+        onClick={() => setIsVisible(!isVisible)}
+        aria-label="More information"
+      >
+        ?
+      </button>
+      {isVisible && (
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 text-xs text-[rgb(var(--text-primary))] bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg z-50">
+          {text}
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[rgb(var(--border-color))]" />
+        </div>
+      )}
+    </span>
+  );
+}
+
+function TransitInfo({ feature }: { feature: InspectedFeature }) {
+  const props = feature.properties;
+
+  // Transit stop
+  if (feature.layerId === 'transit_stops') {
+    return (
+      <div>
+        <h3 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-2">
+          {String(props.stop_name || 'Transit Stop')}
+        </h3>
+        {props.routes != null && (
+          <p className="text-sm text-[rgb(var(--text-secondary))]">
+            Routes: {String(props.routes)}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  // Transit route
+  if (feature.layerId === 'transit_routes') {
+    return (
+      <div>
+        <h3 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-2">
+          Route {String(props.route_short_name || props.route_id || '')}
+        </h3>
+        {props.route_long_name != null && (
+          <p className="text-sm text-[rgb(var(--text-secondary))]">
+            {String(props.route_long_name)}
+          </p>
+        )}
+        {props.agency_name != null && (
+          <p className="text-xs text-[rgb(var(--text-tertiary))] mt-1">
+            {String(props.agency_name)}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return null;
 }

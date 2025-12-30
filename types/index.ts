@@ -227,3 +227,42 @@ export interface UrlStateParams {
   inspect: string;
   compare: boolean;
 }
+
+// ============================================================================
+// External API Types
+// ============================================================================
+
+export interface WalkScoreData {
+  walkscore: number | null;
+  description: string | null;
+  transit_score: number | null;
+  bike_score: number | null;
+  logo_url: string;
+  more_info_link: string;
+  error?: string;
+}
+
+export interface PermitData {
+  permit_number: string;
+  permit_type: string;
+  description: string;
+  status: string;
+  issue_date: string | null;
+  address: string;
+  value: number | null;
+  link: string;
+}
+
+export interface PermitsData {
+  permits: PermitData[];
+  total: number;
+  error?: string;
+}
+
+export interface NearestTransit {
+  distance: number;
+  distanceMeters: number;
+  stopName: string;
+  stopId: string;
+  routes?: string[];
+}

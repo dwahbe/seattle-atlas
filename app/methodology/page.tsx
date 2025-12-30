@@ -3,7 +3,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export const metadata = {
   title: 'Methodology',
-  description: 'Data sources, methodology, and technical documentation for Civic Atlas – Seattle.',
+  description: 'Data sources, methodology, and technical documentation for Seattle Atlas – Seattle.',
 };
 
 export default function MethodologyPage() {
@@ -14,7 +14,7 @@ export default function MethodologyPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-start justify-between gap-4">
           <Link href="/map" className="group shrink-0">
             <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-              Civic Atlas
+              Seattle Atlas
             </h1>
             <p className="text-xs text-[rgb(var(--text-secondary))]">Seattle</p>
           </Link>
@@ -125,7 +125,7 @@ export default function MethodologyPage() {
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
                 The &quot;Transit-Rich, Low Density&quot; layer is a derived dataset created by
-                Civic Atlas. It identifies parcels that meet both of the following criteria:
+                Seattle Atlas. It identifies parcels that meet both of the following criteria:
               </p>
               <ol className="list-decimal list-inside space-y-2 ml-4">
                 <li>
@@ -160,7 +160,7 @@ export default function MethodologyPage() {
               </ul>
               <p>
                 Proposal status is updated weekly. All proposal information links to official
-                government sources. Civic Atlas does not editorialize or advocate for specific
+                government sources. Seattle Atlas does not editorialize or advocate for specific
                 proposals.
               </p>
             </div>
@@ -173,7 +173,7 @@ export default function MethodologyPage() {
 
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Civic Atlas uses vector tiles hosted on Mapbox for efficient map rendering at all
+                Seattle Atlas uses vector tiles hosted on Mapbox for efficient map rendering at all
                 zoom levels. Data processing pipeline:
               </p>
               <ol className="list-decimal list-inside space-y-2 ml-4">
@@ -223,7 +223,7 @@ export default function MethodologyPage() {
       <footer className="border-t border-[rgb(var(--border-color))] mt-8 sm:mt-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[rgb(var(--text-secondary))]">Civic Atlas – Seattle</p>
+            <p className="text-sm text-[rgb(var(--text-secondary))]">Seattle Atlas – Seattle</p>
             <div className="flex gap-6 text-sm">
               <Link
                 href="/about"
