@@ -508,12 +508,6 @@ export function MobileDrawer({
                 <div className="p-4">
                   <div className="flex gap-6 text-sm">
                     <Link
-                      href="/methodology"
-                      className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-                    >
-                      Methodology
-                    </Link>
-                    <Link
                       href="/about"
                       className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
                     >

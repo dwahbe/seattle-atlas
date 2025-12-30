@@ -146,12 +146,6 @@ export function ControlPanel({
         <div className="flex-none p-4 border-t border-[rgb(var(--border-color))] bg-[rgb(var(--secondary-bg))]">
           <div className="flex gap-4 text-xs">
             <Link
-              href="/methodology"
-              className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-            >
-              Methodology
-            </Link>
-            <Link
               href="/about"
               className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
             >
