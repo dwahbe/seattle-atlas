@@ -22,12 +22,16 @@ const BASE_LAYER_OPTIONS = [
   },
 ];
 
+// Transit layers that should be combined into a single toggle
+const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
+
 interface ControlPanelProps {
   layers: LayerConfig[];
   layerGroups: LayerGroupType[];
   activeLayers: string[];
   onLayerToggle: (layerId: string) => void;
   onBaseLayerChange: (layerId: string | null) => void;
+  onTransitToggle: (enabled: boolean) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -38,17 +42,23 @@ export function ControlPanel({
   activeLayers,
   onLayerToggle,
   onBaseLayerChange,
+  onTransitToggle,
   isCollapsed,
   onToggleCollapse,
 }: ControlPanelProps) {
   // Determine which base layer is active (if any)
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;
 
-  // Filter out base layers from layer groups for overlay display
+  // Check if transit is enabled (any transit layer active)
+  const isTransitActive = TRANSIT_LAYER_IDS.some((id) => activeLayers.includes(id));
+
+  // Filter out base layers and transit layers from layer groups for overlay display
   const overlayLayerGroups = layerGroups
     .map((group) => ({
       ...group,
-      layers: group.layers.filter((layer) => !BASE_LAYER_IDS.includes(layer.id)),
+      layers: group.layers.filter(
+        (layer) => !BASE_LAYER_IDS.includes(layer.id) && !TRANSIT_LAYER_IDS.includes(layer.id)
+      ),
     }))
     .filter((group) => group.layers.length > 0);
 
@@ -100,7 +110,6 @@ export function ControlPanel({
               <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
                 Seattle Atlas
               </h1>
-              <p className="text-xs text-[rgb(var(--text-secondary))]">Seattle Zoning & Transit</p>
             </Link>
             <ThemeToggle />
           </div>
@@ -116,25 +125,40 @@ export function ControlPanel({
           />
 
           {/* Overlay Layers */}
-          {overlayLayerGroups.length > 0 && (
-            <div className="border-b border-[rgb(var(--border-color))]">
-              <div className="px-4 py-3">
-                <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
-                  Overlays
-                </h2>
-              </div>
-              {overlayLayerGroups.map((group) => (
-                <LayerGroup
-                  key={group.id}
-                  name={group.name}
-                  layers={group.layers}
-                  activeLayers={activeLayers}
-                  onLayerToggle={onLayerToggle}
-                  defaultExpanded={true}
-                />
-              ))}
+          <div className="border-b border-[rgb(var(--border-color))]">
+            <div className="px-4 py-3">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+                Overlays
+              </h2>
             </div>
-          )}
+            {/* Transit Toggle */}
+            <div className="px-3 pb-3">
+              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-[rgb(var(--secondary-bg))] transition-colors cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isTransitActive}
+                  onChange={(e) => onTransitToggle(e.target.checked)}
+                  className="w-4 h-4 rounded border-[rgb(var(--border-color))] text-[rgb(var(--accent))] focus:ring-[rgb(var(--accent))] focus:ring-offset-0"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Transit</div>
+                  <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                    Bus & lightrail routes
+                  </div>
+                </div>
+              </label>
+            </div>
+            {overlayLayerGroups.map((group) => (
+              <LayerGroup
+                key={group.id}
+                name={group.name}
+                layers={group.layers}
+                activeLayers={activeLayers}
+                onLayerToggle={onLayerToggle}
+                defaultExpanded={true}
+              />
+            ))}
+          </div>
 
           {/* Legend */}
           <div className="p-4">

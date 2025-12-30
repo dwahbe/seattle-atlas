@@ -27,6 +27,9 @@ const BASE_LAYER_OPTIONS = [
   { id: 'zoning_detailed', label: 'Technical', description: 'Official zoning codes' },
 ];
 
+// Transit layers combined into single toggle
+const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
+
 // Snap points for the drawer (peek, half, full)
 const SNAP_POINT_PEEK = 0.15;
 const SNAP_POINT_HALF = 0.5;
@@ -40,6 +43,7 @@ interface MobileDrawerProps {
   activeLayers: string[];
   onLayerToggle: (layerId: string) => void;
   onBaseLayerChange: (layerId: string | null) => void;
+  onTransitToggle: (enabled: boolean) => void;
   // Inspect
   inspectedFeature: InspectedFeature | null;
   proposals: Proposal[];
@@ -53,6 +57,7 @@ export function MobileDrawer({
   activeLayers,
   onLayerToggle,
   onBaseLayerChange,
+  onTransitToggle,
   inspectedFeature,
   proposals,
   onCloseInspect,
@@ -68,13 +73,18 @@ export function MobileDrawer({
   // Determine which base layer is active
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;
 
-  // Filter overlay layers (non-base layers)
+  // Check if transit is enabled (any transit layer active)
+  const isTransitActive = TRANSIT_LAYER_IDS.some((id) => activeLayers.includes(id));
+
+  // Filter overlay layers (non-base layers, non-transit layers)
   const overlayLayerGroups = useMemo(
     () =>
       layerGroups
         .map((group) => ({
           ...group,
-          layers: group.layers.filter((layer) => !BASE_LAYER_IDS.includes(layer.id)),
+          layers: group.layers.filter(
+            (layer) => !BASE_LAYER_IDS.includes(layer.id) && !TRANSIT_LAYER_IDS.includes(layer.id)
+          ),
         }))
         .filter((group) => group.layers.length > 0),
     [layerGroups]
@@ -479,25 +489,42 @@ export function MobileDrawer({
                 />
 
                 {/* Overlay Layers */}
-                {overlayLayerGroups.length > 0 && (
-                  <div className="border-b border-[rgb(var(--border-color))]">
-                    <div className="px-4 py-3">
-                      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
-                        Overlays
-                      </h2>
-                    </div>
-                    {overlayLayerGroups.map((group) => (
-                      <LayerGroup
-                        key={group.id}
-                        name={group.name}
-                        layers={group.layers}
-                        activeLayers={activeLayers}
-                        onLayerToggle={onLayerToggle}
-                        defaultExpanded={true}
-                      />
-                    ))}
+                <div className="border-b border-[rgb(var(--border-color))]">
+                  <div className="px-4 py-3">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+                      Overlays
+                    </h2>
                   </div>
-                )}
+                  {/* Transit Toggle */}
+                  <div className="px-3 pb-3">
+                    <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-[rgb(var(--secondary-bg))] transition-colors cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isTransitActive}
+                        onChange={(e) => onTransitToggle(e.target.checked)}
+                        className="w-4 h-4 rounded border-[rgb(var(--border-color))] text-[rgb(var(--accent))] focus:ring-[rgb(var(--accent))] focus:ring-offset-0"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                          Transit
+                        </div>
+                        <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                          Bus routes and stops
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                  {overlayLayerGroups.map((group) => (
+                    <LayerGroup
+                      key={group.id}
+                      name={group.name}
+                      layers={group.layers}
+                      activeLayers={activeLayers}
+                      onLayerToggle={onLayerToggle}
+                      defaultExpanded={true}
+                    />
+                  ))}
+                </div>
 
                 {/* Legend */}
                 <div className="p-4 border-b border-[rgb(var(--border-color))]">

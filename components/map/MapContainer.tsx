@@ -113,6 +113,20 @@ export function MapContainer() {
     [activeLayers, setUrlActiveLayers]
   );
 
+  // Transit toggle handler (combines routes and stops)
+  const handleTransitToggle = useCallback(
+    (enabled: boolean) => {
+      const transitLayerIds = ['transit_routes', 'transit_stops'];
+      const withoutTransit = activeLayers.filter((id) => !transitLayerIds.includes(id));
+      if (enabled) {
+        setUrlActiveLayers([...withoutTransit, ...transitLayerIds]);
+      } else {
+        setUrlActiveLayers(withoutTransit);
+      }
+    },
+    [activeLayers, setUrlActiveLayers]
+  );
+
   // Copy URL handler
   const handleCopyUrl = useCallback(() => {
     const fullUrl = window.location.origin + shareableUrl;
@@ -156,6 +170,7 @@ export function MapContainer() {
             activeLayers={activeLayers}
             onLayerToggle={toggleLayer}
             onBaseLayerChange={handleBaseLayerChange}
+            onTransitToggle={handleTransitToggle}
             inspectedFeature={inspectedFeature}
             proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
             onCloseInspect={clearInspection}
@@ -177,6 +192,7 @@ export function MapContainer() {
             activeLayers={activeLayers}
             onLayerToggle={toggleLayer}
             onBaseLayerChange={handleBaseLayerChange}
+            onTransitToggle={handleTransitToggle}
             isCollapsed={controlPanelCollapsed}
             onToggleCollapse={() => setControlPanelCollapsed(!controlPanelCollapsed)}
           />

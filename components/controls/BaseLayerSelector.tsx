@@ -16,7 +16,7 @@ export function BaseLayerSelector({ options, activeBaseLayer, onSelect }: BaseLa
   return (
     <div className="p-4 border-b border-[rgb(var(--border-color))]">
       <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
-        Base Layer
+        Zoning
       </h2>
       <div className="grid grid-cols-2 gap-2">
         {options.map((option) => {
