@@ -4,7 +4,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 export const metadata = {
   title: 'About',
   description:
-    'About Civic Atlas – Seattle, an open civic data platform for understanding land use and transit.',
+    'About Seattle Atlas – Seattle, an open civic data platform for understanding land use and transit.',
 };
 
 export default function AboutPage() {
@@ -15,7 +15,7 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-start justify-between gap-4">
           <Link href="/map" className="group shrink-0">
             <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-              Civic Atlas
+              Seattle Atlas
             </h1>
             <p className="text-xs text-[rgb(var(--text-secondary))]">Seattle</p>
           </Link>
@@ -35,7 +35,7 @@ export default function AboutPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article className="prose prose-slate dark:prose-invert max-w-none">
           <h1 className="text-3xl font-bold text-[rgb(var(--text-primary))] mb-2">
-            About Civic Atlas
+            About Seattle Atlas
           </h1>
           <p className="text-lg text-[rgb(var(--text-secondary))] mb-8">
             An open platform for understanding Seattle&apos;s land use, zoning, and transit systems.
@@ -47,7 +47,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Civic Atlas exists to make Seattle&apos;s land use and transit data accessible,
+                Seattle Atlas exists to make Seattle&apos;s land use and transit data accessible,
                 understandable, and useful for everyone—residents, policymakers, journalists,
                 researchers, and advocates alike.
               </p>
@@ -55,7 +55,7 @@ export default function AboutPage() {
                 We believe that informed civic participation requires access to clear, accurate
                 information about how our city is shaped. Zoning codes and transit plans are public
                 documents, but they&apos;re often difficult to interpret without specialized
-                knowledge. Civic Atlas bridges that gap.
+                knowledge. Seattle Atlas bridges that gap.
               </p>
             </div>
           </section>
@@ -160,7 +160,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Civic Atlas presents factual data without advocacy. We do not take positions on
+                Seattle Atlas presents factual data without advocacy. We do not take positions on
                 policy debates or endorse specific proposals. Our role is to provide accurate,
                 contextualized information that enables informed discussion.
               </p>
@@ -177,7 +177,7 @@ export default function AboutPage() {
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
               <p>
-                Civic Atlas is built with open-source technology and our code is publicly available.
+                Seattle Atlas is built with open-source technology and our code is publicly available.
                 We believe civic tools should be transparent and auditable.
               </p>
               <p>
@@ -193,7 +193,7 @@ export default function AboutPage() {
               Data Sources
             </h2>
             <div className="space-y-4 text-[rgb(var(--text-secondary))]">
-              <p>All data displayed on Civic Atlas comes from official public sources:</p>
+              <p>All data displayed on Seattle Atlas comes from official public sources:</p>
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>City of Seattle Open Data Portal</li>
                 <li>King County GIS Center</li>
@@ -221,7 +221,7 @@ export default function AboutPage() {
                 on our GitHub repository or contact us via email.
               </p>
               <p>
-                Civic Atlas is not affiliated with the City of Seattle, King County, Sound Transit,
+                Seattle Atlas is not affiliated with the City of Seattle, King County, Sound Transit,
                 or any government agency.
               </p>
             </div>
@@ -233,7 +233,7 @@ export default function AboutPage() {
       <footer className="border-t border-[rgb(var(--border-color))] mt-8 sm:mt-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[rgb(var(--text-secondary))]">Civic Atlas – Seattle</p>
+            <p className="text-sm text-[rgb(var(--text-secondary))]">Seattle Atlas – Seattle</p>
             <div className="flex gap-6 text-sm">
               <Link
                 href="/methodology"

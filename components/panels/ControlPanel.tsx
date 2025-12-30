@@ -98,7 +98,7 @@ export function ControlPanel({
           <div className="flex items-center justify-between">
             <Link href="/" className="group">
               <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-                Civic Atlas
+                Seattle Atlas
               </h1>
               <p className="text-xs text-[rgb(var(--text-secondary))]">Seattle Zoning & Transit</p>
             </Link>

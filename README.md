@@ -1,4 +1,4 @@
-# Civic Atlas – Seattle
+# Seattle Atlas – Seattle
 
 An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.
 

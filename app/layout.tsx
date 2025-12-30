@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Civic Atlas – Seattle',
-    template: '%s | Civic Atlas – Seattle',
+    default: 'Seattle Atlas – Seattle',
+    template: '%s | Seattle Atlas – Seattle',
   },
   description:
     'An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.',
@@ -31,9 +31,9 @@ export const metadata: Metadata = {
     'GIS',
     'maps',
   ],
-  authors: [{ name: 'Civic Atlas' }],
+  authors: [{ name: 'Seattle Atlas' }],
   openGraph: {
-    title: 'Civic Atlas – Seattle',
+    title: 'Seattle Atlas – Seattle',
     description:
       'An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.',
     type: 'website',
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Civic Atlas – Seattle',
+    title: 'Seattle Atlas – Seattle',
     description: 'An interactive zoning, transit, and fiscal atlas for Seattle.',
   },
   robots: {
