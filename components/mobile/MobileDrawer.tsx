@@ -212,7 +212,7 @@ export function MobileDrawer({
           <div className="flex-1 overflow-y-auto overscroll-contain">
             {isInspecting && inspectedFeature ? (
               /* Inspect Mode */
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-200">
+              <div>
                 {/* Inspect Header */}
                 <div className="px-4 pb-3 border-b border-[rgb(var(--border-color))] flex items-center justify-between">
                   <div>

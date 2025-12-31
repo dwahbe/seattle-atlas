@@ -246,49 +246,18 @@ body {
   /* Smoother scrolling in drawers */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
   }
 }
 
-/* Drawer animations */
-@keyframes slide-in-from-bottom {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+/* Vaul drawer styling - GPU acceleration for smooth animations */
+[vaul-drawer] {
+  will-change: transform;
+  transform: translateZ(0);
 }
 
-.animate-in {
-  animation-duration: 200ms;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  animation-fill-mode: forwards;
-}
-
-.fade-in {
-  animation-name: fade-in;
-}
-
-.slide-in-from-bottom-2 {
-  animation-name: slide-in-from-bottom;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Vaul drawer styling */
-[data-vaul-drawer] {
-  touch-action: none;
-}
-
-[data-vaul-drawer-content] {
-  touch-action: pan-y;
+[vaul-drawer-wrapper] {
+  will-change: transform;
 }
 
 /* ============================================================================
