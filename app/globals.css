@@ -250,14 +250,32 @@ body {
   }
 }
 
-/* Vaul drawer styling - GPU acceleration for smooth animations */
-[vaul-drawer] {
+/* Vaul drawer styling - smooth snap point transitions */
+[data-vaul-drawer] {
+  touch-action: none;
   will-change: transform;
-  transform: translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-[vaul-drawer-wrapper] {
+[data-vaul-drawer][data-vaul-snap-points='true'][data-vaul-drawer-direction='bottom'] {
+  transform: translate3d(0, var(--initial-transform, 100%), 0);
+}
+
+[data-vaul-drawer-wrapper] {
   will-change: transform;
+}
+
+[data-vaul-drawer]::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  background-color: inherit;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 200%;
 }
 
 /* ============================================================================

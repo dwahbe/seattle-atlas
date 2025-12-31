@@ -165,6 +165,13 @@ export function MobileDrawer({
 
   // Auto-expand when inspecting a feature
   const isInspecting = inspectedFeature !== null;
+
+  // When starting to inspect, expand to half. When closing, keep at half.
+  useEffect(() => {
+    if (isInspecting) {
+      setSnap(SNAP_POINT_HALF);
+    }
+  }, [isInspecting]);
   const isZoning = inspectedFeature ? isZoningLayer(inspectedFeature.layerId) : false;
   const isTransit = inspectedFeature ? isTransitLayer(inspectedFeature.layerId) : false;
 
@@ -173,18 +180,12 @@ export function MobileDrawer({
       open
       modal={false}
       snapPoints={SNAP_POINTS}
-      activeSnapPoint={isInspecting ? SNAP_POINT_HALF : snap}
+      activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
       dismissible={false}
     >
       <Drawer.Portal>
-        <Drawer.Content
-          className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-[rgb(var(--panel-bg))] border-t border-[rgb(var(--border-color))] shadow-2xl"
-          style={{
-            height: `${SNAP_POINT_FULL * 100}%`,
-            maxHeight: `${SNAP_POINT_FULL * 100}%`,
-          }}
-        >
+        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-[rgb(var(--panel-bg))] border-t border-[rgb(var(--border-color))] shadow-2xl h-full">
           <Drawer.Title className="sr-only">Seattle Atlas Controls</Drawer.Title>
           {/* Drag handle */}
           <div className="flex-none pt-3 pb-2 px-4">
@@ -213,36 +214,51 @@ export function MobileDrawer({
             {isInspecting && inspectedFeature ? (
               /* Inspect Mode */
               <div>
-                {/* Inspect Header */}
-                <div className="px-4 pb-3 border-b border-[rgb(var(--border-color))] flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--accent))]">
-                      {getLayerName(inspectedFeature.layerId)}
-                    </div>
-                    <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))]">
-                      {isZoning && zoneInfo ? zoneInfo.name : 'Feature Details'}
-                    </h2>
-                  </div>
+                {/* Back button */}
+                <div className="px-4 pb-2">
                   <button
                     onClick={onCloseInspect}
-                    className="p-2 -mr-2 hover:bg-[rgb(var(--secondary-bg))] rounded-lg transition-colors"
-                    aria-label="Close inspection"
+                    className="flex items-center gap-1 text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--accent-hover))] transition-colors -ml-1 py-1"
+                    aria-label="Back to layers"
                   >
                     <svg
-                      className="w-5 h-5 text-[rgb(var(--text-secondary))]"
+                      className="w-4 h-4"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
                     >
-                      <path d="M18 6L6 18M6 6l12 12" />
+                      <path d="M15 18l-6-6 6-6" />
                     </svg>
+                    Layers
                   </button>
+                </div>
+
+                {/* Inspect Header */}
+                <div className="px-4 pb-3 border-b border-[rgb(var(--border-color))]">
+                  <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+                    {isZoning && zoneInfo ? zoneInfo.name : getLayerName(inspectedFeature.layerId)}
+                  </div>
+                  <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] flex items-center gap-1.5">
+                    {isZoning && location && (
+                      <svg
+                        className="w-4 h-4 shrink-0 text-[rgb(var(--text-secondary))]"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                    )}
+                    {isZoning && location ? `Near ${location.address}` : 'Feature Details'}
+                  </h2>
                 </div>
 
                 {/* Zoning Summary */}
                 {isZoning && zoneInfo && (
-                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                  <div className="px-4 pt-3 pb-2 border-b border-[rgb(var(--border-color))]">
                     <p className="text-sm text-[rgb(var(--text-primary))] mb-3">
                       {zoneInfo.summary}
                     </p>
@@ -272,26 +288,9 @@ export function MobileDrawer({
                       )}
                     </div>
 
-                    {/* Location indicator */}
-                    {location && (
-                      <div className="mt-2 flex items-center gap-1 text-xs text-[rgb(var(--text-secondary))]">
-                        <svg
-                          className="w-3 h-3 shrink-0"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                          <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <span className="truncate">Near {location.address}</span>
-                      </div>
-                    )}
-
                     {/* Walk Score */}
                     {(isLoadingWalkScore || walkScore) && (
-                      <div className="mt-3 pt-3 border-t border-[rgb(var(--border-color))]">
+                      <div className="mt-2 pt-2">
                         {isLoadingWalkScore ? (
                           <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
                             <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
@@ -334,7 +333,7 @@ export function MobileDrawer({
 
                 {/* Development Rules (Zoning only) */}
                 {isZoning && zoneInfo && (
-                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                  <div className="px-4 pt-2 pb-3 border-b border-[rgb(var(--border-color))]">
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
                       Development Rules
                     </h3>
@@ -408,7 +407,7 @@ export function MobileDrawer({
 
                 {/* Nearby Permits */}
                 {isZoning && (
-                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                  <div className="px-4 pt-2 pb-3 border-b border-[rgb(var(--border-color))]">
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
                       Nearby Activity
                     </h3>

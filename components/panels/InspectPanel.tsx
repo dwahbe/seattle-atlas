@@ -132,12 +132,24 @@ export function InspectPanel({
     >
       {/* Header */}
       <div className="flex-none flex items-center justify-between p-4 border-b border-[rgb(var(--border-color))]">
-        <div>
-          <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--accent))]">
-            {layerName}
+        <div className="min-w-0 flex-1 mr-2">
+          <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+            {isZoning && zoneInfo ? zoneInfo.name : layerName}
           </div>
-          <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mt-1">
-            {isZoning && zoneInfo ? zoneInfo.name : 'Feature Details'}
+          <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mt-1 truncate flex items-center gap-1.5">
+            {isZoning && location && (
+              <svg
+                className="w-4 h-4 shrink-0 text-[rgb(var(--text-secondary))]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            )}
+            <span className="truncate">{isZoning && location ? `Near ${location.address}` : 'Feature Details'}</span>
           </h2>
         </div>
         <button
@@ -190,26 +202,6 @@ export function InspectPanel({
                 </div>
               )}
             </div>
-
-            {/* Location indicator */}
-            {location && (
-              <div className="mt-3 flex items-center gap-1.5 text-xs text-[rgb(var(--text-secondary))]">
-                <svg
-                  className="w-3.5 h-3.5 shrink-0"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                  <circle cx="12" cy="10" r="3" />
-                </svg>
-                <span className="truncate">
-                  Near {location.address}
-                  {location.neighborhood && `, ${location.neighborhood}`}
-                </span>
-              </div>
-            )}
 
             {/* Walk Score */}
             {(isLoadingWalkScore || walkScore) && (
