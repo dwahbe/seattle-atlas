@@ -637,16 +637,21 @@ function InfoTooltip({ text }: { text: string }) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-flex items-center justify-center">
       <button
         type="button"
-        className="w-3.5 h-3.5 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-[10px] font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors"
+        className="touch-target-inline relative w-5 h-5 flex items-center justify-center"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onClick={() => setIsVisible(!isVisible)}
         aria-label="More information"
       >
-        ?
+        {/* Expanded touch area */}
+        <span className="absolute inset-[-8px]" aria-hidden="true" />
+        {/* Visual indicator */}
+        <span className="w-3.5 h-3.5 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-[10px] font-medium flex items-center justify-center pointer-events-none">
+          ?
+        </span>
       </button>
       {isVisible && (
         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 p-2 text-xs text-[rgb(var(--text-primary))] bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg z-50">

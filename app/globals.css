@@ -232,6 +232,12 @@ body {
     min-width: 44px;
   }
 
+  /* Exception for inline icons that use expanded touch targets */
+  .touch-target-inline {
+    min-height: unset !important;
+    min-width: unset !important;
+  }
+
   /* Disable hover states that cause sticky behavior on touch */
   .hover\:bg-\[rgb\(var\(--secondary-bg\)\)\]:hover {
     background-color: inherit;

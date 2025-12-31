@@ -530,16 +530,22 @@ function InfoTooltip({ text }: { text: string }) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-flex items-center justify-center">
+      {/* Invisible expanded touch target for mobile */}
       <button
         type="button"
-        className="w-4 h-4 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-xs font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors"
+        className="touch-target-inline relative w-5 h-5 flex items-center justify-center"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onClick={() => setIsVisible(!isVisible)}
         aria-label="More information"
       >
-        ?
+        {/* Expanded touch area (invisible) */}
+        <span className="absolute inset-[-8px]" aria-hidden="true" />
+        {/* Visual indicator */}
+        <span className="w-4 h-4 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-[10px] font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors pointer-events-none">
+          ?
+        </span>
       </button>
       {isVisible && (
         <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 text-xs text-[rgb(var(--text-primary))] bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg z-50">
