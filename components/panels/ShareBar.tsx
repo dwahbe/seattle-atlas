@@ -3,11 +3,10 @@
 import { useState } from 'react';
 
 interface ShareBarProps {
-  url: string;
   onCopy: () => void;
 }
 
-export function ShareBar({ url, onCopy }: ShareBarProps) {
+export function ShareBar({ onCopy }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {

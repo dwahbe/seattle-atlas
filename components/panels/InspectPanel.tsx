@@ -416,7 +416,6 @@ export function InspectPanel({
             </div>
           </CollapsibleSection>
         )}
-
       </div>
     </div>
   );

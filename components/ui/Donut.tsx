@@ -43,10 +43,11 @@ export function Donut({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        role="img"
+        role="progressbar"
         aria-valuenow={value}
         aria-valuemin={min}
         aria-valuemax={max}
+        aria-label={title || label || `Progress: ${value}`}
       >
         {title && <title>{title}</title>}
         {/* Background track */}

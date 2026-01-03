@@ -167,7 +167,6 @@ export interface InspectPanelProps {
 }
 
 export interface ShareBarProps {
-  url: string;
   onCopy: () => void;
 }
 

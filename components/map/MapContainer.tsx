@@ -207,7 +207,7 @@ export function MapContainer() {
           />
 
           {/* Share Bar (bottom) */}
-          <ShareBar url={shareableUrl} onCopy={handleCopyUrl} />
+          <ShareBar onCopy={handleCopyUrl} />
         </>
       )}
     </div>
