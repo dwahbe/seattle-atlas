@@ -71,7 +71,7 @@ export function ControlPanel({
           absolute top-[68px] z-20 p-2 
           bg-[rgb(var(--panel-bg))] 
           border border-[rgb(var(--border-color))]
-          rounded-r-md shadow-md
+          rounded-r-md
           hover:bg-[rgb(var(--secondary-bg))]
           transition-all duration-300
           ${isCollapsed ? '-left-px' : 'left-[319px]'}
@@ -116,7 +116,7 @@ export function ControlPanel({
         </div>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
           {/* Base Layer Selector (Arc-style) */}
           <BaseLayerSelector
             options={BASE_LAYER_OPTIONS}
