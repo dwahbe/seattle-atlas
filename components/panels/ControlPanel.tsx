@@ -3,7 +3,7 @@
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Switch, ThemeToggle } from '@/components/ui';
 import type { LayerConfig, LayerGroup as LayerGroupType } from '@/types';
 import Link from 'next/link';
 
@@ -68,13 +68,13 @@ export function ControlPanel({
       <button
         onClick={onToggleCollapse}
         className={`
-          absolute top-20 z-20 p-2 
+          absolute top-[68px] z-20 p-2 
           bg-[rgb(var(--panel-bg))] 
           border border-[rgb(var(--border-color))]
           rounded-r-md shadow-md
           hover:bg-[rgb(var(--secondary-bg))]
           transition-all duration-300
-          ${isCollapsed ? 'left-0' : 'left-80'}
+          ${isCollapsed ? '-left-px' : 'left-[319px]'}
         `}
         aria-label={isCollapsed ? 'Expand panel' : 'Collapse panel'}
       >
@@ -116,16 +116,17 @@ export function ControlPanel({
         </div>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable]">
+        <div className="flex-1 overflow-y-auto">
           {/* Base Layer Selector (Arc-style) */}
           <BaseLayerSelector
             options={BASE_LAYER_OPTIONS}
             activeBaseLayer={activeBaseLayer}
             onSelect={onBaseLayerChange}
           />
+          <div className="h-px bg-[rgb(var(--border-color))]" />
 
           {/* Overlay Layers */}
-          <div className="border-b border-[rgb(var(--border-color))]">
+          <div>
             <div className="px-4 py-3">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
                 Overlays
@@ -133,20 +134,18 @@ export function ControlPanel({
             </div>
             {/* Transit Toggle */}
             <div className="px-3 pb-3">
-              <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-[rgb(var(--secondary-bg))] transition-colors cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={isTransitActive}
-                  onChange={(e) => onTransitToggle(e.target.checked)}
-                  className="w-4 h-4 rounded border-[rgb(var(--border-color))] text-[rgb(var(--accent))] focus:ring-[rgb(var(--accent))] focus:ring-offset-0"
-                />
+              <div className="flex items-center gap-3 p-2 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Transit</div>
                   <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
                     Bus & lightrail routes
                   </div>
                 </div>
-              </label>
+                <Switch
+                  checked={isTransitActive}
+                  onChange={() => onTransitToggle(!isTransitActive)}
+                />
+              </div>
             </div>
             {overlayLayerGroups.map((group) => (
               <LayerGroup
@@ -159,11 +158,13 @@ export function ControlPanel({
               />
             ))}
           </div>
+          <div className="h-px bg-[rgb(var(--border-color))]" />
 
           {/* Legend */}
           <div className="p-4">
             <Legend layers={layers} activeLayers={activeLayers} />
           </div>
+          <div className="h-px bg-[rgb(var(--border-color))]" />
         </div>
 
         {/* Footer */}

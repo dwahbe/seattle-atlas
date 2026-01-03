@@ -921,15 +921,15 @@ const BUILDING_COMPONENTS: Record<BuildingType, React.FC> = {
 };
 
 const BUILDING_LABELS: Record<BuildingType, string> = {
-  house: 'Single-family homes, duplexes & ADUs',
-  townhouse: 'Townhouses & small apartments',
-  lowrise: 'Townhouses & low-rise apartments',
-  midrise: 'Mid-rise apartments',
-  highrise: 'High-rise apartments',
-  skyscraper: 'Downtown towers',
-  shopfront: 'Shops with apartments above',
-  mixeduse: 'Mixed-use buildings',
-  warehouse: 'Industrial & warehouse',
+  house: 'Single-Family Homes, Duplexes & ADUs',
+  townhouse: 'Townhouses & Small Apartments',
+  lowrise: 'Townhouses & Low-Rise Apartments',
+  midrise: 'Mid-Rise Apartments',
+  highrise: 'High-Rise Apartments',
+  skyscraper: 'Downtown Towers',
+  shopfront: 'Shops With Apartments Above',
+  mixeduse: 'Mixed-Use Buildings',
+  warehouse: 'Industrial & Warehouse',
 };
 
 export function BuildingGraphic({ category, maxHeightFt, code, className }: BuildingGraphicProps) {

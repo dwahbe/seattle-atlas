@@ -14,7 +14,7 @@ interface BaseLayerSelectorProps {
 
 export function BaseLayerSelector({ options, activeBaseLayer, onSelect }: BaseLayerSelectorProps) {
   return (
-    <div className="p-4 border-b border-[rgb(var(--border-color))]">
+    <div className="p-4">
       <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
         Zoning
       </h2>
@@ -35,10 +35,6 @@ export function BaseLayerSelector({ options, activeBaseLayer, onSelect }: BaseLa
                 }
               `}
             >
-              {/* Active indicator dot */}
-              {isActive && (
-                <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-[rgb(var(--accent))]" />
-              )}
               <div className="font-medium text-sm text-[rgb(var(--text-primary))] mb-1">
                 {option.label}
               </div>

@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
-import { BuildingGraphic, Donut, ThemeToggle } from '@/components/ui';
+import { BuildingGraphic, Donut, Switch, ThemeToggle } from '@/components/ui';
 import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info';
 import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint } from '@/lib/spatial';
@@ -291,61 +291,64 @@ export function MobileDrawer({
                         </div>
                       )}
                     </div>
+                  </div>
+                )}
 
-                    {/* Walk Score */}
-                    {(isLoadingWalkScore || walkScore) && (
-                      <div className="mt-2 pt-2">
-                        {isLoadingWalkScore ? (
-                          <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
-                            <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
-                            Loading scores...
-                          </div>
-                        ) : walkScore && !walkScore.error ? (
-                          <div>
-                            <div className="flex justify-around">
-                              {walkScore.walkscore !== null && (
-                                <Donut
-                                  value={walkScore.walkscore}
-                                  max={100}
-                                  size={56}
-                                  strokeWidth={5}
-                                  label="Walk"
-                                  title={`Walk Score: ${walkScore.walkscore}`}
-                                />
-                              )}
-                              {walkScore.transit_score !== null && (
-                                <Donut
-                                  value={walkScore.transit_score}
-                                  max={100}
-                                  size={56}
-                                  strokeWidth={5}
-                                  label="Transit"
-                                  title={`Transit Score: ${walkScore.transit_score}`}
-                                />
-                              )}
-                              {walkScore.bike_score !== null && (
-                                <Donut
-                                  value={walkScore.bike_score}
-                                  max={100}
-                                  size={56}
-                                  strokeWidth={5}
-                                  label="Bike"
-                                  title={`Bike Score: ${walkScore.bike_score}`}
-                                />
-                              )}
-                            </div>
-                            <a
-                              href={walkScore.more_info_link || 'https://www.walkscore.com'}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-block mt-2 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
-                            >
-                              Scores by Walk Score®
-                            </a>
-                          </div>
-                        ) : null}
+                {/* Walk Score */}
+                {(isLoadingWalkScore || walkScore) && (
+                  <div className="px-4 py-3 border-b border-[rgb(var(--border-color))]">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+                      Walk Score
+                    </h3>
+                    {isLoadingWalkScore ? (
+                      <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                        <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                        Loading scores...
                       </div>
-                    )}
+                    ) : walkScore && !walkScore.error ? (
+                      <div>
+                        <div className="flex justify-around">
+                          {walkScore.walkscore !== null && (
+                            <Donut
+                              value={walkScore.walkscore}
+                              max={100}
+                              size={56}
+                              strokeWidth={5}
+                              label="Walk"
+                              title={`Walk Score: ${walkScore.walkscore}`}
+                            />
+                          )}
+                          {walkScore.transit_score !== null && (
+                            <Donut
+                              value={walkScore.transit_score}
+                              max={100}
+                              size={56}
+                              strokeWidth={5}
+                              label="Transit"
+                              title={`Transit Score: ${walkScore.transit_score}`}
+                            />
+                          )}
+                          {walkScore.bike_score !== null && (
+                            <Donut
+                              value={walkScore.bike_score}
+                              max={100}
+                              size={56}
+                              strokeWidth={5}
+                              label="Bike"
+                              title={`Bike Score: ${walkScore.bike_score}`}
+                            />
+                          )}
+                        </div>
+                        <a
+                          href={walkScore.more_info_link || 'https://www.walkscore.com'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-block mt-3 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+                        >
+                          Scores by Walk Score®
+                        </a>
+                      </div>
+                    ) : null}
                   </div>
                 )}
 
@@ -521,22 +524,20 @@ export function MobileDrawer({
                   </div>
                   {/* Transit Toggle */}
                   <div className="px-3 pb-3">
-                    <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-[rgb(var(--secondary-bg))] transition-colors cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={isTransitActive}
-                        onChange={(e) => onTransitToggle(e.target.checked)}
-                        className="w-4 h-4 rounded border-[rgb(var(--border-color))] text-[rgb(var(--accent))] focus:ring-[rgb(var(--accent))] focus:ring-offset-0"
-                      />
+                    <div className="flex items-center gap-3 p-2 rounded-lg">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
                           Transit
                         </div>
                         <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
-                          Bus routes and stops
+                          Bus & Lightrail Routes
                         </div>
                       </div>
-                    </label>
+                      <Switch
+                        checked={isTransitActive}
+                        onChange={() => onTransitToggle(!isTransitActive)}
+                      />
+                    </div>
                   </div>
                   {overlayLayerGroups.map((group) => (
                     <LayerGroup
@@ -551,8 +552,10 @@ export function MobileDrawer({
                 </div>
 
                 {/* Legend */}
-                <div className="p-4 border-b border-[rgb(var(--border-color))]">
-                  <Legend layers={layers} activeLayers={activeLayers} />
+                <div className="border-b border-[rgb(var(--border-color))]">
+                  <div className="p-4">
+                    <Legend layers={layers} activeLayers={activeLayers} />
+                  </div>
                 </div>
 
                 {/* Footer links */}

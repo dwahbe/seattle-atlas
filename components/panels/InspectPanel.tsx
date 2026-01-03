@@ -210,61 +210,64 @@ export function InspectPanel({
                 </div>
               )}
             </div>
+          </div>
+        )}
 
-            {/* Walk Score */}
-            {(isLoadingWalkScore || walkScore) && (
-              <div className="mt-4 pt-4 border-t border-[rgb(var(--border-color))]">
-                {isLoadingWalkScore ? (
-                  <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
-                    <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
-                    Loading scores...
-                  </div>
-                ) : walkScore && !walkScore.error ? (
-                  <div>
-                    <div className="flex justify-around">
-                      {walkScore.walkscore !== null && (
-                        <Donut
-                          value={walkScore.walkscore}
-                          max={100}
-                          size={64}
-                          strokeWidth={6}
-                          label="Walk"
-                          title={`Walk Score: ${walkScore.walkscore}`}
-                        />
-                      )}
-                      {walkScore.transit_score !== null && (
-                        <Donut
-                          value={walkScore.transit_score}
-                          max={100}
-                          size={64}
-                          strokeWidth={6}
-                          label="Transit"
-                          title={`Transit Score: ${walkScore.transit_score}`}
-                        />
-                      )}
-                      {walkScore.bike_score !== null && (
-                        <Donut
-                          value={walkScore.bike_score}
-                          max={100}
-                          size={64}
-                          strokeWidth={6}
-                          label="Bike"
-                          title={`Bike Score: ${walkScore.bike_score}`}
-                        />
-                      )}
-                    </div>
-                    <a
-                      href={walkScore.more_info_link || 'https://www.walkscore.com'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-block mt-3 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
-                    >
-                      Scores by Walk Score®
-                    </a>
-                  </div>
-                ) : null}
+        {/* Walk Score */}
+        {isZoning && (isLoadingWalkScore || walkScore) && (
+          <div className="p-4 border-b border-[rgb(var(--border-color))]">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+              Walk Score
+            </h3>
+            {isLoadingWalkScore ? (
+              <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
+                <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+                Loading scores...
               </div>
-            )}
+            ) : walkScore && !walkScore.error ? (
+              <div>
+                <div className="flex justify-around">
+                  {walkScore.walkscore !== null && (
+                    <Donut
+                      value={walkScore.walkscore}
+                      max={100}
+                      size={64}
+                      strokeWidth={6}
+                      label="Walk"
+                      title={`Walk Score: ${walkScore.walkscore}`}
+                    />
+                  )}
+                  {walkScore.transit_score !== null && (
+                    <Donut
+                      value={walkScore.transit_score}
+                      max={100}
+                      size={64}
+                      strokeWidth={6}
+                      label="Transit"
+                      title={`Transit Score: ${walkScore.transit_score}`}
+                    />
+                  )}
+                  {walkScore.bike_score !== null && (
+                    <Donut
+                      value={walkScore.bike_score}
+                      max={100}
+                      size={64}
+                      strokeWidth={6}
+                      label="Bike"
+                      title={`Bike Score: ${walkScore.bike_score}`}
+                    />
+                  )}
+                </div>
+                <a
+                  href={walkScore.more_info_link || 'https://www.walkscore.com'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-3 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+                >
+                  Scores by Walk Score®
+                </a>
+              </div>
+            ) : null}
           </div>
         )}
 

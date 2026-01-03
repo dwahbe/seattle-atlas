@@ -38,7 +38,7 @@ export function Donut({
   const color = getScoreColor(value, max);
 
   return (
-    <div className={`flex flex-col items-center gap-1 ${className || ''}`}>
+    <div className={`flex flex-col items-center gap-2 ${className || ''}`}>
       <svg
         width={size}
         height={size}
@@ -58,7 +58,7 @@ export function Donut({
           fill="none"
           stroke="rgb(var(--border-color))"
           strokeWidth={strokeWidth}
-          opacity={0.3}
+          opacity={0.6}
         />
         {/* Progress arc */}
         <circle

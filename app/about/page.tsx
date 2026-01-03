@@ -40,16 +40,7 @@ export default function AboutPage() {
           <div className="space-y-6 text-[rgb(var(--text-secondary))]">
             <p>
               Seattle Atlas is an interactive map for exploring Seattle&apos;s zoning and transit
-              data. Built by{' '}
-              <a
-                href="https://dylanwahbe.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[rgb(var(--accent))] hover:underline"
-              >
-                Dylan Wahbe
-              </a>
-              .
+              data.
             </p>
 
             <section>

@@ -46,7 +46,7 @@ export function Legend({ layers, activeLayers }: LegendProps) {
               {uniqueItems.map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
                   <LegendSwatch type={layer.type} color={item.color} />
-                  <span className="text-xs text-[rgb(var(--text-secondary))] flex-1">
+                  <span className="text-xs text-[rgb(var(--text-primary))] flex-1">
                     {item.label}
                   </span>
                   {item.percentage !== undefined && (
