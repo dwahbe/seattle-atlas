@@ -6,6 +6,7 @@ import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info'
 import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint } from '@/lib/spatial';
 import { reverseGeocode } from '@/lib/mapbox';
+import { Donut } from '@/components/ui';
 
 interface InspectPanelProps {
   feature: InspectedFeature | null;
@@ -149,7 +150,9 @@ export function InspectPanel({
                 <circle cx="12" cy="10" r="3" />
               </svg>
             )}
-            <span className="truncate">{isZoning && location ? `Near ${location.address}` : 'Feature Details'}</span>
+            <span className="truncate">
+              {isZoning && location ? `Near ${location.address}` : 'Feature Details'}
+            </span>
           </h2>
         </div>
         <button
@@ -213,22 +216,43 @@ export function InspectPanel({
                   </div>
                 ) : walkScore && !walkScore.error ? (
                   <div>
-                    <div className="flex gap-4">
+                    <div className="flex justify-around">
                       {walkScore.walkscore !== null && (
-                        <ScoreBadge label="Walk" score={walkScore.walkscore} />
+                        <Donut
+                          value={walkScore.walkscore}
+                          max={100}
+                          size={64}
+                          strokeWidth={6}
+                          label="Walk"
+                          title={`Walk Score: ${walkScore.walkscore}`}
+                        />
                       )}
                       {walkScore.transit_score !== null && (
-                        <ScoreBadge label="Transit" score={walkScore.transit_score} />
+                        <Donut
+                          value={walkScore.transit_score}
+                          max={100}
+                          size={64}
+                          strokeWidth={6}
+                          label="Transit"
+                          title={`Transit Score: ${walkScore.transit_score}`}
+                        />
                       )}
                       {walkScore.bike_score !== null && (
-                        <ScoreBadge label="Bike" score={walkScore.bike_score} />
+                        <Donut
+                          value={walkScore.bike_score}
+                          max={100}
+                          size={64}
+                          strokeWidth={6}
+                          label="Bike"
+                          title={`Bike Score: ${walkScore.bike_score}`}
+                        />
                       )}
                     </div>
                     <a
                       href={walkScore.more_info_link || 'https://www.walkscore.com'}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block mt-2 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+                      className="inline-block mt-3 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
                     >
                       Scores by Walk Score®
                     </a>
@@ -408,27 +432,6 @@ export function InspectPanel({
 // ============================================================================
 // Sub-components
 // ============================================================================
-
-function ScoreBadge({ label, score }: { label: string; score: number }) {
-  const getColor = (s: number) => {
-    if (s >= 90) return 'bg-green-500';
-    if (s >= 70) return 'bg-green-400';
-    if (s >= 50) return 'bg-yellow-400';
-    if (s >= 25) return 'bg-orange-400';
-    return 'bg-red-400';
-  };
-
-  return (
-    <div className="flex items-center gap-2">
-      <div
-        className={`w-8 h-8 rounded-full ${getColor(score)} flex items-center justify-center text-xs font-bold text-white`}
-      >
-        {score}
-      </div>
-      <span className="text-xs text-[rgb(var(--text-secondary))]">{label}</span>
-    </div>
-  );
-}
 
 function StatusBadge({ status }: { status: Proposal['status'] }) {
   const colors: Record<string, string> = {

@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { Donut, ThemeToggle } from '@/components/ui';
 import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info';
 import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint } from '@/lib/spatial';
@@ -298,15 +298,36 @@ export function MobileDrawer({
                           </div>
                         ) : walkScore && !walkScore.error ? (
                           <div>
-                            <div className="flex gap-3">
+                            <div className="flex justify-around">
                               {walkScore.walkscore !== null && (
-                                <ScoreBadge label="Walk" score={walkScore.walkscore} />
+                                <Donut
+                                  value={walkScore.walkscore}
+                                  max={100}
+                                  size={56}
+                                  strokeWidth={5}
+                                  label="Walk"
+                                  title={`Walk Score: ${walkScore.walkscore}`}
+                                />
                               )}
                               {walkScore.transit_score !== null && (
-                                <ScoreBadge label="Transit" score={walkScore.transit_score} />
+                                <Donut
+                                  value={walkScore.transit_score}
+                                  max={100}
+                                  size={56}
+                                  strokeWidth={5}
+                                  label="Transit"
+                                  title={`Transit Score: ${walkScore.transit_score}`}
+                                />
                               )}
                               {walkScore.bike_score !== null && (
-                                <ScoreBadge label="Bike" score={walkScore.bike_score} />
+                                <Donut
+                                  value={walkScore.bike_score}
+                                  max={100}
+                                  size={56}
+                                  strokeWidth={5}
+                                  label="Bike"
+                                  title={`Bike Score: ${walkScore.bike_score}`}
+                                />
                               )}
                             </div>
                             <a
@@ -556,27 +577,6 @@ export function MobileDrawer({
 // ============================================================================
 // Sub-components
 // ============================================================================
-
-function ScoreBadge({ label, score }: { label: string; score: number }) {
-  const getColor = (s: number) => {
-    if (s >= 90) return 'bg-green-500';
-    if (s >= 70) return 'bg-green-400';
-    if (s >= 50) return 'bg-yellow-400';
-    if (s >= 25) return 'bg-orange-400';
-    return 'bg-red-400';
-  };
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <div
-        className={`w-7 h-7 rounded-full ${getColor(score)} flex items-center justify-center text-xs font-bold text-white`}
-      >
-        {score}
-      </div>
-      <span className="text-xs text-[rgb(var(--text-secondary))]">{label}</span>
-    </div>
-  );
-}
 
 function StatusBadge({ status }: { status: Proposal['status'] }) {
   const colors: Record<string, string> = {
