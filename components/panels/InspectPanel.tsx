@@ -6,7 +6,7 @@ import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info'
 import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint } from '@/lib/spatial';
 import { reverseGeocode } from '@/lib/mapbox';
-import { Donut } from '@/components/ui';
+import { BuildingGraphic, Donut } from '@/components/ui';
 
 interface InspectPanelProps {
   feature: InspectedFeature | null;
@@ -177,8 +177,13 @@ export function InspectPanel({
         {/* Zoning Summary - Only for zoning layers */}
         {isZoning && zoneInfo && (
           <div className="p-4 border-b border-[rgb(var(--border-color))]">
-            {/* Summary sentence */}
-            <p className="text-sm text-[rgb(var(--text-primary))] mb-4">{zoneInfo.summary}</p>
+            {/* Building type graphic */}
+            <BuildingGraphic
+              category={zoneInfo.category}
+              maxHeightFt={zoneInfo.maxHeightFt}
+              code={zoneInfo.code}
+              className="mb-4"
+            />
 
             {/* Quick stats */}
             <div className="grid grid-cols-2 gap-3">
@@ -412,18 +417,6 @@ export function InspectPanel({
           </CollapsibleSection>
         )}
 
-        {/* Layer Info */}
-        {layerConfig && (
-          <div className="p-4 bg-[rgb(var(--secondary-bg))]">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
-              About This Layer
-            </h3>
-            <p className="text-sm text-[rgb(var(--text-secondary))]">{layerConfig.description}</p>
-            <p className="text-xs text-[rgb(var(--text-tertiary))] mt-2">
-              Source: {layerConfig.source} · Updated {layerConfig.updated}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

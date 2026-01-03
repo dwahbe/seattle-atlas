@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface ShareBarProps {
   url: string;
@@ -9,11 +9,6 @@ interface ShareBarProps {
 
 export function ShareBar({ url, onCopy }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
-  const [fullUrl, setFullUrl] = useState('');
-
-  useEffect(() => {
-    setFullUrl(window.location.origin + url);
-  }, [url]);
 
   const handleCopy = () => {
     onCopy();
@@ -23,62 +18,50 @@ export function ShareBar({ url, onCopy }: ShareBarProps) {
 
   return (
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-      <div className="flex items-center gap-2 px-3 py-2 bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-full shadow-lg">
-        <svg
-          className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-        </svg>
-        <span className="text-xs text-[rgb(var(--text-secondary))] max-w-xs truncate hidden sm:inline">
-          {fullUrl}
-        </span>
-        <span className="text-xs text-[rgb(var(--text-secondary))] sm:hidden">Share this view</span>
-        <button
-          onClick={handleCopy}
-          className={`
-            flex items-center gap-1 px-3 py-1 text-xs font-medium rounded-full transition-colors
-            ${
-              copied
-                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                : 'bg-[rgb(var(--accent))] text-white hover:bg-[rgb(var(--accent-hover))]'
-            }
-          `}
-        >
-          {copied ? (
-            <>
-              <svg
-                className="w-3 h-3"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
-              Copied
-            </>
-          ) : (
-            <>
-              <svg
-                className="w-3 h-3"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <rect x="9" y="9" width="13" height="13" rx="2" />
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-              </svg>
-              Copy
-            </>
-          )}
-        </button>
-      </div>
+      <button
+        onClick={handleCopy}
+        className={`
+          flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg transition-all
+          ${
+            copied
+              ? 'bg-green-500 text-white'
+              : 'bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))]'
+          }
+        `}
+        aria-label="Share this view"
+      >
+        {copied ? (
+          <>
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M20 6L9 17l-5-5" />
+            </svg>
+            <span className="text-sm font-medium">Copied!</span>
+          </>
+        ) : (
+          <>
+            <svg
+              className="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+            </svg>
+            <span className="text-sm font-medium">Share</span>
+          </>
+        )}
+      </button>
     </div>
   );
 }

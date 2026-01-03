@@ -5,7 +5,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { LayerGroup } from '@/components/controls/LayerGroup';
 import { Legend } from '@/components/controls/Legend';
-import { Donut, ThemeToggle } from '@/components/ui';
+import { BuildingGraphic, Donut, ThemeToggle } from '@/components/ui';
 import { getZoneInfo, getCategoryLabel, type ZoneInfo } from '@/lib/zoning-info';
 import { getDisplayProperties, isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint } from '@/lib/spatial';
@@ -259,9 +259,13 @@ export function MobileDrawer({
                 {/* Zoning Summary */}
                 {isZoning && zoneInfo && (
                   <div className="px-4 pt-3 pb-2 border-b border-[rgb(var(--border-color))]">
-                    <p className="text-sm text-[rgb(var(--text-primary))] mb-3">
-                      {zoneInfo.summary}
-                    </p>
+                    {/* Building type graphic */}
+                    <BuildingGraphic
+                      category={zoneInfo.category}
+                      maxHeightFt={zoneInfo.maxHeightFt}
+                      code={zoneInfo.code}
+                      className="mb-3"
+                    />
 
                     {/* Quick stats grid */}
                     <div className="grid grid-cols-2 gap-2">
