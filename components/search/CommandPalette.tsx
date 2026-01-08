@@ -260,17 +260,8 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
             rounded-xl
             overflow-hidden
             transition-all duration-300 ease-out
-            ${
-              isOpen
-                ? 'shadow-2xl ring-1 ring-[rgb(var(--accent))]/20'
-                : 'shadow-lg hover:shadow-xl'
-            }
+            ${isOpen ? 'shadow-2xl' : 'shadow-lg hover:shadow-xl'}
           `}
-          style={{
-            boxShadow: isOpen
-              ? '0 25px 50px -12px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(var(--accent), 0.1)'
-              : undefined,
-          }}
         >
           {/* Search Input */}
           <div className="flex items-center gap-3 px-4 py-3">
@@ -294,10 +285,9 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
                 isOpen ? 'Search places, neighborhoods, or commands...' : 'Search Seattle...'
               }
               className="
-                flex-1 bg-transparent
+                flex-1 bg-transparent border-0 ring-0 !outline-none
                 text-sm text-[rgb(var(--text-primary))]
                 placeholder:text-[rgb(var(--text-tertiary))]
-                focus:outline-none
               "
               autoComplete="off"
               autoCorrect="off"
@@ -306,39 +296,41 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
             {isLoading && (
               <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
             )}
-            {query && isOpen ? (
-              <button
-                onClick={() => {
-                  setQuery('');
-                  setResults([]);
-                  inputRef.current?.focus();
-                }}
-                className="p-1 hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors"
-              >
-                <svg
-                  className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+            <div className="w-8 h-6 flex items-center justify-end">
+              {query && isOpen ? (
+                <button
+                  onClick={() => {
+                    setQuery('');
+                    setResults([]);
+                    inputRef.current?.focus();
+                  }}
+                  className="p-1 hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors"
                 >
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            ) : (
-              <kbd
-                className={`
-                  hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
-                  text-xs font-medium text-[rgb(var(--text-tertiary))] 
-                  bg-[rgb(var(--secondary-bg))] rounded 
-                  border border-[rgb(var(--border-color))]
-                  transition-opacity duration-200
-                  ${isOpen ? 'opacity-0' : 'opacity-100'}
-                `}
-              >
-                <span className="text-sm">⌘</span>K
-              </kbd>
-            )}
+                  <svg
+                    className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M18 6L6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              ) : (
+                <kbd
+                  className={`
+                    hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
+                    text-xs font-medium text-[rgb(var(--text-tertiary))] 
+                    bg-[rgb(var(--secondary-bg))] rounded 
+                    border border-[rgb(var(--border-color))]
+                    transition-opacity duration-200
+                    ${isOpen ? 'opacity-0' : 'opacity-100'}
+                  `}
+                >
+                  <span className="text-sm">⌘</span>K
+                </kbd>
+              )}
+            </div>
           </div>
 
           {/* Results - only visible when open */}
@@ -352,7 +344,7 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
             <div className="border-t border-[rgb(var(--border-color))]" />
             <div
               ref={listRef}
-              className="overflow-y-auto max-h-[calc(60vh-60px)] overscroll-contain"
+              className="overflow-y-auto max-h-[calc(60vh-60px)] overscroll-contain [scrollbar-gutter:stable]"
             >
               {/* Quick Actions */}
               {filteredActions.length > 0 && (
