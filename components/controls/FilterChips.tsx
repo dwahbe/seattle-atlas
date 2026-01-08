@@ -50,7 +50,7 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
         return (
           <div key={filter.id}>
             {/* Filter label - matches section header style */}
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
                 {filter.label}
               </h2>
@@ -74,7 +74,7 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
             {/* Horizontal scrolling chips - one per unique label */}
             <div
               className="
-                flex gap-2 overflow-x-auto pb-1
+                flex flex-nowrap gap-2 overflow-x-auto
                 scrollbar-none
                 -mx-4 px-4
                 md:mx-0 md:px-0 md:flex-wrap
@@ -104,9 +104,11 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
                       onChange(filter.id, newValues);
                     }}
                     className={`
+                      touch-target-inline
                       inline-flex items-center gap-1.5
-                      px-2 py-1
-                      text-xs font-medium
+                      min-h-9 min-w-9 md:min-h-0 md:min-w-0
+                      px-2 py-1 md:px-1.5 md:py-0.5
+                      text-sm md:text-xs font-medium
                       rounded-full
                       whitespace-nowrap
                       transition-colors duration-150

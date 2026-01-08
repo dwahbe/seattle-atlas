@@ -326,31 +326,18 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
                 </svg>
               </button>
             ) : (
-              <>
-                {/* Desktop: Show ⌘K hint */}
-                <kbd
-                  className={`
-                    hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
-                    text-xs font-medium text-[rgb(var(--text-tertiary))] 
-                    bg-[rgb(var(--secondary-bg))] rounded 
-                    border border-[rgb(var(--border-color))]
-                    transition-opacity duration-200
-                    ${isOpen ? 'opacity-0' : 'opacity-100'}
-                  `}
-                >
-                  <span className="text-sm">⌘</span>K
-                </kbd>
-                {/* Mobile: Show tap hint */}
-                <span
-                  className={`
-                    sm:hidden text-xs text-[rgb(var(--text-tertiary))]
-                    transition-opacity duration-200
-                    ${isOpen ? 'opacity-0' : 'opacity-100'}
-                  `}
-                >
-                  Tap
-                </span>
-              </>
+              <kbd
+                className={`
+                  hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
+                  text-xs font-medium text-[rgb(var(--text-tertiary))] 
+                  bg-[rgb(var(--secondary-bg))] rounded 
+                  border border-[rgb(var(--border-color))]
+                  transition-opacity duration-200
+                  ${isOpen ? 'opacity-0' : 'opacity-100'}
+                `}
+              >
+                <span className="text-sm">⌘</span>K
+              </kbd>
             )}
           </div>
 

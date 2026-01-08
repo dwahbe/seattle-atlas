@@ -1,7 +1,7 @@
 'use client';
 
 import { Drawer } from 'vaul';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
 import { Switch, ThemeToggle } from '@/components/ui';
@@ -49,6 +49,8 @@ interface MobileDrawerProps {
   proposals: Proposal[];
   onCloseInspect: () => void;
   layerConfigs: LayerConfig[];
+  /** Exact address from search - displayed instead of reverse-geocoded location */
+  searchedAddress?: string | null;
 }
 
 export function MobileDrawer({
@@ -63,6 +65,7 @@ export function MobileDrawer({
   proposals,
   onCloseInspect,
   layerConfigs,
+  searchedAddress,
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
 
@@ -84,9 +87,16 @@ export function MobileDrawer({
 
   // Auto-expand when inspecting a feature
   const isInspecting = inspectedFeature !== null;
+  const wasInspecting = useRef(false);
 
-  // When starting to inspect, expand to half
-  // Using a ref to track previous state would cause re-renders, so we handle this in the parent
+  // When starting to inspect, expand drawer to show content
+  useEffect(() => {
+    if (isInspecting && !wasInspecting.current) {
+      // Transitioning to inspect mode - expand drawer
+      setSnap(SNAP_POINT_HALF);
+    }
+    wasInspecting.current = isInspecting;
+  }, [isInspecting]);
 
   return (
     <Drawer.Root
@@ -138,6 +148,7 @@ export function MobileDrawer({
                   onClose={onCloseInspect}
                   variant="mobile"
                   onBack={onCloseInspect}
+                  searchedAddress={searchedAddress}
                 />
 
                 {/* Zoning Summary - compact */}
@@ -220,7 +231,9 @@ export function MobileDrawer({
                     <div className="p-4 border-b border-[rgb(var(--border-color))]">
                       <FilterChips
                         filters={activeBaseLayerConfig.filters}
-                        values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
+                        values={
+                          (filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}
+                        }
                         onChange={(filterId, values) =>
                           onFilterChange(activeBaseLayerConfig.id, filterId, values)
                         }
@@ -261,7 +274,10 @@ export function MobileDrawer({
                             Bike lanes, trails & greenways
                           </div>
                         </div>
-                        <Switch checked={isBikeActive} onChange={() => onBikeToggle(!isBikeActive)} />
+                        <Switch
+                          checked={isBikeActive}
+                          onChange={() => onBikeToggle(!isBikeActive)}
+                        />
                       </div>
                     </div>
                   </div>
@@ -319,7 +335,9 @@ export function MobileDrawer({
                       >
                         About
                       </Link>
-                      <span className="text-xs text-[rgb(var(--text-tertiary))]">Data: Jan 2025</span>
+                      <span className="text-xs text-[rgb(var(--text-tertiary))]">
+                        Data: Jan 2025
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -110,7 +110,7 @@ export function ControlPanel({
         <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
           {/* Zoning Filters */}
           {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-            <div className="px-4 pt-4">
+            <div className="px-4 py-4">
               <FilterChips
                 filters={activeBaseLayerConfig.filters}
                 values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
@@ -122,8 +122,8 @@ export function ControlPanel({
           )}
 
           {/* Overlay Layers */}
-          <div className="px-4 pt-4">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+          <div className="px-4 py-4">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
               Overlays
             </h2>
             {/* Transit Toggle */}
@@ -156,7 +156,7 @@ export function ControlPanel({
           </div>
 
           {/* Legend */}
-          <div className="px-4 pt-4">
+          <div className="px-4 py-4 border-t border-[rgb(var(--border-color))]">
             <Legend layers={layers} activeLayers={activeLayers} />
           </div>
         </div>

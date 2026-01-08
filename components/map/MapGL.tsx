@@ -17,12 +17,13 @@ interface MapGLProps {
   viewState: MapViewState;
   onViewStateChange: (state: MapViewState) => void;
   onMapLoad: (map: mapboxgl.Map) => void;
-  onFeatureClick: (feature: InspectedFeature | null) => void;
+  onFeatureClick: (feature: InspectedFeature | null, clickPoint: [number, number] | null) => void;
   activeLayers: string[];
   layerConfigs: LayerConfig[];
   isDark: boolean;
   inspectedFeature: InspectedFeature | null;
   highlightedBounds?: [number, number, number, number] | null;
+  markerPosition?: [number, number] | null;
 }
 
 const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
@@ -39,9 +40,11 @@ export function MapGL({
   isDark,
   inspectedFeature,
   highlightedBounds,
+  markerPosition,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const markerRef = useRef<mapboxgl.Marker | null>(null);
   const isInitialized = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
@@ -120,6 +123,7 @@ export function MapGL({
     (e: mapboxgl.MapMouseEvent) => {
       if (!map.current) return;
 
+      const clickPoint: [number, number] = [e.lngLat.lng, e.lngLat.lat];
       const features = map.current.queryRenderedFeatures(e.point, {
         layers: activeLayers.filter((id) => map.current?.getLayer(id)),
       });
@@ -127,14 +131,17 @@ export function MapGL({
       if (features.length > 0) {
         const feature = features[0];
         const layerId = feature.layer?.id ?? 'unknown';
-        onFeatureClick({
-          id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
-          layerId,
-          properties: feature.properties as Record<string, unknown>,
-          geometry: feature.geometry,
-        });
+        onFeatureClick(
+          {
+            id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
+            layerId,
+            properties: feature.properties as Record<string, unknown>,
+            geometry: feature.geometry,
+          },
+          clickPoint
+        );
       } else {
-        onFeatureClick(null);
+        onFeatureClick(null, clickPoint);
       }
     },
     [activeLayers, onFeatureClick]
@@ -326,6 +333,33 @@ export function MapGL({
       }
     };
   }, [isLoaded, highlightedBounds]);
+
+  // Handle marker for neighborhood centers
+  useEffect(() => {
+    // Remove existing marker
+    if (markerRef.current) {
+      markerRef.current.remove();
+      markerRef.current = null;
+    }
+
+    // Add new marker if position provided and map is ready
+    if (markerPosition && map.current) {
+      const marker = new mapboxgl.Marker({
+        color: '#3B82F6', // Match the highlight color
+      })
+        .setLngLat(markerPosition)
+        .addTo(map.current);
+
+      markerRef.current = marker;
+    }
+
+    return () => {
+      if (markerRef.current) {
+        markerRef.current.remove();
+        markerRef.current = null;
+      }
+    };
+  }, [markerPosition, isLoaded]);
 
   // Get the layer config for the hovered feature
   const hoveredLayerConfig = hoverState

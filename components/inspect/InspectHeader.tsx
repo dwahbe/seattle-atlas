@@ -13,6 +13,8 @@ interface InspectHeaderProps {
   variant?: 'desktop' | 'mobile';
   /** Callback for back button in mobile variant */
   onBack?: () => void;
+  /** Exact address from search - displayed instead of reverse-geocoded location */
+  searchedAddress?: string | null;
 }
 
 export function InspectHeader({
@@ -23,9 +25,20 @@ export function InspectHeader({
   onClose,
   variant = 'desktop',
   onBack,
+  searchedAddress,
 }: InspectHeaderProps) {
   const title = isZoning && zoneInfo ? zoneInfo.name : layerName;
-  const subtitle = isZoning && location ? `Near ${location.address}` : 'Feature Details';
+
+  // Prioritize searched address (exact), fall back to reverse-geocoded location (approximate)
+  const subtitle = isZoning
+    ? searchedAddress
+      ? searchedAddress
+      : location
+        ? `Near ${location.address}`
+        : 'Loading...'
+    : 'Feature Details';
+
+  const hasLocation = isZoning && (searchedAddress || location);
 
   if (variant === 'mobile') {
     return (
@@ -56,7 +69,7 @@ export function InspectHeader({
             {title}
           </div>
           <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] flex items-center gap-1.5">
-            {isZoning && location && <LocationIcon />}
+            {hasLocation && <LocationIcon />}
             {subtitle}
           </h2>
         </div>
@@ -72,7 +85,7 @@ export function InspectHeader({
           {title}
         </div>
         <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mt-1 truncate flex items-center gap-1.5">
-          {isZoning && location && <LocationIcon />}
+          {hasLocation && <LocationIcon />}
           <span className="truncate">{subtitle}</span>
         </h2>
       </div>

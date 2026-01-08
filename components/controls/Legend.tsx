@@ -32,54 +32,54 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
 
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
         Legend
       </h2>
       <div className="space-y-4">
-      {activeLayersWithLegends.map((layer) => {
-        // Deduplicate legend items by label and aggregate percentages
-        const uniqueItems = deduplicateLegendItems(layer.legend);
-        const layerFilters = activeFilters[layer.id] || [];
+        {activeLayersWithLegends.map((layer) => {
+          // Deduplicate legend items by label and aggregate percentages
+          const uniqueItems = deduplicateLegendItems(layer.legend);
+          const layerFilters = activeFilters[layer.id] || [];
 
-        return (
-          <div key={layer.id} className="space-y-2">
-            <div className="grid grid-cols-1 gap-y-0.5">
-              {uniqueItems.map((item) => {
-                const isFiltered = layerFilters.includes(item.value);
-                const itemKey = `${layer.id}-${item.value}`;
-                const isHovered = hoveredItem === itemKey;
+          return (
+            <div key={layer.id} className="space-y-2">
+              <div className="grid grid-cols-1 gap-y-0.5">
+                {uniqueItems.map((item) => {
+                  const isFiltered = layerFilters.includes(item.value);
+                  const itemKey = `${layer.id}-${item.value}`;
+                  const isHovered = hoveredItem === itemKey;
 
-                return (
-                  <LegendRow
-                    key={item.label}
-                    item={item}
-                    layerType={layer.type}
-                    isFiltered={isFiltered}
-                    isHovered={isHovered}
-                    isTouch={isTouch}
-                    onClick={() => onFilterToggle?.(layer.id, item.value)}
-                    onMouseEnter={() => !isTouch && setHoveredItem(itemKey)}
-                    onMouseLeave={() => !isTouch && setHoveredItem(null)}
-                    isInteractive={!!onFilterToggle}
-                  />
-                );
-              })}
+                  return (
+                    <LegendRow
+                      key={item.label}
+                      item={item}
+                      layerType={layer.type}
+                      isFiltered={isFiltered}
+                      isHovered={isHovered}
+                      isTouch={isTouch}
+                      onClick={() => onFilterToggle?.(layer.id, item.value)}
+                      onMouseEnter={() => !isTouch && setHoveredItem(itemKey)}
+                      onMouseLeave={() => !isTouch && setHoveredItem(null)}
+                      isInteractive={!!onFilterToggle}
+                    />
+                  );
+                })}
+              </div>
+              {/* Clear filter button */}
+              {layerFilters.length > 0 && (
+                <button
+                  onClick={() => {
+                    // Clear all filters for this layer
+                    layerFilters.forEach((value) => onFilterToggle?.(layer.id, value));
+                  }}
+                  className="text-xs text-[rgb(var(--accent))] hover:underline"
+                >
+                  Show all
+                </button>
+              )}
             </div>
-            {/* Clear filter button */}
-            {layerFilters.length > 0 && (
-              <button
-                onClick={() => {
-                  // Clear all filters for this layer
-                  layerFilters.forEach((value) => onFilterToggle?.(layer.id, value));
-                }}
-                className="text-xs text-[rgb(var(--accent))] hover:underline"
-              >
-                Show all
-              </button>
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
       </div>
     </div>
   );
@@ -109,7 +109,7 @@ function LegendRow({
   isInteractive,
 }: LegendRowProps) {
   const baseClasses = `
-    flex items-center gap-2 py-1 px-1.5 rounded transition-colors
+    flex items-center gap-2 py-1 pr-1.5 rounded transition-colors
     ${isInteractive ? 'cursor-pointer' : ''}
     ${isFiltered ? 'bg-[rgb(var(--accent))]/10 ring-1 ring-[rgb(var(--accent))]/30' : ''}
     ${isHovered && !isFiltered ? 'bg-[rgb(var(--secondary-bg))]' : ''}

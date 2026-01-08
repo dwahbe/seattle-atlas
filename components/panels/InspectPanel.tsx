@@ -22,6 +22,8 @@ interface InspectPanelProps {
   onClose: () => void;
   isOpen: boolean;
   layerConfigs: LayerConfig[];
+  /** Exact address from search - displayed instead of reverse-geocoded location */
+  searchedAddress?: string | null;
 }
 
 export function InspectPanel({
@@ -30,6 +32,7 @@ export function InspectPanel({
   onClose,
   isOpen,
   layerConfigs,
+  searchedAddress,
 }: InspectPanelProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['parcel', 'rules', 'permits', 'proposals'])
@@ -72,6 +75,7 @@ export function InspectPanel({
         isZoning={data.isZoning}
         onClose={onClose}
         variant="desktop"
+        searchedAddress={searchedAddress}
       />
 
       {/* Content */}
