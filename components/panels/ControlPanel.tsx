@@ -1,6 +1,5 @@
 'use client';
 
-import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
 import { Switch, ThemeToggle } from '@/components/ui';
@@ -9,18 +8,6 @@ import Link from 'next/link';
 
 // Define base layer options (mutually exclusive)
 const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
-const BASE_LAYER_OPTIONS = [
-  {
-    id: 'zoning',
-    label: 'Simplified',
-    description: 'What can be built here',
-  },
-  {
-    id: 'zoning_detailed',
-    label: 'Technical',
-    description: 'Official zoning codes',
-  },
-];
 
 // Transit layers that should be combined into a single toggle
 const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
@@ -121,16 +108,9 @@ export function ControlPanel({
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
-          {/* Base Layer Selector (Arc-style) */}
-          <BaseLayerSelector
-            options={BASE_LAYER_OPTIONS}
-            activeBaseLayer={activeBaseLayer}
-            onSelect={onBaseLayerChange}
-          />
-
-          {/* Filters for active base layer */}
+          {/* Zoning Filters */}
           {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-            <div className="px-4 pb-4">
+            <div className="p-4">
               <FilterChips
                 filters={activeBaseLayerConfig.filters}
                 values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
@@ -140,8 +120,6 @@ export function ControlPanel({
               />
             </div>
           )}
-
-          <div className="h-px bg-[rgb(var(--border-color))]" />
 
           {/* Overlay Layers */}
           <div>
@@ -189,16 +167,53 @@ export function ControlPanel({
 
         {/* Footer */}
         <div className="flex-none p-4 border-t border-[rgb(var(--border-color))] bg-[rgb(var(--secondary-bg))]">
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-4 text-xs">
-              <Link
-                href="/about"
-                className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-              >
-                About
-              </Link>
+          <div className="flex flex-col gap-3">
+            {/* Zoning Mode Toggle */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
+                Zoning View
+              </span>
+              <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--secondary-hover))]">
+                <button
+                  onClick={() => onBaseLayerChange('zoning')}
+                  className={`
+                    px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                    ${
+                      activeBaseLayer === 'zoning'
+                        ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
+                        : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                    }
+                  `}
+                >
+                  Simplified
+                </button>
+                <button
+                  onClick={() => onBaseLayerChange('zoning_detailed')}
+                  className={`
+                    px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                    ${
+                      activeBaseLayer === 'zoning_detailed'
+                        ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
+                        : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                    }
+                  `}
+                >
+                  Technical
+                </button>
+              </div>
             </div>
-            <p className="text-xs text-[rgb(var(--text-tertiary))]">Zoning data: Jan 2025</p>
+
+            <div className="flex items-center justify-between">
+              <div className="flex gap-4 text-xs">
+                <Link
+                  href="/about"
+                  className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
+                >
+                  About
+                </Link>
+              </div>
+              <p className="text-xs text-[rgb(var(--text-tertiary))]">Data: Jan 2025</p>
+            </div>
           </div>
         </div>
       </div>

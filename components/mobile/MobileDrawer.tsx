@@ -2,7 +2,6 @@
 
 import { Drawer } from 'vaul';
 import { useState } from 'react';
-import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
 import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
 import { Switch, ThemeToggle } from '@/components/ui';
@@ -23,10 +22,6 @@ import Link from 'next/link';
 
 // Base layer configuration
 const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
-const BASE_LAYER_OPTIONS = [
-  { id: 'zoning', label: 'Simplified', description: 'What can be built here' },
-  { id: 'zoning_detailed', label: 'Technical', description: 'Official zoning codes' },
-];
 
 // Transit layers combined into single toggle
 const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
@@ -133,7 +128,7 @@ export function MobileDrawer({
               /* ============================================================
                  INSPECT MODE - Uses shared components with compact prop
                  ============================================================ */
-              <div>
+              <div className="pb-8">
                 {/* Header with back button */}
                 <InspectHeader
                   zoneInfo={data.zoneInfo}
@@ -218,81 +213,114 @@ export function MobileDrawer({
               /* ============================================================
                  CONTROLS MODE - Layer toggles and legend
                  ============================================================ */
-              <div>
-                {/* Base Layer Selector */}
-                <BaseLayerSelector
-                  options={BASE_LAYER_OPTIONS}
-                  activeBaseLayer={activeBaseLayer}
-                  onSelect={onBaseLayerChange}
-                />
-
-                {/* Filters for active base layer */}
-                {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-                  <div className="px-4 pb-4">
-                    <FilterChips
-                      filters={activeBaseLayerConfig.filters}
-                      values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
-                      onChange={(filterId, values) =>
-                        onFilterChange(activeBaseLayerConfig.id, filterId, values)
-                      }
-                    />
-                  </div>
-                )}
-
-                {/* Overlay Layers */}
-                <div className="border-b border-[rgb(var(--border-color))]">
-                  <div className="px-4 py-3">
-                    <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
-                      Overlays
-                    </h2>
-                  </div>
-                  {/* Transit Toggle */}
-                  <div className="px-3 pb-3 space-y-1">
-                    <div className="flex items-center gap-3 p-2 rounded-lg">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
-                          Transit
-                        </div>
-                        <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
-                          Bus & Lightrail Routes
-                        </div>
-                      </div>
-                      <Switch
-                        checked={isTransitActive}
-                        onChange={() => onTransitToggle(!isTransitActive)}
+              <div className="flex flex-col min-h-full">
+                <div className="flex-1">
+                  {/* Filters for active base layer */}
+                  {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
+                    <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                      <FilterChips
+                        filters={activeBaseLayerConfig.filters}
+                        values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
+                        onChange={(filterId, values) =>
+                          onFilterChange(activeBaseLayerConfig.id, filterId, values)
+                        }
                       />
                     </div>
-                    {/* Bike Infrastructure Toggle */}
-                    <div className="flex items-center gap-3 p-2 rounded-lg">
-                      <div className="flex-1 min-w-0">
-                        <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
-                          Bike Infrastructure
+                  )}
+
+                  {/* Overlay Layers */}
+                  <div className="border-b border-[rgb(var(--border-color))]">
+                    <div className="px-4 py-3">
+                      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+                        Overlays
+                      </h2>
+                    </div>
+                    {/* Transit Toggle */}
+                    <div className="px-3 pb-3 space-y-1">
+                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                            Transit
+                          </div>
+                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                            Bus & Lightrail Routes
+                          </div>
                         </div>
-                        <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
-                          Bike lanes, trails & greenways
-                        </div>
+                        <Switch
+                          checked={isTransitActive}
+                          onChange={() => onTransitToggle(!isTransitActive)}
+                        />
                       </div>
-                      <Switch checked={isBikeActive} onChange={() => onBikeToggle(!isBikeActive)} />
+                      {/* Bike Infrastructure Toggle */}
+                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                            Bike Infrastructure
+                          </div>
+                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                            Bike lanes, trails & greenways
+                          </div>
+                        </div>
+                        <Switch checked={isBikeActive} onChange={() => onBikeToggle(!isBikeActive)} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Legend */}
+                  <div className="border-b border-[rgb(var(--border-color))]">
+                    <div className="p-4">
+                      <Legend layers={layers} activeLayers={activeLayers} />
                     </div>
                   </div>
                 </div>
 
-                {/* Legend */}
-                <div className="border-b border-[rgb(var(--border-color))]">
-                  <div className="p-4">
-                    <Legend layers={layers} activeLayers={activeLayers} />
-                  </div>
-                </div>
+                {/* Footer with toggle */}
+                <div className="p-4 bg-[rgb(var(--secondary-bg))] border-t border-[rgb(var(--border-color))]">
+                  <div className="flex flex-col gap-3">
+                    {/* Zoning Mode Toggle */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
+                        Zoning View
+                      </span>
+                      <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--panel-bg))]">
+                        <button
+                          onClick={() => onBaseLayerChange('zoning')}
+                          className={`
+                            px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                            ${
+                              activeBaseLayer === 'zoning'
+                                ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                            }
+                          `}
+                        >
+                          Simplified
+                        </button>
+                        <button
+                          onClick={() => onBaseLayerChange('zoning_detailed')}
+                          className={`
+                            px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                            ${
+                              activeBaseLayer === 'zoning_detailed'
+                                ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                            }
+                          `}
+                        >
+                          Technical
+                        </button>
+                      </div>
+                    </div>
 
-                {/* Footer links */}
-                <div className="p-4">
-                  <div className="flex gap-6 text-sm">
-                    <Link
-                      href="/about"
-                      className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-                    >
-                      About
-                    </Link>
+                    <div className="flex items-center justify-between">
+                      <Link
+                        href="/about"
+                        className="text-xs text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
+                      >
+                        About
+                      </Link>
+                      <span className="text-xs text-[rgb(var(--text-tertiary))]">Data: Jan 2025</span>
+                    </div>
                   </div>
                 </div>
               </div>
