@@ -104,8 +104,8 @@ export default function AboutPage() {
                   <strong>Bike Infrastructure:</strong> Seattle Department of Transportation (SDOT)
                 </li>
                 <li>
-                  <strong>Development Proposals:</strong> Seattle Office of Planning &amp;
-                  Community Development (OPCD)
+                  <strong>Development Proposals:</strong> Seattle Office of Planning &amp; Community
+                  Development (OPCD)
                 </li>
               </ul>
             </section>

@@ -222,7 +222,7 @@ export function MapContainer() {
   // Transit toggle handler (combines routes and stops)
   const handleTransitToggle = useCallback(
     (enabled: boolean) => {
-      const transitLayerIds = ['transit_routes', 'transit_stops'];
+      const transitLayerIds = ['transit_routes', 'transit_stops', 'light_rail'];
       const withoutTransit = activeLayers.filter((id) => !transitLayerIds.includes(id));
       if (enabled) {
         setUrlActiveLayers([...withoutTransit, ...transitLayerIds]);
@@ -258,7 +258,7 @@ export function MapContainer() {
     (actionId: string) => {
       switch (actionId) {
         case 'toggle-transit': {
-          const transitLayerIds = ['transit_routes', 'transit_stops'];
+          const transitLayerIds = ['transit_routes', 'transit_stops', 'light_rail'];
           const isTransitActive = transitLayerIds.some((id) => activeLayers.includes(id));
           handleTransitToggle(!isTransitActive);
           break;

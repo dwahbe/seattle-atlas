@@ -74,10 +74,10 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
             {/* Horizontal scrolling chips - one per unique label */}
             <div
               className="
-                flex flex-nowrap gap-2 overflow-x-auto
+                flex flex-nowrap gap-2 overflow-x-auto overflow-y-hidden
                 scrollbar-none
                 -mx-4 px-4
-                md:mx-0 md:px-0 md:flex-wrap
+                md:mx-0 md:px-0 md:flex-wrap md:overflow-visible
               "
               style={{
                 scrollbarWidth: 'none',

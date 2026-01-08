@@ -24,7 +24,7 @@ import Link from 'next/link';
 const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
 
 // Transit layers combined into single toggle
-const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
+const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops', 'light_rail'];
 
 // Bike infrastructure layer
 const BIKE_LAYER_ID = 'bike_facilities';
@@ -231,30 +231,30 @@ export function MobileDrawer({
                  ============================================================ */
               <div className="flex flex-col min-h-full">
                 <div className="flex-1">
-                  {/* Filters for active base layer */}
-                  {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-                    <div className="p-4 border-b border-[rgb(var(--border-color))]">
-                      <FilterChips
-                        filters={activeBaseLayerConfig.filters}
-                        values={
-                          (filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}
-                        }
-                        onChange={(filterId, values) =>
-                          onFilterChange(activeBaseLayerConfig.id, filterId, values)
-                        }
-                      />
-                    </div>
-                  )}
-
-                  {/* Overlay Layers */}
+                  {/* Layers */}
                   <div className="border-b border-[rgb(var(--border-color))]">
                     <div className="px-4 py-3">
                       <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
-                        Overlays
+                        Layers
                       </h2>
                     </div>
-                    {/* Transit Toggle */}
                     <div className="px-3 pb-3 space-y-1">
+                      {/* Zoning Toggle */}
+                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                            Zoning
+                          </div>
+                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                            What can be built
+                          </div>
+                        </div>
+                        <Switch
+                          checked={activeBaseLayer !== null}
+                          onChange={() => onBaseLayerChange(activeBaseLayer ? null : 'zoning')}
+                        />
+                      </div>
+                      {/* Transit Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
@@ -287,6 +287,21 @@ export function MobileDrawer({
                     </div>
                   </div>
 
+                  {/* Filters for active base layer */}
+                  {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
+                    <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                      <FilterChips
+                        filters={activeBaseLayerConfig.filters}
+                        values={
+                          (filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}
+                        }
+                        onChange={(filterId, values) =>
+                          onFilterChange(activeBaseLayerConfig.id, filterId, values)
+                        }
+                      />
+                    </div>
+                  )}
+
                   {/* Legend */}
                   <div className="border-b border-[rgb(var(--border-color))]">
                     <div className="p-4">
@@ -298,40 +313,42 @@ export function MobileDrawer({
                 {/* Footer with toggle */}
                 <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-[rgb(var(--secondary-bg))] border-t border-[rgb(var(--border-color))]">
                   <div className="flex flex-col gap-3">
-                    {/* Zoning Mode Toggle */}
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
-                        Zoning View
-                      </span>
-                      <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--panel-bg))]">
-                        <button
-                          onClick={() => onBaseLayerChange('zoning')}
-                          className={`
-                            px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                            ${
-                              activeBaseLayer === 'zoning'
-                                ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
-                                : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
-                            }
-                          `}
-                        >
-                          Simplified
-                        </button>
-                        <button
-                          onClick={() => onBaseLayerChange('zoning_detailed')}
-                          className={`
-                            px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                            ${
-                              activeBaseLayer === 'zoning_detailed'
-                                ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
-                                : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
-                            }
-                          `}
-                        >
-                          Technical
-                        </button>
+                    {/* Zoning Mode Toggle - only show when zoning is enabled */}
+                    {activeBaseLayer && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
+                          Zoning View
+                        </span>
+                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--panel-bg))]">
+                          <button
+                            onClick={() => onBaseLayerChange('zoning')}
+                            className={`
+                              px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                              ${
+                                activeBaseLayer === 'zoning'
+                                  ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                  : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                              }
+                            `}
+                          >
+                            Simplified
+                          </button>
+                          <button
+                            onClick={() => onBaseLayerChange('zoning_detailed')}
+                            className={`
+                              px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                              ${
+                                activeBaseLayer === 'zoning_detailed'
+                                  ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                  : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                              }
+                            `}
+                          >
+                            Technical
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     <div className="flex items-center justify-between">
                       <Link

@@ -12,49 +12,49 @@
     "legend": [
       {
         "label": "Houses Only",
-        "color": "#FDE68A",
+        "color": "#FCE8C8",
         "value": "Residential Small Lot",
         "percentage": 2.3
       },
       {
         "label": "Houses Only",
-        "color": "#FDE68A",
+        "color": "#FCE8C8",
         "value": "Neighborhood Residential",
         "percentage": 61.1
       },
       {
         "label": "Small Apartments",
-        "color": "#FB923C",
+        "color": "#F4A261",
         "value": "Lowrise Multi-Family",
         "percentage": 10.4
       },
       {
         "label": "Taller Apartments",
-        "color": "#DC2626",
+        "color": "#E76F51",
         "value": "High-Density Multi-Family",
         "percentage": 1.3
       },
       {
         "label": "Mixed: Shops + Housing",
-        "color": "#A78BFA",
+        "color": "#B388EB",
         "value": "Neighborhood Commercial",
         "percentage": 5.1
       },
       {
         "label": "Mixed: Shops + Housing",
-        "color": "#A78BFA",
+        "color": "#B388EB",
         "value": "Commercial",
         "percentage": 2.7
       },
       {
         "label": "Mixed: Shops + Housing",
-        "color": "#A78BFA",
+        "color": "#B388EB",
         "value": "Seattle Mixed",
         "percentage": 1.4
       },
       {
         "label": "Downtown",
-        "color": "#6366F1",
+        "color": "#7C5CBF",
         "value": "Downtown",
         "percentage": 1.7
       },
@@ -66,7 +66,7 @@
       },
       {
         "label": "Institutions",
-        "color": "#14B8A6",
+        "color": "#7EC8E3",
         "value": "Major Institutions",
         "percentage": 2.2
       }
@@ -122,7 +122,7 @@
       }
     ],
     "paint": {
-      "fill-opacity": 0.75,
+      "fill-opacity": 0.7,
       "fill-outline-color": "#374151"
     },
     "source": "City of Seattle",
@@ -338,7 +338,49 @@
         "percentage": 0
       }
     ],
-    "filters": [],
+    "filters": [
+      {
+        "id": "zone_type",
+        "label": "Filter by Zone",
+        "property": "ZONELUT",
+        "type": "multiselect",
+        "options": [
+          { "label": "Residential Small Lot", "value": "RSL" },
+          { "label": "Neighborhood Residential", "value": "NR1" },
+          { "label": "Neighborhood Residential", "value": "NR2" },
+          { "label": "Neighborhood Residential", "value": "NR3" },
+          { "label": "Lowrise", "value": "LR1" },
+          { "label": "Lowrise", "value": "LR2" },
+          { "label": "Lowrise", "value": "LR3" },
+          { "label": "Midrise", "value": "MR" },
+          { "label": "Highrise", "value": "HR" },
+          { "label": "Neighborhood Commercial", "value": "NC1" },
+          { "label": "Neighborhood Commercial", "value": "NC2" },
+          { "label": "Neighborhood Commercial", "value": "NC3" },
+          { "label": "Commercial", "value": "C1" },
+          { "label": "Commercial", "value": "C2" },
+          { "label": "Seattle Mixed", "value": "SM" },
+          { "label": "Seattle Mixed", "value": "PSM" },
+          { "label": "Downtown", "value": "DMC" },
+          { "label": "Downtown", "value": "DMR" },
+          { "label": "Downtown", "value": "DOC1" },
+          { "label": "Downtown", "value": "DOC2" },
+          { "label": "Downtown", "value": "DRC" },
+          { "label": "Downtown", "value": "DH1" },
+          { "label": "Downtown", "value": "DH2" },
+          { "label": "Urban Center", "value": "UX" },
+          { "label": "Major Institution", "value": "MIO" },
+          { "label": "Industrial", "value": "IC" },
+          { "label": "Industrial", "value": "IB" },
+          { "label": "Industrial", "value": "MML" },
+          { "label": "Industrial", "value": "II" },
+          { "label": "Industrial", "value": "IDM" },
+          { "label": "Industrial", "value": "IDR" },
+          { "label": "Industrial", "value": "PMM" },
+          { "label": "Master Planned", "value": "MPC" }
+        ]
+      }
+    ],
     "paint": {
       "fill-opacity": 0.75,
       "fill-outline-color": "#1f2937"
@@ -355,7 +397,18 @@
     "type": "line",
     "defaultVisible": false,
     "description": "King County Metro and Sound Transit bus and ferry routes.",
-    "legend": [],
+    "legend": [
+      {
+        "label": "Bus",
+        "color": "#0077B6",
+        "value": "bus"
+      },
+      {
+        "label": "Ferry",
+        "color": "#00B4D8",
+        "value": "ferry"
+      }
+    ],
     "filters": [
       {
         "id": "route_type",
@@ -372,17 +425,11 @@
       "line-color": [
         "match",
         ["get", "route_type"],
-        "streetcar",
-        "#C25D12",
         "ferry",
-        "#0077A8",
-        "rail",
-        "#4A8C32",
-        "subway",
-        "#4A8C32",
+        "#00B4D8",
         "bus",
-        "#B8860B",
-        "#666666"
+        "#0077B6",
+        "#0077B6"
       ],
       "line-width": ["interpolate", ["linear"], ["zoom"], 10, 1, 14, 1.5, 18, 2.5],
       "line-opacity": 1
@@ -392,6 +439,75 @@
       "line-join": "round"
     },
     "source": "King County Metro (GTFS)",
+    "updated": "2025"
+  },
+  {
+    "id": "light_rail",
+    "name": "Light Rail & Sounder",
+    "group": "transit",
+    "tileset": "mapbox://dwahbe.1wfwz2h9",
+    "sourceLayer": "sound-transit-rail-3kkuwg",
+    "type": "line",
+    "defaultVisible": false,
+    "description": "Sound Transit Link Light Rail and Sounder commuter rail lines.",
+    "legend": [
+      {
+        "label": "1 Line",
+        "color": "#28813F",
+        "value": "1 Line"
+      },
+      {
+        "label": "2 Line",
+        "color": "#007CAD",
+        "value": "2 Line"
+      },
+      {
+        "label": "T Line",
+        "color": "#F38B00",
+        "value": "T Line"
+      },
+      {
+        "label": "Sounder N/S",
+        "color": "#9AB6D3",
+        "value": "sounder"
+      }
+    ],
+    "filters": [
+      {
+        "id": "route_type",
+        "label": "Rail Type",
+        "property": "route_type",
+        "type": "multiselect",
+        "options": [
+          { "label": "Light Rail", "value": "light_rail" },
+          { "label": "Sounder", "value": "commuter_rail" }
+        ]
+      }
+    ],
+    "paint": {
+      "line-color": [
+        "match",
+        ["get", "route_name"],
+        "1 Line",
+        "#28813F",
+        "2 Line",
+        "#007CAD",
+        "T Line",
+        "#F38B00",
+        "N Line",
+        "#9AB6D3",
+        "S Line",
+        "#9AB6D3",
+        "#9D4EDD"
+      ],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 8, 2, 12, 3, 16, 4],
+      "line-opacity": 1
+    },
+    "layout": {
+      "line-cap": "round",
+      "line-join": "round"
+    },
+    "source": "Sound Transit (GTFS)",
     "updated": "2025"
   },
   {
@@ -478,7 +594,7 @@
   {
     "id": "bike_facilities",
     "name": "Bike Infrastructure",
-    "group": "transit",
+    "group": "bike",
     "tileset": "mapbox://dwahbe.ap1iclq8",
     "sourceLayer": "seattle-bike-facilities-merge-0wv9vm",
     "type": "line",
@@ -487,31 +603,31 @@
     "legend": [
       {
         "label": "Protected Bike Lane",
-        "color": "#22C55E",
+        "color": "#2DC653",
         "value": "PBL",
         "percentage": 8.2
       },
       {
         "label": "Neighborhood Greenway",
-        "color": "#86EFAC",
+        "color": "#7AE582",
         "value": "NGW",
         "percentage": 18.4
       },
       {
         "label": "Multi-Use Trail",
-        "color": "#4ADE80",
+        "color": "#52B788",
         "value": "MUT",
         "percentage": 12.1
       },
       {
         "label": "Bike Lane",
-        "color": "#A3E635",
+        "color": "#80C055",
         "value": "BL",
         "percentage": 24.6
       },
       {
         "label": "Sharrow",
-        "color": "#D9F99D",
+        "color": "#B8D99F",
         "value": "SHR",
         "percentage": 36.7
       }
@@ -536,16 +652,16 @@
         "match",
         ["get", "PRIMARYFACILITYTYPE"],
         "PBL",
-        "#22C55E",
+        "#2DC653",
         "NGW",
-        "#86EFAC",
+        "#7AE582",
         "MUT",
-        "#4ADE80",
+        "#52B788",
         "BL",
-        "#A3E635",
+        "#80C055",
         "SHR",
-        "#D9F99D",
-        "#22C55E"
+        "#B8D99F",
+        "#2DC653"
       ],
       "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 16, 3, 18, 5],
       "line-opacity": 0.9

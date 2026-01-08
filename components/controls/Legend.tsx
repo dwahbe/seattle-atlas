@@ -30,28 +30,38 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
     return null;
   }
 
+  // Group layers by their group property for seamless legends
+  const groupedLayers = activeLayersWithLegends.reduce(
+    (acc, layer) => {
+      const group = layer.group || 'other';
+      if (!acc[group]) acc[group] = [];
+      acc[group].push(layer);
+      return acc;
+    },
+    {} as Record<string, LayerConfig[]>
+  );
+
   return (
     <div>
       <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
         Legend
       </h2>
       <div className="space-y-4">
-        {activeLayersWithLegends.map((layer) => {
-          // Deduplicate legend items by label and aggregate percentages
-          const uniqueItems = deduplicateLegendItems(layer.legend);
-          const layerFilters = activeFilters[layer.id] || [];
+        {Object.entries(groupedLayers).map(([group, groupLayers]) => (
+          <div key={group}>
+            <div className="grid grid-cols-1 gap-y-0.5">
+              {groupLayers.flatMap((layer) => {
+                const uniqueItems = deduplicateLegendItems(layer.legend);
+                const layerFilters = activeFilters[layer.id] || [];
 
-          return (
-            <div key={layer.id} className="space-y-2">
-              <div className="grid grid-cols-1 gap-y-0.5">
-                {uniqueItems.map((item) => {
+                return uniqueItems.map((item) => {
                   const isFiltered = layerFilters.includes(item.value);
                   const itemKey = `${layer.id}-${item.value}`;
                   const isHovered = hoveredItem === itemKey;
 
                   return (
                     <LegendRow
-                      key={item.label}
+                      key={`${layer.id}-${item.label}`}
                       item={item}
                       layerType={layer.type}
                       isFiltered={isFiltered}
@@ -63,23 +73,11 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
                       isInteractive={!!onFilterToggle}
                     />
                   );
-                })}
-              </div>
-              {/* Clear filter button */}
-              {layerFilters.length > 0 && (
-                <button
-                  onClick={() => {
-                    // Clear all filters for this layer
-                    layerFilters.forEach((value) => onFilterToggle?.(layer.id, value));
-                  }}
-                  className="text-xs text-[rgb(var(--accent))] hover:underline"
-                >
-                  Show all
-                </button>
-              )}
+                });
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );
