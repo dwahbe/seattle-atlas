@@ -41,8 +41,29 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
         }
       }
 
-      // Add layers that are now active
-      for (const layerId of activeLayers) {
+      // Sort active layers by zOrder to determine proper insertion order
+      const sortedActiveLayers = [...activeLayers].sort((a, b) => {
+        const configA = layerConfigs.find((l) => l.id === a);
+        const configB = layerConfigs.find((l) => l.id === b);
+        return (configA?.zOrder ?? 0) - (configB?.zOrder ?? 0);
+      });
+
+      // Helper to find the first layer with a higher zOrder that's already on the map
+      const findBeforeId = (currentZOrder: number): string | undefined => {
+        for (const id of sortedActiveLayers) {
+          const cfg = layerConfigs.find((l) => l.id === id);
+          if (cfg && cfg.zOrder > currentZOrder && map.getLayer(id)) {
+            // Return the casing layer if it exists (casing is below the main line)
+            const casingId = `${id}-casing`;
+            if (map.getLayer(casingId)) return casingId;
+            return id;
+          }
+        }
+        return undefined;
+      };
+
+      // Add layers that are now active (in zOrder)
+      for (const layerId of sortedActiveLayers) {
         const config = layerConfigs.find((l) => l.id === layerId);
         if (!config) continue;
 
@@ -58,6 +79,8 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
         // Add layer if not already added
         if (!addedLayers.current.has(layerId) && !map.getLayer(layerId)) {
+          const beforeId = findBeforeId(config.zOrder);
+
           // For line layers (transit routes), add a subtle casing layer for legibility
           if (config.type === 'line') {
             const casingId = `${layerId}-casing`;
@@ -81,7 +104,7 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
               if (config.maxZoom !== undefined) casingSpec.maxzoom = config.maxZoom;
 
               try {
-                map.addLayer(casingSpec);
+                map.addLayer(casingSpec, beforeId);
                 addedLayers.current.add(casingId);
               } catch (error) {
                 console.error(`[MapLayers] Failed to add casing: ${casingId}`, error);
@@ -107,7 +130,9 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
           }
 
           try {
-            map.addLayer(layerSpec);
+            // For line layers, insert after the casing (so main layer is above casing)
+            const insertBeforeId = config.type === 'line' ? beforeId : beforeId;
+            map.addLayer(layerSpec, insertBeforeId);
             addedLayers.current.add(layerId);
           } catch (error) {
             console.error(`[MapLayers] Failed to add layer: ${layerId}`, error);

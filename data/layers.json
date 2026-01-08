@@ -6,6 +6,7 @@
     "tileset": "mapbox://dwahbe.seattle-zoning",
     "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
     "type": "fill",
+    "zOrder": 0,
     "defaultVisible": true,
     "description": "See what types of buildings are allowed across Seattle — from single-family homes to high-rises.",
     "colorProperty": "CATEGORY_DESC",
@@ -135,6 +136,7 @@
     "tileset": "mapbox://dwahbe.seattle-zoning",
     "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
     "type": "fill",
+    "zOrder": 1,
     "defaultVisible": false,
     "description": "Full zoning designations using official Seattle Municipal Code terminology.",
     "colorProperty": "ZONELUT",
@@ -395,6 +397,7 @@
     "tileset": "mapbox://dwahbe.j2qu5fbbqr1o",
     "sourceLayer": "b0ad40aff03e052736ca",
     "type": "line",
+    "zOrder": 11,
     "defaultVisible": false,
     "description": "King County Metro and Sound Transit bus and ferry routes.",
     "legend": [
@@ -448,6 +451,7 @@
     "tileset": "mapbox://dwahbe.1wfwz2h9",
     "sourceLayer": "sound-transit-rail-3kkuwg",
     "type": "line",
+    "zOrder": 12,
     "defaultVisible": false,
     "description": "Sound Transit Link Light Rail and Sounder commuter rail lines.",
     "legend": [
@@ -517,6 +521,7 @@
     "tileset": "mapbox://dwahbe.lw4mlxkatzoh",
     "sourceLayer": "a1f2c2b7eac573530777",
     "type": "circle",
+    "zOrder": 20,
     "defaultVisible": false,
     "description": "Bus stops and transit stations across Seattle.",
     "legend": [],
@@ -538,6 +543,7 @@
     "tileset": "mapbox://dwahbe.seattle-urban-villages",
     "sourceLayer": "urban-villages",
     "type": "fill",
+    "zOrder": 2,
     "defaultVisible": false,
     "description": "Areas where Seattle is directing growth with improved transit, housing, and services.",
     "legend": [
@@ -598,6 +604,7 @@
     "tileset": "mapbox://dwahbe.ap1iclq8",
     "sourceLayer": "seattle-bike-facilities-merge-0wv9vm",
     "type": "line",
+    "zOrder": 10,
     "defaultVisible": false,
     "description": "Protected bike lanes, greenways, trails, and shared lanes across Seattle.",
     "legend": [
