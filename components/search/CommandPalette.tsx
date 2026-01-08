@@ -284,6 +284,8 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
             <input
               ref={inputRef}
               type="text"
+              inputMode="search"
+              enterKeyHint="search"
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -324,18 +326,31 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
                 </svg>
               </button>
             ) : (
-              <kbd
-                className={`
-                  hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
-                  text-xs font-medium text-[rgb(var(--text-tertiary))] 
-                  bg-[rgb(var(--secondary-bg))] rounded 
-                  border border-[rgb(var(--border-color))]
-                  transition-opacity duration-200
-                  ${isOpen ? 'opacity-0' : 'opacity-100'}
-                `}
-              >
-                <span className="text-sm">⌘</span>K
-              </kbd>
+              <>
+                {/* Desktop: Show ⌘K hint */}
+                <kbd
+                  className={`
+                    hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
+                    text-xs font-medium text-[rgb(var(--text-tertiary))] 
+                    bg-[rgb(var(--secondary-bg))] rounded 
+                    border border-[rgb(var(--border-color))]
+                    transition-opacity duration-200
+                    ${isOpen ? 'opacity-0' : 'opacity-100'}
+                  `}
+                >
+                  <span className="text-sm">⌘</span>K
+                </kbd>
+                {/* Mobile: Show tap hint */}
+                <span
+                  className={`
+                    sm:hidden text-xs text-[rgb(var(--text-tertiary))]
+                    transition-opacity duration-200
+                    ${isOpen ? 'opacity-0' : 'opacity-100'}
+                  `}
+                >
+                  Tap
+                </span>
+              </>
             )}
           </div>
 
@@ -436,8 +451,8 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
                 )}
             </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between px-4 py-2 border-t border-[rgb(var(--border-color))] text-xs text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))/50]">
+            {/* Footer - hidden on mobile since keyboard hints aren't useful */}
+            <div className="hidden sm:flex items-center justify-between px-4 py-2 border-t border-[rgb(var(--border-color))] text-xs text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))/50]">
               <div className="flex items-center gap-4">
                 <span className="flex items-center gap-1">
                   <kbd className="px-1 py-0.5 bg-[rgb(var(--panel-bg))] rounded border border-[rgb(var(--border-color))]">
