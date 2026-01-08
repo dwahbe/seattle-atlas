@@ -355,7 +355,6 @@
     "type": "line",
     "defaultVisible": false,
     "description": "King County Metro and Sound Transit bus and ferry routes.",
-    "colorProperty": "color",
     "legend": [],
     "filters": [
       {
