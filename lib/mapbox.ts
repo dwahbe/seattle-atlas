@@ -28,23 +28,52 @@ export function initializeMapbox() {
 }
 
 // Get layer paint properties based on layer type and config
+// Includes feature-state expressions for inspected highlight
 export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
   const basePaint = layer.paint || {};
   const colorExpr = buildColorExpression(layer);
 
+  // Build inspected state expressions for opacity/width boost
+  const inspectedOpacityExpr = (baseOpacity: number): mapboxgl.Expression => [
+    'case',
+    ['boolean', ['feature-state', 'inspected'], false],
+    Math.min(baseOpacity + 0.2, 1),
+    baseOpacity,
+  ];
+
+  const inspectedStrokeExpr = (baseWidth: number): mapboxgl.Expression => [
+    'case',
+    ['boolean', ['feature-state', 'inspected'], false],
+    baseWidth + 2,
+    baseWidth,
+  ];
+
   if (layer.type === 'fill') {
+    const baseOpacity = (basePaint['fill-opacity'] as number) ?? 0.7;
+    // Spread basePaint first, then override with inspected-aware expressions
     return {
-      'fill-color': colorExpr,
-      'fill-opacity': (basePaint['fill-opacity'] as number) ?? 0.7,
-      'fill-outline-color': (basePaint['fill-outline-color'] as string) ?? '#000000',
       ...basePaint,
+      'fill-color': colorExpr,
+      'fill-opacity': inspectedOpacityExpr(baseOpacity),
+      'fill-outline-color': [
+        'case',
+        ['boolean', ['feature-state', 'inspected'], false],
+        '#3B82F6', // Blue outline for inspected
+        (basePaint['fill-outline-color'] as string) ?? '#000000',
+      ],
     };
   }
 
   if (layer.type === 'line') {
+    const baseWidth = (basePaint['line-width'] as number) ?? 2;
     return {
-      'line-color': colorExpr,
-      'line-width': (basePaint['line-width'] as number) ?? 2,
+      'line-color': [
+        'case',
+        ['boolean', ['feature-state', 'inspected'], false],
+        '#3B82F6',
+        colorExpr,
+      ],
+      'line-width': typeof baseWidth === 'number' ? inspectedStrokeExpr(baseWidth) : baseWidth,
       ...basePaint,
     };
   }
@@ -53,8 +82,18 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
     return {
       'circle-color': colorExpr,
       'circle-radius': (basePaint['circle-radius'] as number) ?? 6,
-      'circle-stroke-width': (basePaint['circle-stroke-width'] as number) ?? 1,
-      'circle-stroke-color': (basePaint['circle-stroke-color'] as string) ?? '#ffffff',
+      'circle-stroke-width': [
+        'case',
+        ['boolean', ['feature-state', 'inspected'], false],
+        ((basePaint['circle-stroke-width'] as number) ?? 1) + 2,
+        (basePaint['circle-stroke-width'] as number) ?? 1,
+      ],
+      'circle-stroke-color': [
+        'case',
+        ['boolean', ['feature-state', 'inspected'], false],
+        '#3B82F6',
+        (basePaint['circle-stroke-color'] as string) ?? '#ffffff',
+      ],
       ...basePaint,
     };
   }

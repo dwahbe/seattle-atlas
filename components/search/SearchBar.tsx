@@ -4,6 +4,25 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { geocodeAddress, type GeocodingResult } from '@/lib/mapbox';
 import type { SearchResult } from '@/types';
 
+// Popular Seattle neighborhoods with their bounds for quick navigation
+const NEIGHBORHOODS: {
+  name: string;
+  bounds: [number, number, number, number]; // [west, south, east, north]
+}[] = [
+  { name: 'Capitol Hill', bounds: [-122.328, 47.613, -122.305, 47.632] },
+  { name: 'Ballard', bounds: [-122.408, 47.66, -122.37, 47.694] },
+  { name: 'Fremont', bounds: [-122.365, 47.643, -122.34, 47.663] },
+  { name: 'Queen Anne', bounds: [-122.373, 47.62, -122.34, 47.65] },
+  { name: 'Wallingford', bounds: [-122.345, 47.648, -122.32, 47.665] },
+  { name: 'University District', bounds: [-122.324, 47.65, -122.29, 47.67] },
+  { name: 'South Lake Union', bounds: [-122.348, 47.618, -122.328, 47.635] },
+  { name: 'Downtown', bounds: [-122.35, 47.595, -122.325, 47.618] },
+  { name: 'West Seattle', bounds: [-122.41, 47.53, -122.35, 47.58] },
+  { name: 'Beacon Hill', bounds: [-122.32, 47.555, -122.295, 47.585] },
+  { name: 'Columbia City', bounds: [-122.295, 47.555, -122.275, 47.575] },
+  { name: 'Greenwood', bounds: [-122.365, 47.69, -122.345, 47.71] },
+];
+
 interface SearchBarProps {
   onSelect: (result: SearchResult) => void;
   placeholder?: string;
@@ -18,6 +37,7 @@ export function SearchBar({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [showNeighborhoods, setShowNeighborhoods] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -26,6 +46,7 @@ export function SearchBar({
   const handleSearch = useCallback((value: string) => {
     setQuery(value);
     setSelectedIndex(-1);
+    setShowNeighborhoods(false);
 
     if (debounceRef.current) {
       clearTimeout(debounceRef.current);
@@ -64,39 +85,88 @@ export function SearchBar({
       });
       setQuery(result.name);
       setIsOpen(false);
+      setShowNeighborhoods(false);
       setResults([]);
       inputRef.current?.blur();
     },
     [onSelect]
   );
 
+  // Handle neighborhood selection
+  const handleNeighborhoodSelect = useCallback(
+    (neighborhood: (typeof NEIGHBORHOODS)[0]) => {
+      onSelect({
+        id: `neighborhood-${neighborhood.name}`,
+        name: neighborhood.name,
+        type: 'neighborhood',
+        center: [
+          (neighborhood.bounds[0] + neighborhood.bounds[2]) / 2,
+          (neighborhood.bounds[1] + neighborhood.bounds[3]) / 2,
+        ],
+        bbox: neighborhood.bounds,
+      });
+      setQuery(neighborhood.name);
+      setIsOpen(false);
+      setShowNeighborhoods(false);
+      setResults([]);
+      inputRef.current?.blur();
+    },
+    [onSelect]
+  );
+
+  // Handle focus - show neighborhoods if no query
+  const handleFocus = useCallback(() => {
+    if (!query.trim()) {
+      setShowNeighborhoods(true);
+      setIsOpen(true);
+    } else if (results.length > 0) {
+      setIsOpen(true);
+    }
+  }, [query, results.length]);
+
+  // Calculate total items for keyboard nav
+  const totalItems = showNeighborhoods ? NEIGHBORHOODS.length : results.length;
+
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (!isOpen || results.length === 0) return;
+      if (!isOpen || totalItems === 0) return;
 
       switch (e.key) {
         case 'ArrowDown':
           e.preventDefault();
-          setSelectedIndex((prev) => (prev < results.length - 1 ? prev + 1 : 0));
+          setSelectedIndex((prev) => (prev < totalItems - 1 ? prev + 1 : 0));
           break;
         case 'ArrowUp':
           e.preventDefault();
-          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : results.length - 1));
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : totalItems - 1));
           break;
         case 'Enter':
           e.preventDefault();
-          if (selectedIndex >= 0 && results[selectedIndex]) {
-            handleSelect(results[selectedIndex]);
+          if (selectedIndex >= 0) {
+            if (showNeighborhoods && NEIGHBORHOODS[selectedIndex]) {
+              handleNeighborhoodSelect(NEIGHBORHOODS[selectedIndex]);
+            } else if (results[selectedIndex]) {
+              handleSelect(results[selectedIndex]);
+            }
           }
           break;
         case 'Escape':
           setIsOpen(false);
+          setShowNeighborhoods(false);
           inputRef.current?.blur();
           break;
       }
     },
-    [isOpen, results, selectedIndex, handleSelect]
+    [
+      isOpen,
+      totalItems,
+      selectedIndex,
+      showNeighborhoods,
+      handleNeighborhoodSelect,
+      handleSelect,
+      results,
+    ]
   );
 
   // Close dropdown when clicking outside
@@ -104,6 +174,7 @@ export function SearchBar({
     const handleClickOutside = (event: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        setShowNeighborhoods(false);
       }
     };
 
@@ -199,7 +270,7 @@ export function SearchBar({
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
           onKeyDown={handleKeyDown}
-          onFocus={() => results.length > 0 && setIsOpen(true)}
+          onFocus={handleFocus}
           placeholder={placeholder}
           className="
             w-full pl-10 pr-4 py-3
@@ -212,31 +283,72 @@ export function SearchBar({
             shadow-lg
           "
         />
-        {query && (
-          <button
-            onClick={() => {
-              setQuery('');
-              setResults([]);
-              setIsOpen(false);
-              inputRef.current?.focus();
-            }}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-          >
-            <svg
-              className="w-4 h-4 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
+          {query ? (
+            <button
+              onClick={() => {
+                setQuery('');
+                setResults([]);
+                setIsOpen(false);
+                setShowNeighborhoods(false);
+                inputRef.current?.focus();
+              }}
+              className="flex items-center"
             >
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
-        )}
+              <svg
+                className="w-4 h-4 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          ) : (
+            <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] border border-[rgb(var(--border-color))] rounded">
+              <span className="text-sm">⌘</span>K
+            </kbd>
+          )}
+        </div>
       </div>
 
+      {/* Quick Neighborhoods dropdown */}
+      {isOpen && showNeighborhoods && (
+        <div className="absolute w-full mt-2 bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg overflow-hidden z-50">
+          <div className="px-4 py-2 border-b border-[rgb(var(--border-color))]">
+            <span className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+              Jump to Neighborhood
+            </span>
+          </div>
+          <div className="max-h-64 overflow-y-auto">
+            {NEIGHBORHOODS.map((neighborhood, index) => (
+              <button
+                key={neighborhood.name}
+                onClick={() => handleNeighborhoodSelect(neighborhood)}
+                onMouseEnter={() => setSelectedIndex(index)}
+                className={`
+                  w-full flex items-center gap-3 px-4 py-2.5 text-left
+                  transition-colors
+                  ${
+                    selectedIndex === index
+                      ? 'bg-[rgb(var(--secondary-bg))]'
+                      : 'hover:bg-[rgb(var(--secondary-bg))]'
+                  }
+                `}
+              >
+                <span className="text-[rgb(var(--text-secondary))]">
+                  {getTypeIcon('neighborhood')}
+                </span>
+                <span className="text-sm text-[rgb(var(--text-primary))]">{neighborhood.name}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Results dropdown */}
-      {isOpen && results.length > 0 && (
+      {isOpen && !showNeighborhoods && results.length > 0 && (
         <div className="absolute w-full mt-2 bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg overflow-hidden z-50">
           {results.map((result, index) => (
             <button

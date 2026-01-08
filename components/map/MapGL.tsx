@@ -21,7 +21,13 @@ interface MapGLProps {
   activeLayers: string[];
   layerConfigs: LayerConfig[];
   isDark: boolean;
+  inspectedFeature: InspectedFeature | null;
+  highlightedBounds?: [number, number, number, number] | null;
 }
+
+const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
+const HIGHLIGHT_LAYER_ID = 'neighborhood-highlight-layer';
+const HIGHLIGHT_OUTLINE_LAYER_ID = 'neighborhood-highlight-outline';
 
 export function MapGL({
   viewState,
@@ -31,12 +37,15 @@ export function MapGL({
   activeLayers,
   layerConfigs,
   isDark,
+  inspectedFeature,
+  highlightedBounds,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const isInitialized = useRef(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
+  const previousInspectedRef = useRef<{ source: string; id: string | number } | null>(null);
 
   // Initialize map
   useEffect(() => {
@@ -187,6 +196,136 @@ export function MapGL({
       }
     };
   }, [isLoaded, handleClick, handleMouseMove, handleMouseLeave, handleDragStart]);
+
+  // Handle inspected feature highlight
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    const mapInstance = map.current;
+
+    // Clear previous highlight
+    if (previousInspectedRef.current) {
+      try {
+        const { source, id } = previousInspectedRef.current;
+        const layerConfig = layerConfigs.find((l) => l.id === source);
+        if (layerConfig && mapInstance.getSource(`source-${source}`)) {
+          mapInstance.setFeatureState(
+            { source: `source-${source}`, sourceLayer: layerConfig.sourceLayer, id },
+            { inspected: false }
+          );
+        }
+      } catch {
+        // Source may have been removed
+      }
+      previousInspectedRef.current = null;
+    }
+
+    // Set new highlight
+    if (inspectedFeature) {
+      const layerConfig = layerConfigs.find((l) => l.id === inspectedFeature.layerId);
+      if (layerConfig && mapInstance.getSource(`source-${inspectedFeature.layerId}`)) {
+        try {
+          mapInstance.setFeatureState(
+            {
+              source: `source-${inspectedFeature.layerId}`,
+              sourceLayer: layerConfig.sourceLayer,
+              id: inspectedFeature.id,
+            },
+            { inspected: true }
+          );
+          previousInspectedRef.current = {
+            source: inspectedFeature.layerId,
+            id: inspectedFeature.id,
+          };
+        } catch (error) {
+          console.warn('Failed to set feature state:', error);
+        }
+      }
+    }
+  }, [isLoaded, inspectedFeature, layerConfigs]);
+
+  // Handle neighborhood boundary highlight
+  useEffect(() => {
+    if (!map.current || !isLoaded) return;
+
+    const mapInstance = map.current;
+
+    // Helper to remove existing highlight layers
+    const removeHighlight = () => {
+      if (mapInstance.getLayer(HIGHLIGHT_OUTLINE_LAYER_ID)) {
+        mapInstance.removeLayer(HIGHLIGHT_OUTLINE_LAYER_ID);
+      }
+      if (mapInstance.getLayer(HIGHLIGHT_LAYER_ID)) {
+        mapInstance.removeLayer(HIGHLIGHT_LAYER_ID);
+      }
+      if (mapInstance.getSource(HIGHLIGHT_SOURCE_ID)) {
+        mapInstance.removeSource(HIGHLIGHT_SOURCE_ID);
+      }
+    };
+
+    // Remove existing highlight first
+    removeHighlight();
+
+    // Add new highlight if bounds provided
+    if (highlightedBounds) {
+      const [west, south, east, north] = highlightedBounds;
+
+      // Create a polygon from bounds
+      const polygon: GeoJSON.Feature<GeoJSON.Polygon> = {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [west, south],
+              [east, south],
+              [east, north],
+              [west, north],
+              [west, south], // Close the polygon
+            ],
+          ],
+        },
+      };
+
+      // Add source
+      mapInstance.addSource(HIGHLIGHT_SOURCE_ID, {
+        type: 'geojson',
+        data: polygon,
+      });
+
+      // Add fill layer (subtle)
+      mapInstance.addLayer({
+        id: HIGHLIGHT_LAYER_ID,
+        type: 'fill',
+        source: HIGHLIGHT_SOURCE_ID,
+        paint: {
+          'fill-color': '#3B82F6',
+          'fill-opacity': 0.08,
+        },
+      });
+
+      // Add outline layer (more visible)
+      mapInstance.addLayer({
+        id: HIGHLIGHT_OUTLINE_LAYER_ID,
+        type: 'line',
+        source: HIGHLIGHT_SOURCE_ID,
+        paint: {
+          'line-color': '#3B82F6',
+          'line-width': 3,
+          'line-opacity': 0.8,
+          'line-dasharray': [2, 2],
+        },
+      });
+    }
+
+    return () => {
+      // Clean up on unmount or when bounds change
+      if (map.current) {
+        removeHighlight();
+      }
+    };
+  }, [isLoaded, highlightedBounds]);
 
   // Get the layer config for the hovered feature
   const hoveredLayerConfig = hoverState

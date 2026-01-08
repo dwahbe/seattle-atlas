@@ -1,10 +1,10 @@
 'use client';
 
 import { BaseLayerSelector } from '@/components/controls/BaseLayerSelector';
-import { LayerGroup } from '@/components/controls/LayerGroup';
+import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
 import { Switch, ThemeToggle } from '@/components/ui';
-import type { LayerConfig, LayerGroup as LayerGroupType } from '@/types';
+import type { LayerConfig, FilterState } from '@/types';
 import Link from 'next/link';
 
 // Define base layer options (mutually exclusive)
@@ -25,24 +25,29 @@ const BASE_LAYER_OPTIONS = [
 // Transit layers that should be combined into a single toggle
 const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops'];
 
+// Bike infrastructure layer
+const BIKE_LAYER_ID = 'bike_facilities';
+
 interface ControlPanelProps {
   layers: LayerConfig[];
-  layerGroups: LayerGroupType[];
   activeLayers: string[];
-  onLayerToggle: (layerId: string) => void;
+  filters: FilterState;
   onBaseLayerChange: (layerId: string | null) => void;
   onTransitToggle: (enabled: boolean) => void;
+  onBikeToggle: (enabled: boolean) => void;
+  onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
 }
 
 export function ControlPanel({
   layers,
-  layerGroups,
   activeLayers,
-  onLayerToggle,
+  filters,
   onBaseLayerChange,
   onTransitToggle,
+  onBikeToggle,
+  onFilterChange,
   isCollapsed,
   onToggleCollapse,
 }: ControlPanelProps) {
@@ -52,15 +57,14 @@ export function ControlPanel({
   // Check if transit is enabled (any transit layer active)
   const isTransitActive = TRANSIT_LAYER_IDS.some((id) => activeLayers.includes(id));
 
-  // Filter out base layers and transit layers from layer groups for overlay display
-  const overlayLayerGroups = layerGroups
-    .map((group) => ({
-      ...group,
-      layers: group.layers.filter(
-        (layer) => !BASE_LAYER_IDS.includes(layer.id) && !TRANSIT_LAYER_IDS.includes(layer.id)
-      ),
-    }))
-    .filter((group) => group.layers.length > 0);
+  // Check if bike layer is enabled
+  const isBikeActive = activeLayers.includes(BIKE_LAYER_ID);
+
+  // Get base layers and their configs
+  const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
+
+  // Get the active base layer config (for filters)
+  const activeBaseLayerConfig = baseLayers.find((l) => l.id === activeBaseLayer);
 
   return (
     <>
@@ -123,6 +127,20 @@ export function ControlPanel({
             activeBaseLayer={activeBaseLayer}
             onSelect={onBaseLayerChange}
           />
+
+          {/* Filters for active base layer */}
+          {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
+            <div className="px-4 pb-4">
+              <FilterChips
+                filters={activeBaseLayerConfig.filters}
+                values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
+                onChange={(filterId, values) =>
+                  onFilterChange(activeBaseLayerConfig.id, filterId, values)
+                }
+              />
+            </div>
+          )}
+
           <div className="h-px bg-[rgb(var(--border-color))]" />
 
           {/* Overlay Layers */}
@@ -133,7 +151,7 @@ export function ControlPanel({
               </h2>
             </div>
             {/* Transit Toggle */}
-            <div className="px-3 pb-3">
+            <div className="px-3 pb-3 space-y-1">
               <div className="flex items-center gap-3 p-2 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Transit</div>
@@ -146,17 +164,19 @@ export function ControlPanel({
                   onChange={() => onTransitToggle(!isTransitActive)}
                 />
               </div>
+              {/* Bike Infrastructure Toggle */}
+              <div className="flex items-center gap-3 p-2 rounded-lg">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                    Bike Infrastructure
+                  </div>
+                  <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                    Bike lanes, trails & greenways
+                  </div>
+                </div>
+                <Switch checked={isBikeActive} onChange={() => onBikeToggle(!isBikeActive)} />
+              </div>
             </div>
-            {overlayLayerGroups.map((group) => (
-              <LayerGroup
-                key={group.id}
-                name={group.name}
-                layers={group.layers}
-                activeLayers={activeLayers}
-                onLayerToggle={onLayerToggle}
-                defaultExpanded={true}
-              />
-            ))}
           </div>
           <div className="h-px bg-[rgb(var(--border-color))]" />
 
@@ -169,13 +189,16 @@ export function ControlPanel({
 
         {/* Footer */}
         <div className="flex-none p-4 border-t border-[rgb(var(--border-color))] bg-[rgb(var(--secondary-bg))]">
-          <div className="flex gap-4 text-xs">
-            <Link
-              href="/about"
-              className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-            >
-              About
-            </Link>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-4 text-xs">
+              <Link
+                href="/about"
+                className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
+              >
+                About
+              </Link>
+            </div>
+            <p className="text-xs text-[rgb(var(--text-tertiary))]">Zoning data: Jan 2025</p>
           </div>
         </div>
       </div>

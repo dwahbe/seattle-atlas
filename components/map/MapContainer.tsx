@@ -7,7 +7,7 @@ import { MapLayers } from './MapLayers';
 import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
-import { SearchBar } from '@/components/search/SearchBar';
+import { CommandPalette } from '@/components/search';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
 import { useUrlState } from '@/hooks/useUrlState';
 import { useMapState } from '@/hooks/useMapState';
@@ -28,6 +28,7 @@ export function MapContainer() {
     shareableUrl,
     setViewState: setUrlViewState,
     setActiveLayers: setUrlActiveLayers,
+    setFilter,
     setInspectedFeatureId,
   } = useUrlState();
 
@@ -36,7 +37,7 @@ export function MapContainer() {
   const [mapInstance, setMapInstance] = useState<MapboxMap | null>(null);
 
   // Layer state
-  const { layers, layerGroups, activeLayers, toggleLayer, getActiveLayerConfigs } = useLayers({
+  const { layers, activeLayers, getActiveLayerConfigs } = useLayers({
     activeLayers: urlActiveLayers,
     onLayersChange: setUrlActiveLayers,
   });
@@ -48,13 +49,18 @@ export function MapContainer() {
   });
 
   // Theme
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   // Responsive
   const isMobile = useIsMobile();
 
   // Panel collapse state
   const [controlPanelCollapsed, setControlPanelCollapsed] = useState(false);
+
+  // Neighborhood highlight state
+  const [highlightedBounds, setHighlightedBounds] = useState<
+    [number, number, number, number] | null
+  >(null);
 
   // All proposals for inspect panel
   const allProposals = useMemo(() => getProposals(), []);
@@ -88,14 +94,27 @@ export function MapContainer() {
   // Search handler
   const handleSearchSelect = useCallback(
     (result: SearchResult) => {
-      if (result.bbox) {
+      // If it's a neighborhood with bounds, show the highlight
+      if (result.type === 'neighborhood' && result.bbox) {
+        setHighlightedBounds(result.bbox);
+        fitBounds(result.bbox);
+      } else if (result.bbox) {
+        setHighlightedBounds(null);
         fitBounds(result.bbox);
       } else {
+        setHighlightedBounds(null);
         flyTo(result.center, 16);
       }
     },
     [flyTo, fitBounds]
   );
+
+  // Clear highlight when clicking on map
+  const handleMapClick = useCallback(() => {
+    if (highlightedBounds) {
+      setHighlightedBounds(null);
+    }
+  }, [highlightedBounds]);
 
   // Base layer change handler (mutually exclusive)
   const handleBaseLayerChange = useCallback(
@@ -127,23 +146,63 @@ export function MapContainer() {
     [activeLayers, setUrlActiveLayers]
   );
 
+  // Bike infrastructure toggle handler
+  const handleBikeToggle = useCallback(
+    (enabled: boolean) => {
+      const bikeLayerId = 'bike_facilities';
+      const withoutBike = activeLayers.filter((id) => id !== bikeLayerId);
+      if (enabled) {
+        setUrlActiveLayers([...withoutBike, bikeLayerId]);
+      } else {
+        setUrlActiveLayers(withoutBike);
+      }
+    },
+    [activeLayers, setUrlActiveLayers]
+  );
+
   // Copy URL handler
   const handleCopyUrl = useCallback(() => {
     const fullUrl = window.location.origin + shareableUrl;
     navigator.clipboard.writeText(fullUrl);
   }, [shareableUrl]);
 
+  // Command palette action handler
+  const handleCommandAction = useCallback(
+    (actionId: string) => {
+      switch (actionId) {
+        case 'toggle-transit': {
+          const transitLayerIds = ['transit_routes', 'transit_stops'];
+          const isTransitActive = transitLayerIds.some((id) => activeLayers.includes(id));
+          handleTransitToggle(!isTransitActive);
+          break;
+        }
+        case 'toggle-theme':
+          setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+          break;
+      }
+    },
+    [activeLayers, handleTransitToggle, resolvedTheme, setTheme]
+  );
+
   return (
     <div className="relative w-full h-screen overflow-hidden">
+      {/* Command Palette (Cmd+K) */}
+      <CommandPalette onSelect={handleSearchSelect} onAction={handleCommandAction} />
+
       {/* Map */}
       <MapGL
         viewState={urlViewState}
         onViewStateChange={handleViewStateChange}
         onMapLoad={handleMapLoad}
-        onFeatureClick={handleFeatureClick}
+        onFeatureClick={(feature) => {
+          handleFeatureClick(feature);
+          handleMapClick();
+        }}
         activeLayers={activeLayers}
         layerConfigs={layers}
         isDark={resolvedTheme === 'dark'}
+        inspectedFeature={inspectedFeature}
+        highlightedBounds={highlightedBounds}
       />
 
       {/* Map Layers Manager */}
@@ -157,20 +216,14 @@ export function MapContainer() {
       {isMobile ? (
         /* Mobile Layout */
         <>
-          {/* Floating Search Bar */}
-          <div className="absolute top-0 left-0 right-0 z-[5] p-3 pt-[env(safe-area-inset-top)] touch-scroll-lock">
-            <div className="pt-3">
-              <SearchBar onSelect={handleSearchSelect} placeholder="Search Seattle..." />
-            </div>
-          </div>
-
           <MobileDrawer
             layers={layers}
-            layerGroups={layerGroups}
             activeLayers={activeLayers}
-            onLayerToggle={toggleLayer}
+            filters={filters}
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
+            onBikeToggle={handleBikeToggle}
+            onFilterChange={setFilter}
             inspectedFeature={inspectedFeature}
             proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
             onCloseInspect={clearInspection}
@@ -180,19 +233,15 @@ export function MapContainer() {
       ) : (
         /* Desktop Layout */
         <>
-          {/* Search Bar (top) */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[5] w-full max-w-md px-4">
-            <SearchBar onSelect={handleSearchSelect} />
-          </div>
-
           {/* Control Panel (left) */}
           <ControlPanel
             layers={layers}
-            layerGroups={layerGroups}
             activeLayers={activeLayers}
-            onLayerToggle={toggleLayer}
+            filters={filters}
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
+            onBikeToggle={handleBikeToggle}
+            onFilterChange={setFilter}
             isCollapsed={controlPanelCollapsed}
             onToggleCollapse={() => setControlPanelCollapsed(!controlPanelCollapsed)}
           />

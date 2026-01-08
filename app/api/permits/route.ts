@@ -49,19 +49,12 @@ export async function GET(request: NextRequest): Promise<NextResponse<PermitsRes
 
     // Build SoQL query
     // within_circle finds points within radius meters of lat/lng
+    // Note: column is location1, not location
     const query = new URLSearchParams({
-      $where: `within_circle(location, ${lat}, ${lng}, ${radius})`,
-      $order: 'issue_date DESC',
+      $where: `within_circle(location1, ${lat}, ${lng}, ${radius})`,
+      $order: 'issueddate DESC',
       $limit: limit,
-      // Only get permits from last 2 years
-      $q: '', // Empty full-text search
     });
-
-    // Add date filter for recent permits (last 2 years)
-    const twoYearsAgo = new Date();
-    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
-    const dateFilter = `issue_date >= '${twoYearsAgo.toISOString().split('T')[0]}'`;
-    query.set('$where', `within_circle(location, ${lat}, ${lng}, ${radius}) AND ${dateFilter}`);
 
     const apiUrl = `${baseUrl}?${query.toString()}`;
 
@@ -80,15 +73,20 @@ export async function GET(request: NextRequest): Promise<NextResponse<PermitsRes
     const data = await response.json();
 
     // Transform to our permit format
+    // Field mapping based on current Seattle Open Data schema:
+    // permitnum, permitclassmapped, permittypedesc, description, statuscurrent,
+    // issueddate, originaladdress1, estprojectcost, link
     const permits: Permit[] = data.map((p: Record<string, unknown>) => ({
-      permit_number: String(p.application_permit_number || p.permit_number || ''),
-      permit_type: String(p.permit_type || p.category || 'Building Permit'),
-      description: String(p.description || p.work_type || '').slice(0, 200),
-      status: String(p.status || 'Unknown'),
-      issue_date: p.issue_date ? String(p.issue_date).split('T')[0] : null,
-      address: String(p.address || p.original_address || ''),
-      value: p.value ? Number(p.value) : null,
-      link: `https://cosaccela.seattle.gov/Portal/Cap/CapDetail.aspx?Module=DPDPermits&capID1=${encodeURIComponent(String(p.application_permit_number || ''))}`,
+      permit_number: String(p.permitnum || ''),
+      permit_type: String(p.permittypedesc || p.permitclassmapped || 'Building Permit'),
+      description: String(p.description || '').slice(0, 200),
+      status: String(p.statuscurrent || 'Unknown'),
+      issue_date: p.issueddate ? String(p.issueddate).split('T')[0] : null,
+      address: String(p.originaladdress1 || ''),
+      value: p.estprojectcost ? Number(p.estprojectcost) : null,
+      link: p.link
+        ? String(p.link)
+        : `https://cosaccela.seattle.gov/Portal/Cap/CapDetail.aspx?Module=DPDPermits&capID1=${encodeURIComponent(String(p.permitnum || ''))}`,
     }));
 
     return NextResponse.json({

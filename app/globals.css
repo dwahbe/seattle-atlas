@@ -82,6 +82,10 @@ body {
   padding: 0;
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: rgb(var(--panel-bg));
@@ -166,6 +170,15 @@ body {
   background: rgb(var(--text-secondary));
 }
 
+/* Hide scrollbar utility */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ============================================================================
    Utility Classes
    ============================================================================ */
@@ -203,6 +216,58 @@ body {
   transition:
     transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
     opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================================
+   Command Palette Animations (Vercel-style)
+   ============================================================================ */
+
+@keyframes animate-in-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes animate-in-zoom {
+  from {
+    transform: scale(0.95);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes animate-in-slide-from-top {
+  from {
+    transform: translateY(-8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fade-in {
+  animation-name: animate-in-fade;
+}
+
+.zoom-in-95 {
+  animation-name: animate-in-zoom, animate-in-fade;
+}
+
+.slide-in-from-top-2 {
+  animation-name: animate-in-slide-from-top, animate-in-fade;
+}
+
+.duration-150 {
+  animation-duration: 150ms;
 }
 
 /* ============================================================================

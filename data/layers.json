@@ -59,14 +59,14 @@
         "percentage": 1.7
       },
       {
-        "label": "Industrial / Institutions",
+        "label": "Industrial",
         "color": "#6B7280",
         "value": "Industrial",
         "percentage": 11.8
       },
       {
-        "label": "Industrial / Institutions",
-        "color": "#6B7280",
+        "label": "Institutions",
+        "color": "#14B8A6",
         "value": "Major Institutions",
         "percentage": 2.2
       }
@@ -83,20 +83,40 @@
             "value": "Residential Small Lot"
           },
           {
-            "label": "Small Apartments (1-3 stories)",
+            "label": "Houses Only",
+            "value": "Neighborhood Residential"
+          },
+          {
+            "label": "Small Apartments",
             "value": "Lowrise Multi-Family"
           },
           {
-            "label": "Taller Apartments (4+ stories)",
+            "label": "Taller Apartments",
             "value": "High-Density Multi-Family"
           },
           {
-            "label": "Mixed-Use (Shops + Housing)",
+            "label": "Mixed: Shops + Housing",
             "value": "Neighborhood Commercial"
+          },
+          {
+            "label": "Mixed: Shops + Housing",
+            "value": "Commercial"
+          },
+          {
+            "label": "Mixed: Shops + Housing",
+            "value": "Seattle Mixed"
           },
           {
             "label": "Downtown",
             "value": "Downtown"
+          },
+          {
+            "label": "Industrial",
+            "value": "Industrial"
+          },
+          {
+            "label": "Institutions",
+            "value": "Major Institutions"
           }
         ]
       }
@@ -394,6 +414,148 @@
       "circle-opacity": 0.9
     },
     "source": "King County Metro (GTFS)",
+    "updated": "2025"
+  },
+  {
+    "id": "urban_villages",
+    "name": "Urban Villages",
+    "group": "planning",
+    "tileset": "mapbox://dwahbe.seattle-urban-villages",
+    "sourceLayer": "urban-villages",
+    "type": "fill",
+    "defaultVisible": false,
+    "description": "Areas where Seattle is directing growth with improved transit, housing, and services.",
+    "legend": [
+      {
+        "label": "Urban Center",
+        "color": "#10B981",
+        "value": "Urban Center",
+        "percentage": 3.2
+      },
+      {
+        "label": "Hub Urban Village",
+        "color": "#34D399",
+        "value": "Hub Urban Village",
+        "percentage": 4.1
+      },
+      {
+        "label": "Residential Urban Village",
+        "color": "#6EE7B7",
+        "value": "Residential Urban Village",
+        "percentage": 5.8
+      }
+    ],
+    "filters": [
+      {
+        "id": "village_type",
+        "label": "Village Type",
+        "property": "UV_DESIG",
+        "type": "multiselect",
+        "options": [
+          { "label": "Urban Center", "value": "Urban Center" },
+          { "label": "Hub Urban Village", "value": "Hub Urban Village" },
+          { "label": "Residential Urban Village", "value": "Residential Urban Village" }
+        ]
+      }
+    ],
+    "paint": {
+      "fill-color": [
+        "match",
+        ["get", "UV_DESIG"],
+        "Urban Center",
+        "#10B981",
+        "Hub Urban Village",
+        "#34D399",
+        "Residential Urban Village",
+        "#6EE7B7",
+        "#10B981"
+      ],
+      "fill-opacity": 0.2,
+      "fill-outline-color": "#059669"
+    },
+    "source": "City of Seattle Open Data",
+    "updated": "2025"
+  },
+  {
+    "id": "bike_facilities",
+    "name": "Bike Infrastructure",
+    "group": "transit",
+    "tileset": "mapbox://dwahbe.ap1iclq8",
+    "sourceLayer": "seattle-bike-facilities-merge-0wv9vm",
+    "type": "line",
+    "defaultVisible": false,
+    "description": "Protected bike lanes, greenways, trails, and shared lanes across Seattle.",
+    "legend": [
+      {
+        "label": "Protected Bike Lane",
+        "color": "#22C55E",
+        "value": "PBL",
+        "percentage": 8.2
+      },
+      {
+        "label": "Neighborhood Greenway",
+        "color": "#86EFAC",
+        "value": "NGW",
+        "percentage": 18.4
+      },
+      {
+        "label": "Multi-Use Trail",
+        "color": "#4ADE80",
+        "value": "MUT",
+        "percentage": 12.1
+      },
+      {
+        "label": "Bike Lane",
+        "color": "#A3E635",
+        "value": "BL",
+        "percentage": 24.6
+      },
+      {
+        "label": "Sharrow",
+        "color": "#D9F99D",
+        "value": "SHR",
+        "percentage": 36.7
+      }
+    ],
+    "filters": [
+      {
+        "id": "facility_type",
+        "label": "Facility Type",
+        "property": "PRIMARYFACILITYTYPE",
+        "type": "multiselect",
+        "options": [
+          { "label": "Protected Bike Lane", "value": "PBL" },
+          { "label": "Neighborhood Greenway", "value": "NGW" },
+          { "label": "Multi-Use Trail", "value": "MUT" },
+          { "label": "Bike Lane", "value": "BL" },
+          { "label": "Sharrow", "value": "SHR" }
+        ]
+      }
+    ],
+    "paint": {
+      "line-color": [
+        "match",
+        ["get", "PRIMARYFACILITYTYPE"],
+        "PBL",
+        "#22C55E",
+        "NGW",
+        "#86EFAC",
+        "MUT",
+        "#4ADE80",
+        "BL",
+        "#A3E635",
+        "SHR",
+        "#D9F99D",
+        "#22C55E"
+      ],
+      "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 16, 3, 18, 5],
+      "line-opacity": 0.9
+    },
+    "layout": {
+      "line-cap": "round",
+      "line-join": "round"
+    },
+    "source": "SDOT (City of Seattle)",
     "updated": "2025"
   }
 ]
