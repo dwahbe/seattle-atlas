@@ -39,9 +39,55 @@ export default function AboutPage() {
 
           <div className="space-y-6 text-[rgb(var(--text-secondary))]">
             <p>
-              Seattle Atlas is an interactive map for exploring Seattle&apos;s zoning and transit
-              data.
+              Seattle Atlas is an interactive map for exploring land use, transit, and urban
+              planning in Seattle. View zoning rules, transit routes, bike infrastructure, and
+              proposed development policies—all in one place.
             </p>
+
+            <section>
+              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
+                What&apos;s on the Map
+              </h2>
+              <div className="space-y-3">
+                <div>
+                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">
+                    Zoning &amp; Land Use
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li>
+                      Simplified view showing what can be built (houses, apartments, mixed-use,
+                      etc.)
+                    </li>
+                    <li>Detailed technical zoning codes (NR1, LR2, NC3, etc.)</li>
+                    <li>Urban Villages—areas designated for growth</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">Transit</h3>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li>Bus and ferry routes (King County Metro, Sound Transit)</li>
+                    <li>Transit stops across Seattle</li>
+                    <li>
+                      Bike infrastructure: protected lanes, greenways, trails, shared lanes,
+                      sharrows
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">
+                    Development Proposals
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li>Station area rezoning around light rail</li>
+                    <li>ADU policy updates</li>
+                    <li>Comprehensive Plan 2044</li>
+                    <li>Industrial &amp; maritime strategy</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
 
             <section>
               <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
@@ -49,10 +95,17 @@ export default function AboutPage() {
               </h2>
               <ul className="list-disc list-inside space-y-1 ml-2">
                 <li>
-                  <strong>Zoning:</strong> City of Seattle Open Data Portal
+                  <strong>Zoning &amp; Urban Villages:</strong> City of Seattle Open Data Portal
                 </li>
                 <li>
-                  <strong>Transit:</strong> King County Metro GTFS
+                  <strong>Transit Routes &amp; Stops:</strong> King County Metro GTFS, Sound Transit
+                </li>
+                <li>
+                  <strong>Bike Infrastructure:</strong> Seattle Department of Transportation (SDOT)
+                </li>
+                <li>
+                  <strong>Development Proposals:</strong> Seattle Office of Planning &amp;
+                  Community Development (OPCD)
                 </li>
               </ul>
             </section>
@@ -62,13 +115,14 @@ export default function AboutPage() {
                 Methodology
               </h2>
               <p className="mb-3">
-                Zoning boundaries are sourced from Seattle&apos;s official GIS data and follow
-                Seattle Municipal Code Title 23 designations. Transit routes and stops come from
-                GTFS data published by King County Metro.
+                All geographic data is sourced from official government datasets. Zoning boundaries
+                follow Seattle Municipal Code Title 23 designations. Transit data comes from GTFS
+                feeds published by transit agencies. Bike infrastructure reflects SDOT&apos;s master
+                plan.
               </p>
               <p>
                 Source data is processed into vector tiles using Tippecanoe and hosted on Mapbox.
-                The app is built with Next.js.
+                The app is built with Next.js, React, and TypeScript.
               </p>
             </section>
 
