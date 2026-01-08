@@ -98,9 +98,14 @@ export function ControlPanel({
         <div className="flex-none p-4 border-b border-[rgb(var(--border-color))]">
           <div className="flex items-center justify-between">
             <Link href="/" className="group">
-              <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-                Seattle Atlas
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+                  Seattle Atlas
+                </h1>
+                <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap border bg-[rgb(var(--accent))] text-white border-[rgb(var(--accent))]">
+                  Beta
+                </span>
+              </div>
             </Link>
             <ThemeToggle />
           </div>

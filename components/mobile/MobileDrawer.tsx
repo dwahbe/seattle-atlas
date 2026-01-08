@@ -122,9 +122,14 @@ export function MobileDrawer({
           <div className="flex-none px-4 pb-2">
             <div className="flex items-center justify-between">
               <Link href="/" className="group flex items-center min-h-[36px]">
-                <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
-                  Seattle Atlas
-                </h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+                    Seattle Atlas
+                  </h1>
+                  <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap border bg-[rgb(var(--accent))] text-white border-[rgb(var(--accent))]">
+                    Beta
+                  </span>
+                </div>
               </Link>
               <div className="flex items-center">
                 <ThemeToggle />
