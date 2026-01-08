@@ -128,7 +128,7 @@ export function MobileDrawer({
               /* ============================================================
                  INSPECT MODE - Uses shared components with compact prop
                  ============================================================ */
-              <div className="pb-8">
+              <div className="pb-[calc(2rem+env(safe-area-inset-bottom))]">
                 {/* Header with back button */}
                 <InspectHeader
                   zoneInfo={data.zoneInfo}
@@ -275,7 +275,7 @@ export function MobileDrawer({
                 </div>
 
                 {/* Footer with toggle */}
-                <div className="p-4 bg-[rgb(var(--secondary-bg))] border-t border-[rgb(var(--border-color))]">
+                <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-[rgb(var(--secondary-bg))] border-t border-[rgb(var(--border-color))]">
                   <div className="flex flex-col gap-3">
                     {/* Zoning Mode Toggle */}
                     <div className="flex items-center justify-between">
@@ -326,9 +326,6 @@ export function MobileDrawer({
               </div>
             )}
           </div>
-
-          {/* Safe area padding for iOS */}
-          <div className="flex-none h-[env(safe-area-inset-bottom)]" />
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

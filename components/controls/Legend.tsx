@@ -31,10 +31,11 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
   }
 
   return (
-    <div className="space-y-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+    <div>
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
         Legend
-      </h3>
+      </h2>
+      <div className="space-y-4">
       {activeLayersWithLegends.map((layer) => {
         // Deduplicate legend items by label and aggregate percentages
         const uniqueItems = deduplicateLegendItems(layer.legend);
@@ -79,6 +80,7 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
           </div>
         );
       })}
+      </div>
     </div>
   );
 }
@@ -107,7 +109,7 @@ function LegendRow({
   isInteractive,
 }: LegendRowProps) {
   const baseClasses = `
-    flex items-center gap-2 py-1.5 px-1.5 rounded transition-colors
+    flex items-center gap-2 py-1 px-1.5 rounded transition-colors
     ${isInteractive ? 'cursor-pointer' : ''}
     ${isFiltered ? 'bg-[rgb(var(--accent))]/10 ring-1 ring-[rgb(var(--accent))]/30' : ''}
     ${isHovered && !isFiltered ? 'bg-[rgb(var(--secondary-bg))]' : ''}

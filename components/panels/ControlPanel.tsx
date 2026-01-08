@@ -110,7 +110,7 @@ export function ControlPanel({
         <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
           {/* Zoning Filters */}
           {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-            <div className="p-4">
+            <div className="px-4 pt-4">
               <FilterChips
                 filters={activeBaseLayerConfig.filters}
                 values={(filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}}
@@ -122,15 +122,13 @@ export function ControlPanel({
           )}
 
           {/* Overlay Layers */}
-          <div>
-            <div className="px-4 py-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
-                Overlays
-              </h2>
-            </div>
+          <div className="px-4 pt-4">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+              Overlays
+            </h2>
             {/* Transit Toggle */}
-            <div className="px-3 pb-3 space-y-1">
-              <div className="flex items-center gap-3 p-2 rounded-lg">
+            <div className="space-y-1">
+              <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Transit</div>
                   <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
@@ -143,7 +141,7 @@ export function ControlPanel({
                 />
               </div>
               {/* Bike Infrastructure Toggle */}
-              <div className="flex items-center gap-3 p-2 rounded-lg">
+              <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
                     Bike Infrastructure
@@ -156,13 +154,11 @@ export function ControlPanel({
               </div>
             </div>
           </div>
-          <div className="h-px bg-[rgb(var(--border-color))]" />
 
           {/* Legend */}
-          <div className="p-4">
+          <div className="px-4 pt-4">
             <Legend layers={layers} activeLayers={activeLayers} />
           </div>
-          <div className="h-px bg-[rgb(var(--border-color))]" />
         </div>
 
         {/* Footer */}
