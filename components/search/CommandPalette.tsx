@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import { geocodeAddress, type GeocodingResult } from '@/lib/mapbox';
-import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { SearchResult } from '@/types';
 
 // Popular Seattle neighborhoods for quick navigation
@@ -24,71 +24,85 @@ const NEIGHBORHOODS: {
   { name: 'Greenwood', bounds: [-122.365, 47.69, -122.345, 47.71] },
 ];
 
-// Quick actions for the command palette
-const QUICK_ACTIONS = [
-  { id: 'toggle-transit', label: 'Toggle Transit Layer', icon: 'transit', shortcut: 'T' },
-  { id: 'toggle-theme', label: 'Toggle Dark Mode', icon: 'theme', shortcut: 'D' },
-];
-
-interface CommandPaletteProps {
+interface PanelSearchProps {
   onSelect: (result: SearchResult) => void;
-  onAction?: (actionId: string) => void;
+  variant?: 'desktop' | 'mobile';
 }
 
-export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
+/**
+ * Inline search component that expands in place within a panel.
+ * When open, renders via portal above the blurred backdrop.
+ */
+export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(null);
+  
   const inputRef = useRef<HTMLInputElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // On smaller desktop screens, show compact button instead of full search bar
-  const isCompact = !useMediaQuery('(min-width: 1100px)');
+  const isMobile = variant === 'mobile';
+  const isVisible = isOpen || isClosing;
+
+  // For portal rendering
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Filter neighborhoods based on query
   const filteredNeighborhoods = query.trim()
     ? NEIGHBORHOODS.filter((n) => n.name.toLowerCase().includes(query.toLowerCase()))
     : NEIGHBORHOODS;
 
-  // Filter actions based on query
-  const filteredActions = query.trim()
-    ? QUICK_ACTIONS.filter((a) => a.label.toLowerCase().includes(query.toLowerCase()))
-    : QUICK_ACTIONS;
-
   // Calculate total items for keyboard navigation
   const allItems = useMemo<
     Array<
-      | { type: 'action'; data: (typeof QUICK_ACTIONS)[0] }
       | { type: 'neighborhood'; data: (typeof NEIGHBORHOODS)[0] }
       | { type: 'result'; data: GeocodingResult }
     >
   >(
     () => [
-      ...filteredActions.map((a) => ({ type: 'action' as const, data: a })),
       ...filteredNeighborhoods.map((n) => ({ type: 'neighborhood' as const, data: n })),
       ...results.map((r) => ({ type: 'result' as const, data: r })),
     ],
-    [filteredActions, filteredNeighborhoods, results]
+    [filteredNeighborhoods, results]
   );
 
-  // Open/close handlers
+  // Open handler - captures position for portal
   const open = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPosition({
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+      });
+    }
     setIsOpen(true);
     setQuery('');
     setResults([]);
     setSelectedIndex(0);
+    setTimeout(() => inputRef.current?.focus(), 0);
   }, []);
 
   const close = useCallback(() => {
+    setIsClosing(true);
     setIsOpen(false);
-    setQuery('');
-    setResults([]);
-    setSelectedIndex(0);
-    inputRef.current?.blur();
+    // Wait for animation to complete before fully closing
+    setTimeout(() => {
+      setIsClosing(false);
+      setQuery('');
+      setResults([]);
+      setSelectedIndex(0);
+      setPosition(null);
+    }, 150);
   }, []);
 
   // Keyboard shortcut listener (Cmd+K / Ctrl+K)
@@ -100,9 +114,6 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
           close();
         } else {
           open();
-          // Focus input when opening via keyboard shortcut
-          // Use setTimeout(0) to run after state update but still synchronously enough for browsers
-          setTimeout(() => inputRef.current?.focus(), 0);
         }
       }
       if (e.key === 'Escape' && isOpen) {
@@ -114,27 +125,6 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, open, close]);
-
-  // Click outside to close
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        close();
-      }
-    };
-
-    // Delay to prevent immediate close on open click
-    const timeout = setTimeout(() => {
-      document.addEventListener('mousedown', handleClickOutside);
-    }, 0);
-
-    return () => {
-      clearTimeout(timeout);
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen, close]);
 
   // Debounced search
   const handleSearch = useCallback((value: string) => {
@@ -167,10 +157,7 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
   // Handle item selection
   const handleSelectItem = useCallback(
     (item: (typeof allItems)[0]) => {
-      if (item.type === 'action') {
-        onAction?.(item.data.id);
-        close();
-      } else if (item.type === 'neighborhood') {
+      if (item.type === 'neighborhood') {
         onSelect({
           id: `neighborhood-${item.data.name}`,
           name: item.data.name,
@@ -181,7 +168,6 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
           ],
           bbox: item.data.bounds,
         });
-        close();
       } else {
         onSelect({
           id: item.data.id,
@@ -190,16 +176,16 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
           center: item.data.center,
           bbox: item.data.bbox,
         });
-        close();
       }
+      close();
     },
-    [onSelect, onAction, close]
+    [onSelect, close]
   );
 
   // Keyboard navigation
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (allItems.length === 0) return;
+      if (!isOpen || allItems.length === 0) return;
 
       switch (e.key) {
         case 'ArrowDown':
@@ -218,427 +204,314 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
           break;
       }
     },
-    [allItems, selectedIndex, handleSelectItem]
+    [isOpen, allItems, selectedIndex, handleSelectItem]
   );
 
   // Scroll selected item into view
   useEffect(() => {
-    if (listRef.current) {
+    if (listRef.current && isOpen) {
       const selectedEl = listRef.current.querySelector('[data-selected="true"]');
       selectedEl?.scrollIntoView({ block: 'nearest' });
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, isOpen]);
+
+  // The search UI (used both inline and in portal)
+  const searchUI = (
+    <div className={isOpen ? 'shadow-2xl rounded-lg' : ''}>
+      {/* Search Input */}
+      <div
+        className={`
+          flex items-center gap-2 px-3
+          bg-[rgb(var(--panel-bg))]
+          border border-[rgb(var(--border-color))]
+          ${isOpen ? 'rounded-t-lg border-b-transparent' : 'rounded-lg'}
+          ${isMobile ? 'py-2.5' : 'py-2'}
+        `}
+      >
+        <svg
+          className="w-4 h-4 shrink-0 text-[rgb(var(--text-secondary))]"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input
+          ref={inputRef}
+          type="text"
+          inputMode="search"
+          enterKeyHint="search"
+          value={query}
+          onChange={(e) => handleSearch(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onFocus={() => !isOpen && open()}
+          placeholder={isOpen ? 'Search address or neighborhood...' : 'Search address...'}
+          className="
+            flex-1 bg-transparent
+            text-sm text-[rgb(var(--text-primary))]
+            placeholder:text-[rgb(var(--text-secondary))]
+            [border:none] [outline:none] [box-shadow:none]
+            focus:[border:none] focus:[outline:none] focus:[box-shadow:none]
+          "
+          style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+        />
+        {isLoading && (
+          <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+        )}
+        {isOpen && query && (
+          <button
+            onClick={() => {
+              setQuery('');
+              setResults([]);
+              inputRef.current?.focus();
+            }}
+            className="p-0.5 hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors"
+          >
+            <svg
+              className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        )}
+        {!isOpen && !isMobile && (
+          <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] rounded border border-[rgb(var(--border-color))]">
+            <span className="text-sm">⌘</span>K
+          </kbd>
+        )}
+        {isOpen && (
+          <kbd className="px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] rounded border border-[rgb(var(--border-color))]">
+            Esc
+          </kbd>
+        )}
+      </div>
+
+      {/* Results dropdown */}
+      {isOpen && (
+        <div
+          className={`
+            bg-[rgb(var(--panel-bg))]
+            border border-[rgb(var(--border-color))] border-t-0
+            rounded-b-lg
+            overflow-hidden
+            animate-in slide-in-from-top-1 duration-150
+            ${isMobile ? 'max-h-[40vh]' : 'max-h-[50vh]'}
+          `}
+        >
+          <div
+            ref={listRef}
+            className="overflow-y-auto max-h-[inherit] overscroll-contain"
+          >
+            {/* Neighborhoods */}
+            {filteredNeighborhoods.length > 0 && (
+              <div className="py-1">
+                <div className="px-3 py-1.5 text-xs font-medium text-[rgb(var(--text-tertiary))] uppercase tracking-wider">
+                  Neighborhoods
+                </div>
+                {filteredNeighborhoods.map((neighborhood, idx) => {
+                  const isSelected = selectedIndex === idx;
+                  return (
+                    <button
+                      key={neighborhood.name}
+                      data-selected={isSelected}
+                      onClick={() => handleSelectItem({ type: 'neighborhood', data: neighborhood })}
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      className={`
+                        w-full flex items-center gap-3 px-3 py-2
+                        text-sm text-left
+                        transition-colors duration-75
+                        ${isSelected ? 'bg-[rgb(var(--accent))]/10 text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))]'}
+                      `}
+                    >
+                      <svg
+                        className="w-4 h-4 shrink-0 opacity-60"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <path d="M3 9h18M9 21V9" />
+                      </svg>
+                      <span className="flex-1">{neighborhood.name}</span>
+                      <svg
+                        className="w-4 h-4 opacity-40"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Search Results */}
+            {results.length > 0 && (
+              <div className="py-1 border-t border-[rgb(var(--border-color))]">
+                <div className="px-3 py-1.5 text-xs font-medium text-[rgb(var(--text-tertiary))] uppercase tracking-wider">
+                  Places
+                </div>
+                {results.map((result, idx) => {
+                  const globalIdx = filteredNeighborhoods.length + idx;
+                  const isSelected = selectedIndex === globalIdx;
+                  return (
+                    <button
+                      key={result.id}
+                      data-selected={isSelected}
+                      onClick={() => handleSelectItem({ type: 'result', data: result })}
+                      onMouseEnter={() => setSelectedIndex(globalIdx)}
+                      className={`
+                        w-full flex items-center gap-3 px-3 py-2
+                        text-sm text-left
+                        transition-colors duration-75
+                        ${isSelected ? 'bg-[rgb(var(--accent))]/10 text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))]'}
+                      `}
+                    >
+                      <svg
+                        className="w-4 h-4 shrink-0 opacity-60"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                        <circle cx="12" cy="10" r="3" />
+                      </svg>
+                      <div className="flex-1 min-w-0">
+                        <div className="truncate">{result.name}</div>
+                        <div className="text-xs opacity-60 capitalize">{result.type}</div>
+                      </div>
+                      <svg
+                        className="w-4 h-4 opacity-40"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M9 18l6-6-6-6" />
+                      </svg>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Empty state when searching */}
+            {query.trim() &&
+              !isLoading &&
+              results.length === 0 &&
+              filteredNeighborhoods.length === 0 && (
+                <div className="px-4 py-6 text-center text-sm text-[rgb(var(--text-secondary))]">
+                  No results found for &ldquo;{query}&rdquo;
+                </div>
+              )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
-      {/* Backdrop with blur - only visible when open */}
-      <div
-        className={`
-          fixed inset-0 z-40
-          bg-black/40 backdrop-blur-sm
-          transition-all duration-300 ease-out
-          ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
-        `}
-        onClick={close}
-        aria-hidden="true"
-      />
+      {/* Backdrop + floating search - rendered via portal when open/closing */}
+      {mounted &&
+        isVisible &&
+        position &&
+        createPortal(
+          <>
+            {/* Backdrop with blur */}
+            <div
+              className="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40"
+              onClick={close}
+              aria-hidden="true"
+              style={{
+                animation: isClosing 
+                  ? 'fadeOut 150ms ease-out forwards' 
+                  : 'fadeIn 150ms ease-out',
+                willChange: 'opacity',
+              }}
+            />
+            {/* Floating search panel - above the backdrop, expands wider on desktop */}
+            <div
+              className="fixed z-50"
+              style={{
+                top: position.top,
+                left: position.left,
+                // Use CSS custom properties for width animation
+                '--start-width': `${position.width}px`,
+                '--end-width': `${isMobile ? position.width : Math.max(position.width, 420)}px`,
+                width: isMobile ? position.width : Math.max(position.width, 420),
+                animation: isClosing 
+                  ? 'searchCollapse 150ms ease-out forwards' 
+                  : 'searchExpand 150ms ease-out forwards',
+                transformOrigin: 'top left',
+                willChange: 'transform, opacity, width',
+              } as React.CSSProperties}
+            >
+              {searchUI}
+            </div>
+            {/* Keyframes for animations */}
+            <style>{`
+              @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+              }
+              @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+              }
+              @keyframes searchExpand {
+                from {
+                  opacity: 0;
+                  width: var(--start-width);
+                  transform: translateY(-2px);
+                }
+                to {
+                  opacity: 1;
+                  width: var(--end-width);
+                  transform: translateY(0);
+                }
+              }
+              @keyframes searchCollapse {
+                from {
+                  opacity: 1;
+                  width: var(--end-width);
+                  transform: translateY(0);
+                }
+                to {
+                  opacity: 0;
+                  width: var(--start-width);
+                  transform: translateY(-2px);
+                }
+              }
+            `}</style>
+          </>,
+          document.body
+        )}
 
-      {/* Compact search button - shown on smaller screens when not open */}
-      {isCompact && !isOpen && (
-        <button
-          onClick={() => {
-            open();
-            setTimeout(() => inputRef.current?.focus(), 0);
-          }}
-          className="
-            fixed z-50 top-4 right-4
-            w-11 h-11
-            flex items-center justify-center
-            bg-[rgb(var(--panel-bg))]
-            border border-[rgb(var(--border-color))]
-            rounded-full shadow-lg
-            hover:shadow-xl hover:bg-[rgb(var(--secondary-bg))] hover:scale-105
-            active:scale-95
-            transition-all duration-200
-          "
-          aria-label="Search (⌘K)"
-        >
-          <SearchIcon className="w-5 h-5 text-[rgb(var(--text-secondary))]" />
-        </button>
-      )}
-
-      {/* Search container - always visible on large screens, or when open on small screens */}
+      {/* Inline trigger - invisible when portal is open (no transition to avoid double-vision) */}
       <div
-        ref={containerRef}
-        className={`
-          fixed left-1/2 -translate-x-1/2 z-50
-          w-full max-w-md px-4
-          transition-all duration-300 ease-out
-          ${isCompact && !isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-        `}
-        style={{
-          top: 'max(1rem, env(safe-area-inset-top, 0px))',
+        ref={triggerRef}
+        style={{ 
+          opacity: isVisible ? 0 : 1,
+          pointerEvents: isVisible ? 'none' : 'auto'
         }}
       >
-        <div
-          className={`
-            relative
-            bg-[rgb(var(--panel-bg))]
-            border border-[rgb(var(--border-color))]
-            rounded-xl
-            overflow-hidden
-            transition-all duration-300 ease-out
-            ${isOpen ? 'shadow-2xl' : 'shadow-lg hover:shadow-xl'}
-          `}
-        >
-          {/* Search Input */}
-          <div className="flex items-center gap-3 px-4 py-3">
-            <SearchIcon
-              className={`
-                w-5 h-5 flex-shrink-0
-                transition-colors duration-200
-                ${isOpen ? 'text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-tertiary))]'}
-              `}
-            />
-            <input
-              ref={inputRef}
-              type="text"
-              inputMode="search"
-              enterKeyHint="search"
-              value={query}
-              onChange={(e) => handleSearch(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => !isOpen && open()}
-              placeholder={
-                isOpen ? 'Search places, neighborhoods, or commands...' : 'Search Seattle...'
-              }
-              className="
-                flex-1 bg-transparent border-0 ring-0 !outline-none
-                text-sm text-[rgb(var(--text-primary))]
-                placeholder:text-[rgb(var(--text-tertiary))]
-              "
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-            />
-            {isLoading && (
-              <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
-            )}
-            <div className="w-8 h-6 flex items-center justify-end">
-              {query && isOpen ? (
-                <button
-                  onClick={() => {
-                    setQuery('');
-                    setResults([]);
-                    inputRef.current?.focus();
-                  }}
-                  className="p-1 hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors"
-                >
-                  <svg
-                    className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
-              ) : (
-                <kbd
-                  className={`
-                    hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 
-                    text-xs font-medium text-[rgb(var(--text-tertiary))] 
-                    bg-[rgb(var(--secondary-bg))] rounded 
-                    border border-[rgb(var(--border-color))]
-                    transition-opacity duration-200
-                    ${isOpen ? 'opacity-0' : 'opacity-100'}
-                  `}
-                >
-                  <span className="text-sm">⌘</span>K
-                </kbd>
-              )}
-            </div>
-          </div>
-
-          {/* Results - only visible when open */}
-          <div
-            className={`
-              overflow-hidden
-              transition-all duration-300 ease-out
-              ${isOpen ? 'max-h-[60vh] opacity-100' : 'max-h-0 opacity-0'}
-            `}
-          >
-            <div className="border-t border-[rgb(var(--border-color))]" />
-            <div
-              ref={listRef}
-              className="overflow-y-auto max-h-[calc(60vh-60px)] overscroll-contain [scrollbar-gutter:stable]"
-            >
-              {/* Quick Actions */}
-              {filteredActions.length > 0 && (
-                <ResultSection title="Actions">
-                  {filteredActions.map((action, idx) => {
-                    const globalIdx = idx;
-                    return (
-                      <ResultItem
-                        key={action.id}
-                        selected={selectedIndex === globalIdx}
-                        onClick={() => handleSelectItem({ type: 'action', data: action })}
-                        onMouseEnter={() => setSelectedIndex(globalIdx)}
-                      >
-                        <ActionIcon type={action.icon} />
-                        <span className="flex-1">{action.label}</span>
-                        <kbd className="px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] rounded border border-[rgb(var(--border-color))]">
-                          {action.shortcut}
-                        </kbd>
-                      </ResultItem>
-                    );
-                  })}
-                </ResultSection>
-              )}
-
-              {/* Neighborhoods */}
-              {filteredNeighborhoods.length > 0 && (
-                <ResultSection title="Neighborhoods">
-                  {filteredNeighborhoods.map((neighborhood, idx) => {
-                    const globalIdx = filteredActions.length + idx;
-                    return (
-                      <ResultItem
-                        key={neighborhood.name}
-                        selected={selectedIndex === globalIdx}
-                        onClick={() =>
-                          handleSelectItem({ type: 'neighborhood', data: neighborhood })
-                        }
-                        onMouseEnter={() => setSelectedIndex(globalIdx)}
-                      >
-                        <NeighborhoodIcon />
-                        <span className="flex-1">{neighborhood.name}</span>
-                        <ArrowIcon />
-                      </ResultItem>
-                    );
-                  })}
-                </ResultSection>
-              )}
-
-              {/* Search Results */}
-              {results.length > 0 && (
-                <ResultSection title="Places">
-                  {results.map((result, idx) => {
-                    const globalIdx = filteredActions.length + filteredNeighborhoods.length + idx;
-                    return (
-                      <ResultItem
-                        key={result.id}
-                        selected={selectedIndex === globalIdx}
-                        onClick={() => handleSelectItem({ type: 'result', data: result })}
-                        onMouseEnter={() => setSelectedIndex(globalIdx)}
-                      >
-                        <PlaceIcon type={result.type} />
-                        <div className="flex-1 min-w-0">
-                          <div className="truncate">{result.name}</div>
-                          <div className="text-xs text-[rgb(var(--text-tertiary))] capitalize">
-                            {result.type}
-                          </div>
-                        </div>
-                        <ArrowIcon />
-                      </ResultItem>
-                    );
-                  })}
-                </ResultSection>
-              )}
-
-              {/* Empty state when searching */}
-              {query.trim() &&
-                !isLoading &&
-                results.length === 0 &&
-                filteredNeighborhoods.length === 0 &&
-                filteredActions.length === 0 && (
-                  <div className="px-4 py-8 text-center text-sm text-[rgb(var(--text-secondary))]">
-                    No results found for &ldquo;{query}&rdquo;
-                  </div>
-                )}
-            </div>
-
-            {/* Footer - hidden on mobile since keyboard hints aren't useful */}
-            <div className="hidden sm:flex items-center justify-between px-4 py-2 border-t border-[rgb(var(--border-color))] text-xs text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))/50]">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1 py-0.5 bg-[rgb(var(--panel-bg))] rounded border border-[rgb(var(--border-color))]">
-                    ↑
-                  </kbd>
-                  <kbd className="px-1 py-0.5 bg-[rgb(var(--panel-bg))] rounded border border-[rgb(var(--border-color))]">
-                    ↓
-                  </kbd>
-                  <span className="ml-1">Navigate</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-[rgb(var(--panel-bg))] rounded border border-[rgb(var(--border-color))]">
-                    ↵
-                  </kbd>
-                  <span className="ml-1">Select</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <kbd className="px-1.5 py-0.5 bg-[rgb(var(--panel-bg))] rounded border border-[rgb(var(--border-color))]">
-                    esc
-                  </kbd>
-                  <span className="ml-1">Close</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {searchUI}
       </div>
     </>
-  );
-}
-
-// ============================================================================
-// Sub-components
-// ============================================================================
-
-function ResultSection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="py-2">
-      <div className="px-4 py-1.5 text-xs font-medium text-[rgb(var(--text-tertiary))] uppercase tracking-wider">
-        {title}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function ResultItem({
-  children,
-  selected,
-  onClick,
-  onMouseEnter,
-}: {
-  children: React.ReactNode;
-  selected: boolean;
-  onClick: () => void;
-  onMouseEnter: () => void;
-}) {
-  return (
-    <button
-      data-selected={selected}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      className={`
-        w-full flex items-center gap-3 px-4 py-2.5
-        text-sm text-left text-[rgb(var(--text-primary))]
-        transition-colors duration-75
-        ${selected ? 'bg-[rgb(var(--accent))]/10 text-[rgb(var(--accent))]' : 'hover:bg-[rgb(var(--secondary-bg))]'}
-      `}
-    >
-      {children}
-    </button>
-  );
-}
-
-// ============================================================================
-// Icons
-// ============================================================================
-
-function SearchIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <circle cx="11" cy="11" r="8" />
-      <path d="M21 21l-4.35-4.35" />
-    </svg>
-  );
-}
-
-function ActionIcon({ type }: { type: string }) {
-  if (type === 'transit') {
-    return (
-      <svg
-        className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <rect x="3" y="3" width="18" height="18" rx="2" />
-        <path d="M3 9h18M9 21V9" />
-      </svg>
-    );
-  }
-  if (type === 'theme') {
-    return (
-      <svg
-        className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-      </svg>
-    );
-  }
-  return null;
-}
-
-function NeighborhoodIcon() {
-  return (
-    <svg
-      className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <path d="M3 9h18M9 21V9" />
-    </svg>
-  );
-}
-
-function PlaceIcon({ type }: { type: GeocodingResult['type'] }) {
-  if (type === 'address') {
-    return (
-      <svg
-        className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    );
-  }
-  return (
-    <svg
-      className="w-4 h-4 text-[rgb(var(--text-secondary))]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M12 8v4l3 3" />
-    </svg>
-  );
-}
-
-function ArrowIcon() {
-  return (
-    <svg
-      className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <path d="M9 18l6-6-6-6" />
-    </svg>
   );
 }

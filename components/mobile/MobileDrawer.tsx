@@ -128,7 +128,7 @@ export function MobileDrawer({
           </div>
 
           {/* Header */}
-          <div className="flex-none px-4 pb-2">
+          <div className="flex-none px-4 pb-3">
             <div className="flex items-center justify-between">
               <Link href="/" className="group flex items-center min-h-[36px]">
                 <div className="flex items-center gap-2">

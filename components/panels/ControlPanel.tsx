@@ -2,8 +2,9 @@
 
 import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
+import { PanelSearch } from '@/components/search';
 import { Switch, ThemeToggle } from '@/components/ui';
-import type { LayerConfig, FilterState } from '@/types';
+import type { LayerConfig, FilterState, SearchResult } from '@/types';
 import Link from 'next/link';
 
 // Define base layer options (mutually exclusive)
@@ -25,6 +26,7 @@ interface ControlPanelProps {
   onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
+  onSearchSelect: (result: SearchResult) => void;
 }
 
 export function ControlPanel({
@@ -37,6 +39,7 @@ export function ControlPanel({
   onFilterChange,
   isCollapsed,
   onToggleCollapse,
+  onSearchSelect,
 }: ControlPanelProps) {
   // Determine which base layer is active (if any)
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;
@@ -55,8 +58,8 @@ export function ControlPanel({
 
   return (
     <>
-      {/* Collapse toggle button */}
-      <button
+      {/* Collapse toggle button - temporarily disabled */}
+      {/* <button
         onClick={onToggleCollapse}
         className={`
           absolute top-[68px] z-20 p-2 
@@ -80,7 +83,7 @@ export function ControlPanel({
         >
           <path d="M9 18l6-6-6-6" />
         </svg>
-      </button>
+      </button> */}
 
       {/* Panel */}
       <div
@@ -91,12 +94,11 @@ export function ControlPanel({
           shadow-lg
           transition-transform duration-300 ease-in-out
           flex flex-col
-          ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}
         `}
       >
         {/* Header */}
         <div className="flex-none p-4 border-b border-[rgb(var(--border-color))]">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <Link href="/" className="group">
               <div className="flex items-center gap-2">
                 <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
@@ -109,6 +111,8 @@ export function ControlPanel({
             </Link>
             <ThemeToggle />
           </div>
+          {/* Search */}
+          <PanelSearch onSelect={onSearchSelect} variant="desktop" />
         </div>
 
         {/* Scrollable content */}

@@ -275,15 +275,15 @@ body {
    ============================================================================ */
 
 /* Prevent pull-to-refresh and viewport scrolling on mobile */
-html,
-body {
+html.scroll-lock,
+body.scroll-lock {
   overscroll-behavior: none;
 }
 
 /* iOS Safari viewport scroll lock - prevents rubber-banding and scroll on fixed elements */
 @supports (-webkit-touch-callout: none) {
-  html,
-  body {
+  html.scroll-lock,
+  body.scroll-lock {
     position: fixed;
     overflow: hidden;
     width: 100%;

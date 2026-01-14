@@ -21,6 +21,18 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
     if (!map || !map.isStyleLoaded()) return;
 
     const handleStyleLoad = () => {
+      // Style changes reset the map sources/layers, so prune stale caches
+      for (const sourceId of addedSources.current) {
+        if (!map.getSource(sourceId)) {
+          addedSources.current.delete(sourceId);
+        }
+      }
+      for (const layerId of addedLayers.current) {
+        if (!map.getLayer(layerId)) {
+          addedLayers.current.delete(layerId);
+        }
+      }
+
       // Remove layers that are no longer active
       for (const layerId of addedLayers.current) {
         // Skip casing layers - they're managed with their parent

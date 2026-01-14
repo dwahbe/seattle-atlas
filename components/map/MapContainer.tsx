@@ -1,14 +1,14 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import type { Map as MapboxMap } from 'mapbox-gl';
 import { MapGL } from './MapGL';
 import { MapLayers } from './MapLayers';
 import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
-import { CommandPalette } from '@/components/search';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
+import { PanelSearch } from '@/components/search';
 import { useUrlState } from '@/hooks/useUrlState';
 import { useMapState } from '@/hooks/useMapState';
 import { useLayers } from '@/hooks/useLayers';
@@ -19,6 +19,16 @@ import { getProposals } from '@/lib/proposals';
 import type { InspectedFeature, SearchResult } from '@/types';
 
 export function MapContainer() {
+  useEffect(() => {
+    document.documentElement.classList.add('scroll-lock');
+    document.body.classList.add('scroll-lock');
+
+    return () => {
+      document.documentElement.classList.remove('scroll-lock');
+      document.body.classList.remove('scroll-lock');
+    };
+  }, []);
+
   // URL state (source of truth)
   const {
     viewState: urlViewState,
@@ -253,29 +263,8 @@ export function MapContainer() {
     navigator.clipboard.writeText(fullUrl);
   }, [shareableUrl]);
 
-  // Command palette action handler
-  const handleCommandAction = useCallback(
-    (actionId: string) => {
-      switch (actionId) {
-        case 'toggle-transit': {
-          const transitLayerIds = ['transit_routes', 'transit_stops', 'light_rail'];
-          const isTransitActive = transitLayerIds.some((id) => activeLayers.includes(id));
-          handleTransitToggle(!isTransitActive);
-          break;
-        }
-        case 'toggle-theme':
-          setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
-          break;
-      }
-    },
-    [activeLayers, handleTransitToggle, resolvedTheme, setTheme]
-  );
-
   return (
     <div className="relative w-full h-screen overflow-hidden">
-      {/* Command Palette (Cmd+K) */}
-      <CommandPalette onSelect={handleSearchSelect} onAction={handleCommandAction} />
-
       {/* Map */}
       <MapGL
         viewState={urlViewState}
@@ -304,6 +293,11 @@ export function MapContainer() {
       {isMobile ? (
         /* Mobile Layout */
         <>
+          {/* Floating search bar at top */}
+          <div className="absolute top-4 left-4 right-4 z-20">
+            <PanelSearch onSelect={handleSearchSelect} variant="mobile" />
+          </div>
+
           <MobileDrawer
             layers={layers}
             activeLayers={activeLayers}
@@ -334,6 +328,7 @@ export function MapContainer() {
             onFilterChange={setFilter}
             isCollapsed={controlPanelCollapsed}
             onToggleCollapse={() => setControlPanelCollapsed(!controlPanelCollapsed)}
+            onSearchSelect={handleSearchSelect}
           />
 
           {/* Inspect Panel (right) */}
