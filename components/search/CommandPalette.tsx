@@ -77,10 +77,6 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
     setQuery('');
     setResults([]);
     setSelectedIndex(0);
-    // Focus input after animation starts
-    requestAnimationFrame(() => {
-      inputRef.current?.focus();
-    });
   }, []);
 
   const close = useCallback(() => {
@@ -100,6 +96,9 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
           close();
         } else {
           open();
+          // Focus input when opening via keyboard shortcut
+          // Use setTimeout(0) to run after state update but still synchronously enough for browsers
+          setTimeout(() => inputRef.current?.focus(), 0);
         }
       }
       if (e.key === 'Escape' && isOpen) {
