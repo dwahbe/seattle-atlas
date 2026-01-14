@@ -10,8 +10,6 @@ interface PermitsSectionProps {
 }
 
 export function PermitsSection({ permits, isLoading, compact = false }: PermitsSectionProps) {
-  const maxPermits = compact ? 4 : 10;
-
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
@@ -28,7 +26,7 @@ export function PermitsSection({ permits, isLoading, compact = false }: PermitsS
           {permits.total} permit{permits.total !== 1 ? 's' : ''}{' '}
           {compact ? 'nearby (2yr)' : 'in last 2 years within 300m'}
         </p>
-        {permits.permits.slice(0, maxPermits).map((permit) => (
+        {permits.permits.map((permit) => (
           <div
             key={permit.permit_number}
             className={`bg-[rgb(var(--secondary-bg))] rounded-lg ${compact ? 'p-2' : 'p-3'}`}
