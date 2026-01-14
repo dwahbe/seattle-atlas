@@ -24,6 +24,8 @@ interface InspectPanelProps {
   layerConfigs: LayerConfig[];
   /** Exact address from search - displayed instead of reverse-geocoded location */
   searchedAddress?: string | null;
+  /** Click point for more accurate reverse geocoding */
+  clickPoint?: [number, number] | null;
 }
 
 export function InspectPanel({
@@ -33,13 +35,14 @@ export function InspectPanel({
   isOpen,
   layerConfigs,
   searchedAddress,
+  clickPoint,
 }: InspectPanelProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['parcel', 'rules', 'permits', 'proposals'])
   );
 
   // Use shared data fetching hook
-  const data = useInspectData(feature, layerConfigs, proposals);
+  const data = useInspectData(feature, layerConfigs, proposals, clickPoint);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {

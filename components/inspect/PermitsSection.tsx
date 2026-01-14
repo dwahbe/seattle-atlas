@@ -10,7 +10,7 @@ interface PermitsSectionProps {
 }
 
 export function PermitsSection({ permits, isLoading, compact = false }: PermitsSectionProps) {
-  const maxPermits = compact ? 2 : 3;
+  const maxPermits = compact ? 4 : 10;
 
   if (isLoading) {
     return (

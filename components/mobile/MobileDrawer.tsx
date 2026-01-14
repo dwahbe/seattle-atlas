@@ -51,6 +51,8 @@ interface MobileDrawerProps {
   layerConfigs: LayerConfig[];
   /** Exact address from search - displayed instead of reverse-geocoded location */
   searchedAddress?: string | null;
+  /** Click point for more accurate reverse geocoding */
+  clickPoint?: [number, number] | null;
 }
 
 export function MobileDrawer({
@@ -66,11 +68,12 @@ export function MobileDrawer({
   onCloseInspect,
   layerConfigs,
   searchedAddress,
+  clickPoint,
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
 
   // Use shared data fetching hook
-  const data = useInspectData(inspectedFeature, layerConfigs, proposals);
+  const data = useInspectData(inspectedFeature, layerConfigs, proposals, clickPoint);
 
   // Determine which base layer is active
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;

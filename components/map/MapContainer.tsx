@@ -317,6 +317,7 @@ export function MapContainer() {
             onCloseInspect={clearInspection}
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
+            clickPoint={markerPosition}
           />
         </>
       ) : (
@@ -343,6 +344,7 @@ export function MapContainer() {
             isOpen={inspectedFeature !== null}
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
+            clickPoint={markerPosition}
           />
 
           {/* Share Bar (bottom) */}

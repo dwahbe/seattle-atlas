@@ -65,7 +65,9 @@ export interface InspectData {
 export function useInspectData(
   feature: InspectedFeature | null,
   layerConfigs: LayerConfig[],
-  proposals: Proposal[]
+  proposals: Proposal[],
+  /** Optional click point - used for reverse geocoding instead of centroid */
+  clickPoint?: [number, number] | null
 ): InspectData {
   // Local state for fetched data
   const [walkScore, setWalkScore] = useState<WalkScoreData | null>(null);
@@ -145,14 +147,17 @@ export function useInspectData(
   }, [featurePoint, isZoning]);
 
   // Effect: Fetch Location (reverse geocode)
+  // Use clickPoint if provided (more accurate), otherwise fall back to centroid
   useEffect(() => {
-    if (!featurePoint || !isZoning) return;
+    if (!isZoning) return;
+    const point = clickPoint || featurePoint;
+    if (!point) return;
 
-    const [lng, lat] = featurePoint;
+    const [lng, lat] = point;
     reverseGeocode(lng, lat)
       .then((result) => setLocation(result))
       .catch(() => setLocation(null));
-  }, [featurePoint, isZoning]);
+  }, [clickPoint, featurePoint, isZoning]);
 
   // Effect: Fetch Parcel Data from King County
   useEffect(() => {

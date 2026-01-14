@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { geocodeAddress, type GeocodingResult } from '@/lib/mapbox';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import type { SearchResult } from '@/types';
 
 // Popular Seattle neighborhoods for quick navigation
@@ -44,6 +45,9 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  // On smaller desktop screens, show compact button instead of full search bar
+  const isCompact = !useMediaQuery('(min-width: 1100px)');
 
   // Filter neighborhoods based on query
   const filteredNeighborhoods = query.trim()
@@ -239,14 +243,39 @@ export function CommandPalette({ onSelect, onAction }: CommandPaletteProps) {
         aria-hidden="true"
       />
 
-      {/* Search container - always visible, positioned at top center */}
+      {/* Compact search button - shown on smaller screens when not open */}
+      {isCompact && !isOpen && (
+        <button
+          onClick={() => {
+            open();
+            setTimeout(() => inputRef.current?.focus(), 0);
+          }}
+          className="
+            fixed z-50 top-4 right-4
+            w-11 h-11
+            flex items-center justify-center
+            bg-[rgb(var(--panel-bg))]
+            border border-[rgb(var(--border-color))]
+            rounded-full shadow-lg
+            hover:shadow-xl hover:bg-[rgb(var(--secondary-bg))] hover:scale-105
+            active:scale-95
+            transition-all duration-200
+          "
+          aria-label="Search (⌘K)"
+        >
+          <SearchIcon className="w-5 h-5 text-[rgb(var(--text-secondary))]" />
+        </button>
+      )}
+
+      {/* Search container - always visible on large screens, or when open on small screens */}
       <div
         ref={containerRef}
-        className="
+        className={`
           fixed left-1/2 -translate-x-1/2 z-50
           w-full max-w-md px-4
           transition-all duration-300 ease-out
-        "
+          ${isCompact && !isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+        `}
         style={{
           top: 'max(1rem, env(safe-area-inset-top, 0px))',
         }}
