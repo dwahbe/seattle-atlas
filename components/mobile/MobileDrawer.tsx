@@ -147,9 +147,11 @@ export function MobileDrawer({
           </div>
 
           {/* Scrollable content area - height calculated based on current snap point */}
+          {/* data-vaul-no-drag prevents scroll gestures from resizing the drawer */}
           <div 
             className="overflow-y-auto overscroll-contain"
             style={{ maxHeight: scrollableMaxHeight }}
+            data-vaul-no-drag
           >
             {isInspecting && inspectedFeature ? (
               /* ============================================================
