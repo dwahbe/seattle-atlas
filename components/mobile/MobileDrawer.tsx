@@ -72,6 +72,12 @@ export function MobileDrawer({
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
 
+  // Calculate the max height for scrollable content based on current snap point
+  // Header + drag handle is ~80px, subtract from visible drawer height
+  const headerHeight = 80;
+  const snapFraction = typeof snap === 'number' ? snap : SNAP_POINT_HALF;
+  const scrollableMaxHeight = `calc(${snapFraction * 100}vh - ${headerHeight}px)`;
+
   // Use shared data fetching hook
   const data = useInspectData(inspectedFeature, layerConfigs, proposals, clickPoint);
 
@@ -140,8 +146,11 @@ export function MobileDrawer({
             </div>
           </div>
 
-          {/* Scrollable content area - data-vaul-no-drag allows scrolling without triggering drawer drag */}
-          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" data-vaul-no-drag>
+          {/* Scrollable content area - height calculated based on current snap point */}
+          <div 
+            className="overflow-y-auto overscroll-contain"
+            style={{ maxHeight: scrollableMaxHeight }}
+          >
             {isInspecting && inspectedFeature ? (
               /* ============================================================
                  INSPECT MODE - Uses shared components with compact prop
