@@ -140,8 +140,8 @@ export function MobileDrawer({
             </div>
           </div>
 
-          {/* Scrollable content area */}
-          <div className="flex-1 overflow-y-auto overscroll-contain">
+          {/* Scrollable content area - data-vaul-no-drag allows scrolling without triggering drawer drag */}
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain" data-vaul-no-drag>
             {isInspecting && inspectedFeature ? (
               /* ============================================================
                  INSPECT MODE - Uses shared components with compact prop
