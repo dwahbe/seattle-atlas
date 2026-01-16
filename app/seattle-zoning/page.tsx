@@ -79,18 +79,18 @@ export default function SeattleZoningPage() {
 
       {/* Header */}
       <header className="border-b border-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <Link href="/" className="group">
-            <span className="text-lg font-bold text-text-primary group-hover:text-accent transition-colors">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
+          <Link href="/map" className="group flex items-center">
+            <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
               Seattle Atlas
             </span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/map"
-              className="text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
+              className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
-              View Map
+              ← Back to Map
             </Link>
             <ThemeToggle />
           </div>

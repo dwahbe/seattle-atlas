@@ -15,18 +15,18 @@ export default function AboutPage() {
     <div className="min-h-screen bg-[rgb(var(--panel-bg))]">
       {/* Header */}
       <header className="border-b border-[rgb(var(--border-color))]">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
-          <Link href="/map" className="group">
-            <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
+          <Link href="/map" className="group flex items-center">
+            <span className="text-lg font-bold leading-none text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
               Seattle Atlas
-            </h1>
+            </span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/map"
-              className="text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--text-primary))] transition-colors whitespace-nowrap"
+              className="h-9 flex items-center text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--text-primary))] transition-colors whitespace-nowrap"
             >
-              ← Back to Map
+              View Map
             </Link>
             <ThemeToggle />
           </div>
