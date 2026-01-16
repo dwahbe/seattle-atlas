@@ -1,0 +1,22 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A" />
+      <stop offset="1" stop-color="#1E293B" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="32" fill="url(#bg)" />
+  <rect x="64" y="64" width="1072" height="502" rx="24" fill="#0B1220" stroke="#1F2A44" stroke-width="2" />
+  <text x="120" y="220" fill="#F8FAFC" font-size="56" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="700">
+    Seattle Atlas
+  </text>
+  <text x="120" y="290" fill="#94A3B8" font-size="30" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif">
+    Seattle zoning, transit, and land use in one map
+  </text>
+  <text x="120" y="380" fill="#38BDF8" font-size="24" font-family="Inter, system-ui, -apple-system, Segoe UI, sans-serif" font-weight="600">
+    seattleatlas.org
+  </text>
+  <circle cx="1010" cy="350" r="120" fill="#0F172A" stroke="#38BDF8" stroke-width="3" />
+  <path d="M960 350C960 321 983 298 1012 298C1041 298 1064 321 1064 350C1064 379 1041 402 1012 402C983 402 960 379 960 350Z" fill="#38BDF8" />
+  <path d="M986 350H1038" stroke="#0F172A" stroke-width="10" stroke-linecap="round" />
+</svg>

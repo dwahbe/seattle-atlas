@@ -8,9 +8,10 @@ interface ZoningSummaryProps {
   zoneInfo: ZoneInfo;
   /** Compact mode for mobile */
   compact?: boolean;
+  landmark?: 'space-needle' | null;
 }
 
-export function ZoningSummary({ zoneInfo, compact = false }: ZoningSummaryProps) {
+export function ZoningSummary({ zoneInfo, compact = false, landmark = null }: ZoningSummaryProps) {
   return (
     <div
       className={`border-b border-[rgb(var(--border-color))] ${compact ? 'px-4 pt-3 pb-2' : 'p-4'}`}
@@ -20,6 +21,7 @@ export function ZoningSummary({ zoneInfo, compact = false }: ZoningSummaryProps)
         category={zoneInfo.category}
         maxHeightFt={zoneInfo.maxHeightFt}
         code={zoneInfo.code}
+        landmark={landmark}
         className={compact ? 'mb-3' : 'mb-4'}
       />
 

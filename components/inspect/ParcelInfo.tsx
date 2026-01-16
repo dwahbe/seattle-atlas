@@ -137,5 +137,5 @@ function formatSqFt(sqft: number): string {
  */
 function formatPresentUse(presentUse: string | null | undefined): string {
   if (!presentUse) return '';
-  return presentUse.replace(/\(/g, ' (').replace(/  +/g, ' ').trim();
+  return presentUse.replace(/\//g, ' / ').replace(/\(/g, ' (').replace(/  +/g, ' ').trim();
 }

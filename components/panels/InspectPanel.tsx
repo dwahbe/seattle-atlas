@@ -84,7 +84,9 @@ export function InspectPanel({
       {/* Content */}
       <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
         {/* Zoning Summary */}
-        {data.isZoning && data.zoneInfo && <ZoningSummary zoneInfo={data.zoneInfo} />}
+        {data.isZoning && data.zoneInfo && (
+          <ZoningSummary zoneInfo={data.zoneInfo} landmark={data.landmark} />
+        )}
 
         {/* Walk Score */}
         {data.isZoning && (

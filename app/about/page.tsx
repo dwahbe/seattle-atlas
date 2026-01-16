@@ -1,10 +1,13 @@
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ThemeToggle, Footer } from '@/components/ui';
 
 export const metadata = {
   title: 'About',
   description:
     'About Seattle Atlas – an open civic data platform for understanding land use and transit.',
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function AboutPage() {
@@ -153,30 +156,7 @@ export default function AboutPage() {
         </article>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-[rgb(var(--border-color))] mt-auto">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-[rgb(var(--text-secondary))]">
-              Built by{' '}
-              <a
-                href="https://dylanwahbe.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[rgb(var(--accent))] hover:underline"
-              >
-                Dylan Wahbe
-              </a>
-            </p>
-            <Link
-              href="/map"
-              className="text-sm text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-            >
-              Map
-            </Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
 import { PanelSearch } from '@/components/search';
+import { NavMenu } from '@/components/ui';
 import { useUrlState } from '@/hooks/useUrlState';
 import { useMapState } from '@/hooks/useMapState';
 import { useLayers } from '@/hooks/useLayers';
@@ -64,13 +65,10 @@ export function MapContainer() {
   });
 
   // Theme
-  const { resolvedTheme, setTheme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   // Responsive
   const isMobile = useIsMobile();
-
-  // Panel collapse state
-  const [controlPanelCollapsed, setControlPanelCollapsed] = useState(false);
 
   // Neighborhood highlight state
   const [highlightedBounds, setHighlightedBounds] = useState<
@@ -280,6 +278,7 @@ export function MapContainer() {
         inspectedFeature={inspectedFeature}
         highlightedBounds={highlightedBounds}
         markerPosition={markerPosition}
+        showControls={!isMobile}
       />
 
       {/* Map Layers Manager */}
@@ -293,9 +292,12 @@ export function MapContainer() {
       {isMobile ? (
         /* Mobile Layout */
         <>
-          {/* Floating search bar at top */}
-          <div className="absolute top-4 left-4 right-4 z-20">
-            <PanelSearch onSelect={handleSearchSelect} variant="mobile" />
+          {/* Floating search bar and nav at top */}
+          <div className="absolute top-4 left-4 right-4 z-20 flex gap-2">
+            <div className="flex-1">
+              <PanelSearch onSelect={handleSearchSelect} variant="mobile" />
+            </div>
+            <NavMenu />
           </div>
 
           <MobileDrawer
@@ -326,10 +328,17 @@ export function MapContainer() {
             onTransitToggle={handleTransitToggle}
             onBikeToggle={handleBikeToggle}
             onFilterChange={setFilter}
-            isCollapsed={controlPanelCollapsed}
-            onToggleCollapse={() => setControlPanelCollapsed(!controlPanelCollapsed)}
             onSearchSelect={handleSearchSelect}
           />
+
+          {/* Nav Menu (top-right, shifts left when InspectPanel is open) */}
+          <div
+            className={`absolute top-4 z-20 transition-all duration-300 ${
+              inspectedFeature ? 'right-100' : 'right-4'
+            }`}
+          >
+            <NavMenu />
+          </div>
 
           {/* Inspect Panel (right) */}
           <InspectPanel

@@ -24,6 +24,7 @@ interface MapGLProps {
   inspectedFeature: InspectedFeature | null;
   highlightedBounds?: [number, number, number, number] | null;
   markerPosition?: [number, number] | null;
+  showControls?: boolean;
 }
 
 const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
@@ -41,6 +42,7 @@ export function MapGL({
   inspectedFeature,
   highlightedBounds,
   markerPosition,
+  showControls = true,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -71,17 +73,19 @@ export function MapGL({
       attributionControl: false,
     });
 
-    // Add navigation control
-    mapInstance.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+    if (showControls) {
+      // Add navigation control
+      mapInstance.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
-    // Add scale control
-    mapInstance.addControl(
-      new mapboxgl.ScaleControl({ maxWidth: 100, unit: 'imperial' }),
-      'bottom-right'
-    );
+      // Add scale control
+      mapInstance.addControl(
+        new mapboxgl.ScaleControl({ maxWidth: 100, unit: 'imperial' }),
+        'bottom-right'
+      );
 
-    // Add attribution control
-    mapInstance.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
+      // Add attribution control
+      mapInstance.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-right');
+    }
 
     mapInstance.on('load', () => {
       map.current = mapInstance;

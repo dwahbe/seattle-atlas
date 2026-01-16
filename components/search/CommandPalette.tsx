@@ -41,8 +41,10 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
-  const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(null);
-  
+  const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(
+    null
+  );
+
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -307,10 +309,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
             ${isMobile ? 'max-h-[40vh]' : 'max-h-[50vh]'}
           `}
         >
-          <div
-            ref={listRef}
-            className="overflow-y-auto max-h-[inherit] overscroll-contain"
-          >
+          <div ref={listRef} className="overflow-y-auto max-h-[inherit] overscroll-contain">
             {/* Neighborhoods */}
             {filteredNeighborhoods.length > 0 && (
               <div className="py-1">
@@ -438,28 +437,28 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
               onClick={close}
               aria-hidden="true"
               style={{
-                animation: isClosing 
-                  ? 'fadeOut 150ms ease-out forwards' 
-                  : 'fadeIn 150ms ease-out',
+                animation: isClosing ? 'fadeOut 150ms ease-out forwards' : 'fadeIn 150ms ease-out',
                 willChange: 'opacity',
               }}
             />
             {/* Floating search panel - above the backdrop, expands wider on desktop */}
             <div
               className="fixed z-50"
-              style={{
-                top: position.top,
-                left: position.left,
-                // Use CSS custom properties for width animation
-                '--start-width': `${position.width}px`,
-                '--end-width': `${isMobile ? position.width : Math.max(position.width, 420)}px`,
-                width: isMobile ? position.width : Math.max(position.width, 420),
-                animation: isClosing 
-                  ? 'searchCollapse 150ms ease-out forwards' 
-                  : 'searchExpand 150ms ease-out forwards',
-                transformOrigin: 'top left',
-                willChange: 'transform, opacity, width',
-              } as React.CSSProperties}
+              style={
+                {
+                  top: position.top,
+                  left: position.left,
+                  // Use CSS custom properties for width animation
+                  '--start-width': `${position.width}px`,
+                  '--end-width': `${isMobile ? position.width : Math.max(position.width, 420)}px`,
+                  width: isMobile ? position.width : Math.max(position.width, 420),
+                  animation: isClosing
+                    ? 'searchCollapse 150ms ease-out forwards'
+                    : 'searchExpand 150ms ease-out forwards',
+                  transformOrigin: 'top left',
+                  willChange: 'transform, opacity, width',
+                } as React.CSSProperties
+              }
             >
               {searchUI}
             </div>
@@ -505,9 +504,9 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       {/* Inline trigger - invisible when portal is open (no transition to avoid double-vision) */}
       <div
         ref={triggerRef}
-        style={{ 
+        style={{
           opacity: isVisible ? 0 : 1,
-          pointerEvents: isVisible ? 'none' : 'auto'
+          pointerEvents: isVisible ? 'none' : 'auto',
         }}
       >
         {searchUI}

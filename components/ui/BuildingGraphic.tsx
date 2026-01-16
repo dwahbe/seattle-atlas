@@ -6,6 +6,7 @@ interface BuildingGraphicProps {
   category: ZoneInfo['category'];
   maxHeightFt: number;
   code: string;
+  landmark?: LandmarkType | null;
   className?: string;
 }
 
@@ -19,6 +20,8 @@ type BuildingType =
   | 'shopfront'
   | 'mixeduse'
   | 'warehouse';
+
+type LandmarkType = 'space-needle';
 
 function getBuildingType(
   category: ZoneInfo['category'],
@@ -62,7 +65,8 @@ function getBuildingType(
 }
 
 const STROKE_COLOR = 'rgb(var(--text-primary))';
-const STROKE_WIDTH = 1.5;
+const STROKE_WIDTH = 1.25;
+const THIN_STROKE_WIDTH = 1;
 
 // Small house with pitched roof
 function HouseGraphic() {
@@ -123,29 +127,91 @@ function HouseGraphic() {
 
       {/* ADU/small building */}
       <rect
-        x="70"
-        y="55"
-        width="20"
-        height="20"
+        x="68"
+        y="52"
+        width="24"
+        height="23"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
       <polyline
-        points="67,55 80,45 93,55"
+        points="66,52 80,40 94,52"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
       <rect
-        x="76"
-        y="62"
-        width="8"
-        height="8"
+        x="74"
+        y="60"
+        width="12"
+        height="10"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
+    </svg>
+  );
+}
+
+// Townhouses / small apartments - varied rooflines and stoops
+function TownhouseGraphic() {
+  return (
+    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
+      {/* Ground line */}
+      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
+
+      {/* Row of attached units */}
+      {[10, 38, 66, 94].map((x, index) => (
+        <g key={x}>
+          <rect
+            x={x}
+            y={28}
+            width={24}
+            height={47}
+            fill="none"
+            stroke={STROKE_COLOR}
+            strokeWidth={STROKE_WIDTH}
+          />
+          {/* Alternating roofline */}
+          {index % 2 === 0 ? (
+            <polyline
+              points={`${x - 2},28 ${x + 12},18 ${x + 26},28`}
+              fill="none"
+              stroke={STROKE_COLOR}
+              strokeWidth={STROKE_WIDTH}
+            />
+          ) : (
+            <line
+              x1={x - 1}
+              y1={28}
+              x2={x + 25}
+              y2={28}
+              stroke={STROKE_COLOR}
+              strokeWidth={STROKE_WIDTH}
+            />
+          )}
+          {/* Door + window */}
+          <rect
+            x={x + 7}
+            y={60}
+            width={10}
+            height={15}
+            fill="none"
+            stroke={STROKE_COLOR}
+            strokeWidth={STROKE_WIDTH}
+          />
+          <rect
+            x={x + 6}
+            y={40}
+            width={12}
+            height={10}
+            fill="none"
+            stroke={STROKE_COLOR}
+            strokeWidth={THIN_STROKE_WIDTH}
+          />
+        </g>
+      ))}
     </svg>
   );
 }
@@ -168,7 +234,7 @@ function LowriseGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
       {/* Windows */}
-      {[35, 48, 61].map((y) => (
+      {[33, 45, 57].map((y) => (
         <g key={y}>
           <rect
             x="14"
@@ -177,7 +243,7 @@ function LowriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="28"
@@ -186,16 +252,16 @@ function LowriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
       {/* Door */}
       <rect
         x="21"
-        y="63"
-        width="8"
-        height="12"
+        y="65"
+        width="7"
+        height="10"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
@@ -221,7 +287,7 @@ function LowriseGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="63"
@@ -230,7 +296,7 @@ function LowriseGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -246,7 +312,7 @@ function LowriseGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
       {/* Windows */}
-      {[35, 48, 61].map((y) => (
+      {[33, 45, 57].map((y) => (
         <g key={y}>
           <rect
             x="84"
@@ -255,7 +321,7 @@ function LowriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="98"
@@ -264,7 +330,7 @@ function LowriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -290,8 +356,8 @@ function MidriseGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
 
-      {/* Windows grid - 6 floors */}
-      {[15, 25, 35, 45, 55, 65].map((y) => (
+      {/* Windows grid - 5 floors */}
+      {[16, 28, 40, 52].map((y) => (
         <g key={y}>
           <rect
             x="30"
@@ -300,7 +366,7 @@ function MidriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="46"
@@ -309,7 +375,7 @@ function MidriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="62"
@@ -318,26 +384,10 @@ function MidriseGraphic() {
             height="6"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
-
-      {/* Fire escape - zigzag stairs */}
-      <g stroke={STROKE_COLOR} strokeWidth={1} fill="none">
-        <line x1="78" y1="15" x2="85" y2="15" />
-        <line x1="85" y1="15" x2="85" y2="25" />
-        <line x1="78" y1="25" x2="85" y2="25" />
-        <line x1="78" y1="25" x2="78" y2="35" />
-        <line x1="78" y1="35" x2="85" y2="35" />
-        <line x1="85" y1="35" x2="85" y2="45" />
-        <line x1="78" y1="45" x2="85" y2="45" />
-        <line x1="78" y1="45" x2="78" y2="55" />
-        <line x1="78" y1="55" x2="85" y2="55" />
-        <line x1="85" y1="55" x2="85" y2="65" />
-        <line x1="78" y1="65" x2="85" y2="65" />
-        <line x1="85" y1="65" x2="85" y2="75" />
-      </g>
 
       {/* Entrance */}
       <rect
@@ -372,10 +422,18 @@ function HighriseGraphic() {
       />
 
       {/* Rooftop structure */}
-      <rect x="50" y="0" width="10" height="5" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
+      <rect
+        x="50"
+        y="0"
+        width="10"
+        height="5"
+        fill="none"
+        stroke={STROKE_COLOR}
+        strokeWidth={THIN_STROKE_WIDTH}
+      />
 
       {/* Windows grid - many floors */}
-      {[10, 18, 26, 34, 42, 50, 58, 66].map((y) => (
+      {[12, 22, 32, 42, 52, 62].map((y) => (
         <g key={y}>
           <rect
             x="39"
@@ -384,7 +442,7 @@ function HighriseGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.75}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="52"
@@ -393,7 +451,7 @@ function HighriseGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.75}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="65"
@@ -402,7 +460,7 @@ function HighriseGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.75}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -428,7 +486,7 @@ function HighriseGraphic() {
         height="4"
         fill="none"
         stroke={STROKE_COLOR}
-        strokeWidth={0.75}
+        strokeWidth={THIN_STROKE_WIDTH}
       />
       <rect
         x="91"
@@ -437,7 +495,7 @@ function HighriseGraphic() {
         height="4"
         fill="none"
         stroke={STROKE_COLOR}
-        strokeWidth={0.75}
+        strokeWidth={THIN_STROKE_WIDTH}
       />
       <rect
         x="84"
@@ -446,7 +504,7 @@ function HighriseGraphic() {
         height="4"
         fill="none"
         stroke={STROKE_COLOR}
-        strokeWidth={0.75}
+        strokeWidth={THIN_STROKE_WIDTH}
       />
       <rect
         x="91"
@@ -455,7 +513,7 @@ function HighriseGraphic() {
         height="4"
         fill="none"
         stroke={STROKE_COLOR}
-        strokeWidth={0.75}
+        strokeWidth={THIN_STROKE_WIDTH}
       />
     </svg>
   );
@@ -479,12 +537,8 @@ function SkyscraperGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
 
-      {/* Spire/antenna */}
-      <line x1="62.5" y1="2" x2="62.5" y2="-5" stroke={STROKE_COLOR} strokeWidth={1} />
-      <polygon points="59,2 62.5,-2 66,2" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
-
       {/* Window grid - many floors */}
-      {[6, 14, 22, 30, 38, 46, 54, 62, 70].map((y) => (
+      {[8, 18, 28, 38, 48, 58, 68].map((y) => (
         <g key={y}>
           <rect
             x="48"
@@ -493,7 +547,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="55"
@@ -502,7 +556,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="62"
@@ -511,7 +565,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="69"
@@ -520,7 +574,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -544,7 +598,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="25"
@@ -553,7 +607,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -577,7 +631,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="101"
@@ -586,7 +640,7 @@ function SkyscraperGraphic() {
             height="5"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={0.5}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -635,17 +689,6 @@ function ShopfrontGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
 
-      {/* Another storefront */}
-      <rect
-        x="77"
-        y="55"
-        width="18"
-        height="20"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
       {/* Awning */}
       <polyline
         points="25,55 27,50 53,50 55,55"
@@ -653,15 +696,9 @@ function ShopfrontGraphic() {
         stroke={STROKE_COLOR}
         strokeWidth={1}
       />
-      <polyline
-        points="77,55 79,50 93,50 95,55"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={1}
-      />
 
       {/* Upper floor windows */}
-      {[35, 45].map((y) => (
+      {[35].map((y) => (
         <g key={y}>
           <rect
             x="28"
@@ -744,7 +781,7 @@ function MixeduseGraphic() {
       />
 
       {/* Upper windows - residential */}
-      {[20, 32, 44].map((y) => (
+      {[22, 36, 50].map((y) => (
         <g key={y}>
           <rect
             x="20"
@@ -753,7 +790,7 @@ function MixeduseGraphic() {
             height="8"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="36"
@@ -762,7 +799,7 @@ function MixeduseGraphic() {
             height="8"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="52"
@@ -771,7 +808,7 @@ function MixeduseGraphic() {
             height="8"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -787,19 +824,19 @@ function MixeduseGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
       <rect
-        x="75"
-        y="60"
-        width="12"
-        height="15"
+        x="76"
+        y="62"
+        width="10"
+        height="13"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
       <rect
-        x="90"
-        y="60"
-        width="10"
-        height="15"
+        x="92"
+        y="62"
+        width="8"
+        height="13"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
@@ -813,7 +850,7 @@ function MixeduseGraphic() {
             height="7"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
           <rect
             x="92"
@@ -822,7 +859,7 @@ function MixeduseGraphic() {
             height="7"
             fill="none"
             stroke={STROKE_COLOR}
-            strokeWidth={1}
+            strokeWidth={THIN_STROKE_WIDTH}
           />
         </g>
       ))}
@@ -880,8 +917,24 @@ function WarehouseGraphic() {
       <line x1="59" y1="50" x2="59" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
 
       {/* Small windows */}
-      <rect x="24" y="40" width="10" height="6" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
-      <rect x="54" y="40" width="10" height="6" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
+      <rect
+        x="24"
+        y="40"
+        width="10"
+        height="6"
+        fill="none"
+        stroke={STROKE_COLOR}
+        strokeWidth={THIN_STROKE_WIDTH}
+      />
+      <rect
+        x="54"
+        y="40"
+        width="10"
+        height="6"
+        fill="none"
+        stroke={STROKE_COLOR}
+        strokeWidth={THIN_STROKE_WIDTH}
+      />
 
       {/* Smaller office/industrial building */}
       <rect
@@ -902,15 +955,62 @@ function WarehouseGraphic() {
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
-      <rect x="90" y="50" width="6" height="6" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
-      <rect x="99" y="50" width="6" height="6" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
+      <rect
+        x="90"
+        y="50"
+        width="6"
+        height="6"
+        fill="none"
+        stroke={STROKE_COLOR}
+        strokeWidth={THIN_STROKE_WIDTH}
+      />
+      <rect
+        x="99"
+        y="50"
+        width="6"
+        height="6"
+        fill="none"
+        stroke={STROKE_COLOR}
+        strokeWidth={THIN_STROKE_WIDTH}
+      />
+    </svg>
+  );
+}
+
+// Space Needle landmark (provided SVG with site colors)
+function SpaceNeedleGraphic() {
+  return (
+    <svg viewBox="0 0 1900 2386.4976" className="w-full h-full" aria-hidden="true">
+      <g transform="translate(-23.87359,349.04765)">
+        <path
+          d="m 810.21784,-49.547399 120.80132,125.606446 195.56434,0.242389 86.1958,-126.193314 c 9.2891,-13.59947 -71.7513,-5.122509 -71.7513,-5.122509 l -0.4712,-31.927892 -91.9737,0 -31.778,-262.105371 -42.43304,260.768922 -96.23434,0.870763 -2.88891,32.393578 c 0,0 -80.83399,-9.984851 -65.03097,5.466988 z"
+          fill={STROKE_COLOR}
+        />
+        <g transform="translate(1024,1024)">
+          <g>
+            <path
+              d="m -35.1976,-494.315 0,1507.765 c 26.38585,0 35.809365,0 35.809365,0 l 0,-1507.765 c 0,0 -13.192965,0 -35.809365,0 z M -478.103,1013.45 c 246.896,0 371.287,0 429.7125,0 l 0,-1507.765 c -39.5788,0 -99.8895,0 -158.3155,0 C 32.6517,525.31 -402.715,922.982 -478.103,1013.45 Z m 399.5572,-64.082 -312.8602,0 c 20.731,-24.501 45.232,-54.657 69.734,-92.351 l 241.2415,0 0,92.351 1.8847,0 z m 0,-150.776 -205.4322,0 c 16.962,-28.271 33.924,-58.426 49.002,-92.351 l 156.4302,0 0,92.351 z m 0,-135.699 -135.6982,0 c 13.193,-28.271 24.501,-60.311 35.809,-92.35 l 101.7739,0 0,92.35 -1.8847,0 z m 0,-135.699 -88.5812,0 c 9.424,-30.155 16.963,-60.31 24.501,-92.35 l 64.0802,0 0,92.35 0,0 z m 0,-784.036 -50.8872,0 c -3.769,-30.155 -9.423,-60.311 -15.077,-92.351 l 65.9642,0 0,92.351 z m 0,-135.699 -75.3882,0 c -5.654,-30.155 -13.193,-60.31 -20.732,-92.35 l 94.2355,0 0,92.35 1.8847,0 z"
+              fill="rgb(var(--text-secondary))"
+            />
+            <path
+              d="m 36.4211,-494.315 0,1507.765 c -26.3858,0 -35.809333,0 -35.809333,0 l 0,-1507.765 c 0,0 13.192933,0 35.809333,0 z M 479.326,1013.45 c -246.896,0 -371.286,0 -429.712,0 l 0,-1507.765 c 39.5788,0 99.889,0 158.315,0 C -31.4282,525.31 403.938,922.982 479.326,1013.45 Z m -399.5567,-64.082 312.8607,0 c -20.732,-24.501 -45.233,-54.657 -69.734,-92.351 l -241.242,0 0,92.351 -1.8847,0 z m 0,-150.776 205.4327,0 C 268.24,770.321 251.277,740.166 236.2,706.241 l -156.4307,0 0,92.351 z m 0,-135.699 135.6987,0 c -13.193,-28.271 -24.501,-60.311 -35.809,-92.35 l -101.7744,0 0,92.35 1.8847,0 z m 0,-135.699 88.5807,0 c -9.423,-30.155 -16.962,-60.31 -24.501,-92.35 l -64.0797,0 0,92.35 0,0 z m 0,-784.036 50.8867,0 c 3.77,-30.155 9.424,-60.311 15.078,-92.351 l -65.9647,0 0,92.351 z m 0,-135.699 75.3877,0 c 5.655,-30.155 13.193,-60.31 20.732,-92.35 l -94.235,0 0,92.35 -1.8847,0 z"
+              fill="rgb(var(--text-secondary))"
+            />
+            <path
+              d="m 535.84412,-845.21029 -1075.37953,3.62729 c -25.67386,0.0866 -44.591,20.269 -44.591,44.591 0,25.673 20.268,44.591 44.591,44.591 l 89.54141,0 67.562,116.206 c 17.566,28.376 48.644,47.294 81.074,47.294 l 22.971,0 78.372,67.561 c 18.917,17.567 44.591,27.025 70.264,27.025 l 259.438,0 c 25.673,0 51.347,-9.458 70.264,-27.025 l 78.372,-67.561 22.971,0 c 33.781,0 64.86,-17.567 81.074,-47.294 l 67.562,-116.206 85.91412,-3.62729 c 25.65114,-1.08299 44.591,-20.269 44.591,-44.591 1.352,-24.322 -18.91714,-44.6776 -44.591,-44.591 z M 254.001,-746.996 l 0,133.772 -105.397,0 0,-133.772 z m -133.773,0 0,133.772 -105.3963,0 0,-133.772 z m -135.1235,0 0,133.772 -105.3965,0 0,-133.772 z m -135.1235,0 0,133.772 -105.397,0 0,-133.772 z m -135.124,135.124 -20.269,0 c -21.619,0 -40.537,-10.81 -51.347,-29.728 l -60.805,-105.396 132.421,0 z m 644.54,-29.728 c -10.81,17.566 -29.727,29.728 -51.347,29.728 l -20.268,0 0,-133.773 132.421,0 z m -5.405,-335.107 C 318.86,-1006.43 275.621,-1024 229.679,-1024 l -459.421,0 c -45.942,0 -90.533,16.21 -124.314,47.293 l -137.827,120.26 983.702,0 z"
+              fill={STROKE_COLOR}
+              fillOpacity={0.85}
+            />
+          </g>
+        </g>
+      </g>
     </svg>
   );
 }
 
 const BUILDING_COMPONENTS: Record<BuildingType, React.FC> = {
   house: HouseGraphic,
-  townhouse: LowriseGraphic,
+  townhouse: TownhouseGraphic,
   lowrise: LowriseGraphic,
   midrise: MidriseGraphic,
   highrise: HighriseGraphic,
@@ -918,6 +1018,10 @@ const BUILDING_COMPONENTS: Record<BuildingType, React.FC> = {
   shopfront: ShopfrontGraphic,
   mixeduse: MixeduseGraphic,
   warehouse: WarehouseGraphic,
+};
+
+const LANDMARK_COMPONENTS: Record<LandmarkType, React.FC> = {
+  'space-needle': SpaceNeedleGraphic,
 };
 
 const BUILDING_LABELS: Record<BuildingType, string> = {
@@ -932,10 +1036,25 @@ const BUILDING_LABELS: Record<BuildingType, string> = {
   warehouse: 'Industrial & Warehouse',
 };
 
-export function BuildingGraphic({ category, maxHeightFt, code, className }: BuildingGraphicProps) {
+const LANDMARK_LABELS: Record<LandmarkType, string> = {
+  'space-needle': 'Space Needle',
+};
+
+export function BuildingGraphic({
+  category,
+  maxHeightFt,
+  code,
+  landmark,
+  className,
+}: BuildingGraphicProps) {
   const buildingType = getBuildingType(category, maxHeightFt, code);
-  const BuildingComponent = BUILDING_COMPONENTS[buildingType];
-  const label = BUILDING_LABELS[buildingType];
+  const hasLandmark = Boolean(landmark && LANDMARK_COMPONENTS[landmark]);
+  const BuildingComponent = hasLandmark
+    ? LANDMARK_COMPONENTS[landmark as LandmarkType]
+    : BUILDING_COMPONENTS[buildingType];
+  const label = hasLandmark
+    ? LANDMARK_LABELS[landmark as LandmarkType]
+    : BUILDING_LABELS[buildingType];
 
   return (
     <div className={`${className || ''}`}>

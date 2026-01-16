@@ -7,6 +7,8 @@ import { Switch, ThemeToggle } from '@/components/ui';
 import type { LayerConfig, FilterState, SearchResult } from '@/types';
 import Link from 'next/link';
 
+const DATA_FRESHNESS = 'Jan 2025';
+
 // Define base layer options (mutually exclusive)
 const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
 
@@ -24,8 +26,6 @@ interface ControlPanelProps {
   onTransitToggle: (enabled: boolean) => void;
   onBikeToggle: (enabled: boolean) => void;
   onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
   onSearchSelect: (result: SearchResult) => void;
 }
 
@@ -37,8 +37,6 @@ export function ControlPanel({
   onTransitToggle,
   onBikeToggle,
   onFilterChange,
-  isCollapsed,
-  onToggleCollapse,
   onSearchSelect,
 }: ControlPanelProps) {
   // Determine which base layer is active (if any)
@@ -58,33 +56,6 @@ export function ControlPanel({
 
   return (
     <>
-      {/* Collapse toggle button - temporarily disabled */}
-      {/* <button
-        onClick={onToggleCollapse}
-        className={`
-          absolute top-[68px] z-20 p-2 
-          bg-[rgb(var(--panel-bg))] 
-          border border-[rgb(var(--border-color))]
-          rounded-r-md
-          hover:bg-[rgb(var(--secondary-bg))]
-          transition-all duration-300
-          ${isCollapsed ? '-left-px' : 'left-[319px]'}
-        `}
-        aria-label={isCollapsed ? 'Expand panel' : 'Collapse panel'}
-      >
-        <svg
-          className={`w-4 h-4 text-[rgb(var(--text-secondary))] transition-transform ${
-            isCollapsed ? '' : 'rotate-180'
-          }`}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button> */}
-
       {/* Panel */}
       <div
         className={`
@@ -98,7 +69,7 @@ export function ControlPanel({
       >
         {/* Header */}
         <div className="flex-none p-4 border-b border-[rgb(var(--border-color))]">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2 mb-3">
             <Link href="/" className="group">
               <div className="flex items-center gap-2">
                 <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
@@ -109,7 +80,6 @@ export function ControlPanel({
                 </span>
               </div>
             </Link>
-            <ThemeToggle />
           </div>
           {/* Search */}
           <PanelSearch onSelect={onSearchSelect} variant="desktop" />
@@ -196,7 +166,7 @@ export function ControlPanel({
                   <button
                     onClick={() => onBaseLayerChange('zoning')}
                     className={`
-                      px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                      touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                       ${
                         activeBaseLayer === 'zoning'
                           ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
@@ -209,7 +179,7 @@ export function ControlPanel({
                   <button
                     onClick={() => onBaseLayerChange('zoning_detailed')}
                     className={`
-                      px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                      touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                       ${
                         activeBaseLayer === 'zoning_detailed'
                           ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
@@ -224,15 +194,8 @@ export function ControlPanel({
             )}
 
             <div className="flex items-center justify-between">
-              <div className="flex gap-4 text-xs">
-                <Link
-                  href="/about"
-                  className="text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-                >
-                  About
-                </Link>
-              </div>
-              <p className="text-xs text-[rgb(var(--text-tertiary))]">Data: Jan 2025</p>
+              <ThemeToggle />
+              <p className="text-xs text-[rgb(var(--text-tertiary))]">Data: {DATA_FRESHNESS}</p>
             </div>
           </div>
         </div>

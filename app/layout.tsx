@@ -14,40 +14,57 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : 'https://seattleatlas.org');
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: 'Seattle Atlas – Seattle',
-    template: '%s | Seattle Atlas – Seattle',
+    default: 'Seattle Atlas – Seattle Zoning Map',
+    template: '%s | Seattle Atlas',
   },
   description:
-    'An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.',
+    'Interactive Seattle zoning map and planning atlas. Explore zoning rules, transit routes, and proposed land use changes across Seattle neighborhoods.',
   keywords: [
-    'Seattle',
-    'zoning',
-    'transit',
-    'urban planning',
-    'land use',
-    'city planning',
-    'civic data',
+    'Seattle zoning',
+    'Seattle zoning map',
+    'Seattle land use',
+    'Seattle transit',
+    'Seattle urban planning',
+    'Seattle housing',
+    'Seattle comprehensive plan',
+    'Seattle neighborhoods',
+    'zoning map',
     'GIS',
-    'maps',
   ],
   authors: [{ name: 'Seattle Atlas' }],
   openGraph: {
-    title: 'Seattle Atlas – Seattle',
+    title: 'Seattle Atlas – Seattle Zoning Map',
     description:
-      'An interactive zoning, transit, and fiscal atlas for Seattle. Explore what can be built where, what changes are proposed, and what transit serves each area.',
+      'Interactive Seattle zoning map and planning atlas. Explore zoning rules, transit routes, and proposed land use changes.',
+    url: siteUrl,
+    siteName: 'Seattle Atlas',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Seattle Atlas – Seattle',
-    description: 'An interactive zoning, transit, and fiscal atlas for Seattle.',
+    title: 'Seattle Atlas – Seattle Zoning Map',
+    description: 'Interactive Seattle zoning map. Explore zoning, transit, and proposed changes.',
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

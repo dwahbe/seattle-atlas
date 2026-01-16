@@ -69,11 +69,14 @@ export function useTheme() {
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, [theme, mounted]);
 
-  const setTheme = useCallback((newTheme: Theme) => {
-    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-    applyThemeState(newTheme);
-    window.dispatchEvent(new Event(THEME_EVENT));
-  }, [applyThemeState]);
+  const setTheme = useCallback(
+    (newTheme: Theme) => {
+      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+      applyThemeState(newTheme);
+      window.dispatchEvent(new Event(THEME_EVENT));
+    },
+    [applyThemeState]
+  );
 
   useEffect(() => {
     if (!mounted) return;

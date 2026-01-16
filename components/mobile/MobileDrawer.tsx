@@ -129,7 +129,7 @@ export function MobileDrawer({
 
           {/* Header */}
           <div className="flex-none px-4 pb-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center">
               <Link href="/" className="group flex items-center min-h-[36px]">
                 <div className="flex items-center gap-2">
                   <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
@@ -140,15 +140,12 @@ export function MobileDrawer({
                   </span>
                 </div>
               </Link>
-              <div className="flex items-center">
-                <ThemeToggle />
-              </div>
             </div>
           </div>
 
           {/* Scrollable content area - height calculated based on current snap point */}
           {/* data-vaul-no-drag prevents scroll gestures from resizing the drawer */}
-          <div 
+          <div
             className="overflow-y-auto overscroll-contain"
             style={{ maxHeight: scrollableMaxHeight }}
             data-vaul-no-drag
@@ -172,7 +169,7 @@ export function MobileDrawer({
 
                 {/* Zoning Summary - compact */}
                 {data.isZoning && data.zoneInfo && (
-                  <ZoningSummary zoneInfo={data.zoneInfo} compact />
+                  <ZoningSummary zoneInfo={data.zoneInfo} compact landmark={data.landmark} />
                 )}
 
                 {/* Walk Score - compact */}
@@ -333,14 +330,14 @@ export function MobileDrawer({
                         <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
                           Zoning View
                         </span>
-                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--panel-bg))]">
+                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--secondary-hover))]">
                           <button
                             onClick={() => onBaseLayerChange('zoning')}
                             className={`
-                              px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                              touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                               ${
                                 activeBaseLayer === 'zoning'
-                                  ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                  ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
                                   : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
                               }
                             `}
@@ -350,10 +347,10 @@ export function MobileDrawer({
                           <button
                             onClick={() => onBaseLayerChange('zoning_detailed')}
                             className={`
-                              px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                              touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                               ${
                                 activeBaseLayer === 'zoning_detailed'
-                                  ? 'bg-[rgb(var(--secondary-hover))] text-[rgb(var(--text-primary))] shadow-sm'
+                                  ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
                                   : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
                               }
                             `}
@@ -365,12 +362,7 @@ export function MobileDrawer({
                     )}
 
                     <div className="flex items-center justify-between">
-                      <Link
-                        href="/about"
-                        className="text-xs text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors"
-                      >
-                        About
-                      </Link>
+                      <ThemeToggle />
                       <span className="text-xs text-[rgb(var(--text-tertiary))]">
                         Data: Jan 2025
                       </span>

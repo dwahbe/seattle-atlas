@@ -4,8 +4,11 @@ import { useState, useEffect, useMemo } from 'react';
 import type { InspectedFeature, WalkScoreData, PermitsData, LayerConfig, Proposal } from '@/types';
 import { getZoneInfo, type ZoneInfo } from '@/lib/zoning-info';
 import { isZoningLayer, isTransitLayer } from '@/lib/property-display';
-import { getRepresentativePoint } from '@/lib/spatial';
+import { getRepresentativePoint, isWithinRadius } from '@/lib/spatial';
 import { reverseGeocode } from '@/lib/mapbox';
+
+const SPACE_NEEDLE_COORD: [number, number] = [-122.3493, 47.6205];
+const SPACE_NEEDLE_RADIUS_METERS = 350;
 
 // ============================================================================
 // Types
@@ -56,6 +59,9 @@ export interface InspectData {
 
   // Related proposals
   relatedProposals: Proposal[];
+
+  // Landmark (derived)
+  landmark: 'space-needle' | null;
 }
 
 // ============================================================================
@@ -101,6 +107,17 @@ export function useInspectData(
     if (!feature?.geometry) return null;
     return getRepresentativePoint(feature.geometry);
   }, [feature?.geometry]);
+
+  // Derived: landmark detection (Space Needle)
+  const landmark = useMemo<'space-needle' | null>(() => {
+    if (!isZoning) return null;
+    const point = clickPoint || featurePoint;
+    if (!point) return null;
+    if (isWithinRadius(SPACE_NEEDLE_COORD, point, SPACE_NEEDLE_RADIUS_METERS)) {
+      return 'space-needle';
+    }
+    return null;
+  }, [clickPoint, featurePoint, isZoning]);
 
   // Derived: related proposals
   const relatedProposals = useMemo(
@@ -195,5 +212,6 @@ export function useInspectData(
     parcelData,
     isLoadingParcel,
     relatedProposals,
+    landmark,
   };
 }
