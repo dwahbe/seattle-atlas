@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ThemeToggle, Footer } from '@/components/ui';
 
@@ -45,6 +46,39 @@ const faqs = [
   },
 ];
 
+const footnoteRegex = /\[(\d+)\]/g;
+
+function renderAnswerWithFootnotes(answer: string) {
+  const nodes: (string | ReactNode)[] = [];
+  let lastIndex = 0;
+
+  for (const match of answer.matchAll(footnoteRegex)) {
+    const matchIndex = match.index ?? 0;
+    if (matchIndex > lastIndex) {
+      nodes.push(answer.slice(lastIndex, matchIndex));
+    }
+
+    const footnoteNumber = match[1];
+    nodes.push(
+      <sup key={`${footnoteNumber}-${matchIndex}`}>
+        [
+        <a href={`#fn-${footnoteNumber}`} className="text-accent hover:underline">
+          {footnoteNumber}
+        </a>
+        ]
+      </sup>
+    );
+
+    lastIndex = matchIndex + match[0].length;
+  }
+
+  if (lastIndex < answer.length) {
+    nodes.push(answer.slice(lastIndex));
+  }
+
+  return nodes;
+}
+
 export default function SeattleZoningPage() {
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -90,7 +124,7 @@ export default function SeattleZoningPage() {
               href="/map"
               className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
-              ← Back to Map
+              View Map
             </Link>
             <ThemeToggle />
           </div>
@@ -325,7 +359,7 @@ export default function SeattleZoningPage() {
                 {faqs.map((faq, index) => (
                   <div key={index} className="space-y-2">
                     <h3 className="font-medium text-text-primary">{faq.question}</h3>
-                    <p className="text-sm">{faq.answer}</p>
+                    <p className="text-sm">{renderAnswerWithFootnotes(faq.answer)}</p>
                   </div>
                 ))}
               </div>
