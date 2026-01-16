@@ -41,6 +41,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const [collapsedHeight, setCollapsedHeight] = useState<number | null>(null);
   const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(
     null
   );
@@ -86,6 +87,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
         left: rect.left,
         width: rect.width,
       });
+      setCollapsedHeight(rect.height);
     }
     setIsOpen(true);
     setQuery('');
@@ -104,6 +106,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       setResults([]);
       setSelectedIndex(0);
       setPosition(null);
+      setCollapsedHeight(null);
     }, 150);
   }, []);
 
@@ -507,6 +510,8 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
         style={{
           opacity: isVisible ? 0 : 1,
           pointerEvents: isVisible ? 'none' : 'auto',
+          height: isVisible && collapsedHeight ? collapsedHeight : undefined,
+          overflow: isVisible ? 'hidden' : undefined,
         }}
       >
         {searchUI}
