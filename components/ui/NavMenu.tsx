@@ -45,16 +45,16 @@ export function NavMenu() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="
-          w-10 h-10 flex items-center justify-center rounded-lg
-          bg-panel-bg border border-border
-          shadow-lg hover:bg-secondary-bg transition-colors
+          touch-target-inline h-[42px] px-3 flex items-center justify-center rounded-lg
+          bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))]
+          hover:bg-secondary-bg transition-colors
         "
         aria-label="Navigation menu"
         aria-expanded={isOpen}
       >
         {isOpen ? (
           <svg
-            className="w-5 h-5 text-text-primary"
+            className="w-4 h-4 text-text-primary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -68,7 +68,7 @@ export function NavMenu() {
           </svg>
         ) : (
           <svg
-            className="w-5 h-5 text-text-primary"
+            className="w-4 h-4 text-text-primary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
