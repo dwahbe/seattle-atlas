@@ -11,64 +11,8 @@ export const size = {
 
 export const contentType = 'image/png';
 
-// Space Needle icon built with divs (Satori-compatible)
-function SpaceNeedleIcon({ size = 200 }: { size?: number }) {
-  const scale = size / 200;
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: size,
-        height: size * 1.4,
-      }}
-    >
-      {/* Spire/top triangle */}
-      <div
-        style={{
-          display: 'flex',
-          width: 0,
-          height: 0,
-          borderLeft: `${20 * scale}px solid transparent`,
-          borderRight: `${20 * scale}px solid transparent`,
-          borderBottom: `${50 * scale}px solid #38BDF8`,
-        }}
-      />
-      {/* Observation deck */}
-      <div
-        style={{
-          display: 'flex',
-          width: `${120 * scale}px`,
-          height: `${18 * scale}px`,
-          backgroundColor: '#38BDF8',
-          borderRadius: `${9 * scale}px`,
-        }}
-      />
-      {/* Shaft */}
-      <div
-        style={{
-          display: 'flex',
-          width: `${16 * scale}px`,
-          height: `${140 * scale}px`,
-          backgroundColor: '#38BDF8',
-          borderRadius: `${8 * scale}px`,
-        }}
-      />
-      {/* Base */}
-      <div
-        style={{
-          display: 'flex',
-          width: `${70 * scale}px`,
-          height: `${20 * scale}px`,
-          backgroundColor: '#38BDF8',
-          borderRadius: `${10 * scale}px`,
-          marginTop: `${-4 * scale}px`,
-        }}
-      />
-    </div>
-  );
-}
+// Base64-encoded Space Needle SVG icon
+const spaceNeedleSvg = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjE3MkEiIC8+CiAgPHJlY3QgeD0iOTYiIHk9Ijk2IiB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgcng9IjcyIiBzdHJva2U9IiMxRjI5MzciIHN0cm9rZS13aWR0aD0iMTAiIC8+CiAgPHBhdGggZD0iTTI1NiA5MkwzMDAgMTg4SDIxMkwyNTYgOTJaIiBmaWxsPSIjMzhCREY4IiAvPgogIDxyZWN0IHg9IjIzNiIgeT0iMTg4IiB3aWR0aD0iNDAiIGhlaWdodD0iMTkyIiByeD0iMjAiIGZpbGw9IiMzOEJERjgiIC8+CiAgPHJlY3QgeD0iMTgwIiB5PSIxODgiIHdpZHRoPSIxNTIiIGhlaWdodD0iMjIiIHJ4PSIxMSIgZmlsbD0iIzM4QkRGOCIgLz4KICA8cmVjdCB4PSIyMTIiIHk9IjM3MiIgd2lkdGg9Ijg4IiBoZWlnaHQ9IjI2IiByeD0iMTMiIGZpbGw9IiMzOEJERjgiIC8+Cjwvc3ZnPg==`;
 
 export default function Image() {
   return new ImageResponse(
@@ -93,7 +37,8 @@ export default function Image() {
           justifyContent: 'center',
         }}
       >
-        <SpaceNeedleIcon size={220} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={spaceNeedleSvg} width={240} height={240} alt="" />
       </div>
 
       {/* Right side - Text content (bolder, simpler for Twitter) */}
