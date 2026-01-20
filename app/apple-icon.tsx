@@ -9,11 +9,67 @@ export const size = {
 
 export const contentType = 'image/png';
 
+// Space Needle icon built with divs (Satori-compatible)
+function SpaceNeedleIcon({ iconSize = 100 }: { iconSize?: number }) {
+  const scale = iconSize / 100;
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}
+    >
+      {/* Spire/top triangle */}
+      <div
+        style={{
+          display: 'flex',
+          width: 0,
+          height: 0,
+          borderLeft: `${10 * scale}px solid transparent`,
+          borderRight: `${10 * scale}px solid transparent`,
+          borderBottom: `${25 * scale}px solid #38BDF8`,
+        }}
+      />
+      {/* Observation deck */}
+      <div
+        style={{
+          display: 'flex',
+          width: `${60 * scale}px`,
+          height: `${9 * scale}px`,
+          backgroundColor: '#38BDF8',
+          borderRadius: `${5 * scale}px`,
+        }}
+      />
+      {/* Shaft */}
+      <div
+        style={{
+          display: 'flex',
+          width: `${8 * scale}px`,
+          height: `${70 * scale}px`,
+          backgroundColor: '#38BDF8',
+          borderRadius: `${4 * scale}px`,
+        }}
+      />
+      {/* Base */}
+      <div
+        style={{
+          display: 'flex',
+          width: `${35 * scale}px`,
+          height: `${10 * scale}px`,
+          backgroundColor: '#38BDF8',
+          borderRadius: `${5 * scale}px`,
+          marginTop: `${-2 * scale}px`,
+        }}
+      />
+    </div>
+  );
+}
+
 export default function Icon() {
   return new ImageResponse(
     <div
       style={{
-        fontSize: 24,
         background: '#0F172A',
         width: '100%',
         height: '100%',
@@ -23,22 +79,7 @@ export default function Icon() {
         borderRadius: 40,
       }}
     >
-      <svg
-        width="140"
-        height="140"
-        viewBox="0 0 512 512"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Needle top/spire */}
-        <path d="M256 92L300 188H212L256 92Z" fill="#38BDF8" />
-        {/* Needle shaft */}
-        <rect x="236" y="188" width="40" height="192" rx="20" fill="#38BDF8" />
-        {/* Observation deck */}
-        <rect x="180" y="188" width="152" height="22" rx="11" fill="#38BDF8" />
-        {/* Base */}
-        <rect x="212" y="372" width="88" height="26" rx="13" fill="#38BDF8" />
-      </svg>
+      <SpaceNeedleIcon iconSize={120} />
     </div>,
     {
       ...size,
