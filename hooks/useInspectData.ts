@@ -177,10 +177,13 @@ export function useInspectData(
   }, [clickPoint, featurePoint, isZoning]);
 
   // Effect: Fetch Parcel Data from King County
+  // Use clickPoint if available (more accurate), otherwise fall back to centroid
   useEffect(() => {
-    if (!featurePoint || !isZoning) return;
+    if (!isZoning) return;
+    const point = clickPoint || featurePoint;
+    if (!point) return;
 
-    const [lng, lat] = featurePoint;
+    const [lng, lat] = point;
     setIsLoadingParcel(true);
 
     fetch(`/api/parcel?lat=${lat}&lng=${lng}`)
@@ -194,7 +197,7 @@ export function useInspectData(
       })
       .catch(() => setParcelData(null))
       .finally(() => setIsLoadingParcel(false));
-  }, [featurePoint, isZoning]);
+  }, [clickPoint, featurePoint, isZoning]);
 
   return {
     feature,
