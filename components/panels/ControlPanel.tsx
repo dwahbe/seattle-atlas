@@ -86,7 +86,7 @@ export function ControlPanel({
         </div>
 
         {/* Scrollable content */}
-        <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
+        <div className="flex-1 overflow-y-scroll">
           {/* Layers */}
           <div className="px-4 py-4">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
