@@ -82,7 +82,7 @@ export function InspectPanel({
       />
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto" style={{ scrollbarGutter: 'stable' }}>
+      <div className="flex-1 overflow-y-scroll">
         {/* Zoning Summary */}
         {data.isZoning && data.zoneInfo && (
           <ZoningSummary zoneInfo={data.zoneInfo} landmark={data.landmark} />
