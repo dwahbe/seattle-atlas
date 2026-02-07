@@ -19,18 +19,18 @@ export function ProposalsSection({ proposals, compact = false }: ProposalsSectio
       {proposals.slice(0, maxProposals).map((proposal) => (
         <div
           key={proposal.id}
-          className={`bg-[rgb(var(--secondary-bg))] rounded-lg ${compact ? 'p-3' : 'p-3'}`}
+          className={`bg-secondary-bg rounded-lg ${compact ? 'p-3' : 'p-3'}`}
         >
           <div className="flex items-start justify-between gap-2">
             <h4
-              className={`font-medium text-[rgb(var(--text-primary))] ${compact ? 'text-sm line-clamp-1' : 'text-sm'}`}
+              className={`font-medium text-text-primary ${compact ? 'text-sm line-clamp-1' : 'text-sm'}`}
             >
               {proposal.name}
             </h4>
             <StatusBadge status={proposal.status} />
           </div>
           <p
-            className={`text-xs text-[rgb(var(--text-secondary))] ${compact ? 'mt-1 line-clamp-2' : 'mt-2 line-clamp-3'}`}
+            className={`text-xs text-text-secondary ${compact ? 'mt-1 line-clamp-2' : 'mt-2 line-clamp-3'}`}
           >
             {proposal.summary}
           </p>
@@ -42,7 +42,7 @@ export function ProposalsSection({ proposals, compact = false }: ProposalsSectio
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-[rgb(var(--accent))] hover:underline"
+                  className="text-xs text-accent hover:underline"
                 >
                   {link.title} →
                 </a>

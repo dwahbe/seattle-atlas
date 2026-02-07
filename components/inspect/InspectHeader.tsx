@@ -47,7 +47,7 @@ export function InspectHeader({
         <div className="px-4 pb-2">
           <button
             onClick={onBack || onClose}
-            className="flex items-center gap-1 text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--accent-hover))] transition-colors -ml-1 py-1"
+            className="flex items-center gap-1 text-sm text-accent hover:text-accent-hover transition-colors -ml-1 py-1"
             aria-label="Back to layers"
           >
             <svg
@@ -64,11 +64,11 @@ export function InspectHeader({
         </div>
 
         {/* Title */}
-        <div className="px-4 pb-3 border-b border-[rgb(var(--border-color))]">
-          <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+        <div className="px-4 pb-3 border-b border-border">
+          <div className="text-xs font-medium uppercase tracking-wide text-text-secondary">
             {title}
           </div>
-          <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] flex items-center gap-1.5">
+          <h2 className="text-lg font-semibold text-text-primary flex items-center gap-1.5">
             {hasLocation && <LocationIcon />}
             {subtitle}
           </h2>
@@ -79,23 +79,23 @@ export function InspectHeader({
 
   // Desktop variant
   return (
-    <div className="flex-none flex items-center justify-between p-4 border-b border-[rgb(var(--border-color))]">
+    <div className="flex-none flex items-center justify-between p-4 border-b border-border">
       <div className="min-w-0 flex-1 mr-2">
-        <div className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+        <div className="text-xs font-medium uppercase tracking-wide text-text-secondary">
           {title}
         </div>
-        <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mt-1 truncate flex items-center gap-1.5">
+        <h2 className="text-lg font-semibold text-text-primary mt-1 truncate flex items-center gap-1.5">
           {hasLocation && <LocationIcon />}
           <span className="truncate">{subtitle}</span>
         </h2>
       </div>
       <button
         onClick={onClose}
-        className="p-2 hover:bg-[rgb(var(--secondary-bg))] rounded-md transition-colors"
+        className="p-2 hover:bg-secondary-bg rounded-md transition-colors"
         aria-label="Close panel"
       >
         <svg
-          className="w-5 h-5 text-[rgb(var(--text-secondary))]"
+          className="w-5 h-5 text-text-secondary"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -111,7 +111,7 @@ export function InspectHeader({
 function LocationIcon() {
   return (
     <svg
-      className="w-4 h-4 shrink-0 text-[rgb(var(--text-secondary))]"
+      className="w-4 h-4 shrink-0 text-text-secondary"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"

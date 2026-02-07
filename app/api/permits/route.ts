@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { permitsQuerySchema, parseSearchParams } from '@/lib/validation';
 
 export interface Permit {
   permit_number: string;
@@ -24,23 +25,12 @@ export interface PermitsResponse {
  * No API key required.
  */
 export async function GET(request: NextRequest): Promise<NextResponse<PermitsResponse>> {
-  const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get('lat');
-  const lng = searchParams.get('lng');
-  const radius = searchParams.get('radius') || '300'; // Default 300 meters
-  const limit = searchParams.get('limit') || '10';
-
-  // Validate required params
-  if (!lat || !lng) {
-    return NextResponse.json(
-      {
-        permits: [],
-        total: 0,
-        error: 'Missing required parameters: lat, lng',
-      },
-      { status: 400 }
-    );
+  const parsed = parseSearchParams(permitsQuerySchema, request.nextUrl.searchParams);
+  if (!parsed.success) {
+    return parsed.response as NextResponse<PermitsResponse>;
   }
+
+  const { lat, lng, radius, limit } = parsed.data;
 
   try {
     // Seattle Open Data - Building Permits dataset
@@ -53,7 +43,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<PermitsRes
     const query = new URLSearchParams({
       $where: `within_circle(location1, ${lat}, ${lng}, ${radius})`,
       $order: 'issueddate DESC',
-      $limit: limit,
+      $limit: String(limit),
     });
 
     const apiUrl = `${baseUrl}?${query.toString()}`;

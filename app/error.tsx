@@ -15,7 +15,7 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8 bg-[rgb(var(--panel-bg))]">
+    <div className="min-h-screen flex items-center justify-center p-8 bg-panel-bg">
       <div className="text-center max-w-md">
         <div className="w-20 h-20 mx-auto mb-6 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
           <svg
@@ -29,10 +29,10 @@ export default function Error({
             <path d="M12 9v4M12 17h.01" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-[rgb(var(--text-primary))] mb-3">
+        <h1 className="text-2xl font-bold text-text-primary mb-3">
           Something went wrong
         </h1>
-        <p className="text-[rgb(var(--text-secondary))] mb-8">
+        <p className="text-text-secondary mb-8">
           We encountered an unexpected error. Please try again or return to the map.
         </p>
         <div className="flex gap-4 justify-center">

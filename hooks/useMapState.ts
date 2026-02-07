@@ -60,7 +60,6 @@ export function useMapState(initialViewState: MapViewState) {
   const getMap = useCallback(() => mapRef.current, []);
 
   return {
-    map: mapRef.current,
     getMap,
     setMap,
     viewState,

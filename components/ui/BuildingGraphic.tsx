@@ -1061,7 +1061,7 @@ export function BuildingGraphic({
       <div className="h-16">
         <BuildingComponent />
       </div>
-      <p className="text-xs text-[rgb(var(--text-secondary))] text-center mt-1">{label}</p>
+      <p className="text-xs text-text-secondary text-center mt-1">{label}</p>
     </div>
   );
 }

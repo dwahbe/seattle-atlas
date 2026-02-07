@@ -1,7 +1,7 @@
 'use client';
 
 import type { WalkScoreData } from '@/types';
-import { Donut } from '@/components/ui';
+import { Donut, Skeleton } from '@/components/ui';
 
 interface WalkScoreSectionProps {
   walkScore: WalkScoreData | null;
@@ -18,15 +18,19 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
   const strokeWidth = compact ? 5 : 6;
 
   return (
-    <div className={`border-b border-[rgb(var(--border-color))] ${compact ? 'px-4 py-3' : 'p-4'}`}>
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+    <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
         Walk Score
       </h3>
 
       {isLoading ? (
-        <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
-          <LoadingSpinner />
-          Loading scores...
+        <div className="flex justify-around">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex flex-col items-center gap-2">
+              <Skeleton className={`rounded-full ${compact ? 'w-14 h-14' : 'w-16 h-16'}`} />
+              <Skeleton className="h-3 w-10" />
+            </div>
+          ))}
         </div>
       ) : walkScore && !walkScore.error ? (
         <div>
@@ -66,18 +70,12 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
             href={walkScore.more_info_link || 'https://www.walkscore.com'}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-3 text-xs text-[rgb(var(--text-tertiary))] hover:text-[rgb(var(--text-secondary))]"
+            className="inline-block mt-3 text-xs text-text-tertiary hover:text-text-secondary"
           >
             Scores by Walk Score®
           </a>
         </div>
       ) : null}
     </div>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
   );
 }

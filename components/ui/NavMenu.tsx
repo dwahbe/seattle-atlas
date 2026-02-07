@@ -46,7 +46,7 @@ export function NavMenu() {
         onClick={() => setIsOpen(!isOpen)}
         className="
           touch-target-inline h-[42px] px-3 flex items-center justify-center rounded-lg
-          bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))]
+          bg-panel-bg border border-border
           hover:bg-secondary-bg transition-colors
         "
         aria-label="Navigation menu"

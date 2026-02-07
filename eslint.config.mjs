@@ -1,19 +1,20 @@
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
-import { FlatCompat } from '@eslint/eslintrc';
+import nextPlugin from '@next/eslint-plugin-next';
+import reactHooks from 'eslint-plugin-react-hooks';
+import tseslint from 'typescript-eslint';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+export default [
+  ...tseslint.configs.recommended,
+  nextPlugin.configs.recommended,
+  nextPlugin.configs['core-web-vitals'],
+  reactHooks.configs.flat['recommended-latest'],
+  {
+    rules: {
+      // Downgrade to warning: setting state in effects is standard for
+      // data fetching, browser API initialization, and state resets.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
+  },
   {
     ignores: ['.next/**', 'out/**', 'build/**', 'next-env.d.ts'],
   },
 ];
-
-export default eslintConfig;

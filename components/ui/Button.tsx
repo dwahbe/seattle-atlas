@@ -14,13 +14,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variantClasses = {
       primary:
-        'bg-[rgb(var(--accent))] text-white hover:bg-[rgb(var(--accent-hover))] focus:ring-[rgb(var(--accent))]',
+        'bg-accent text-white hover:bg-accent-hover focus:ring-accent',
       secondary:
-        'bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-hover))] focus:ring-[rgb(var(--accent))]',
+        'bg-secondary-bg text-text-primary hover:bg-secondary-hover focus:ring-accent',
       ghost:
-        'text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))] focus:ring-[rgb(var(--accent))]',
+        'text-text-primary hover:bg-secondary-bg focus:ring-accent',
       outline:
-        'border border-[rgb(var(--border-color))] text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))] focus:ring-[rgb(var(--accent))]',
+        'border border-border text-text-primary hover:bg-secondary-bg focus:ring-accent',
     };
 
     const sizeClasses = {

@@ -1,0 +1,30 @@
+---
+description: Project tech stack, dependency versions, and framework conventions for Seattle Atlas
+alwaysApply: true
+---
+
+# Project Stack
+
+This is a **Next.js 16** app deployed on Vercel, using Bun as the package manager.
+
+## Key Dependencies
+
+- **Next.js ^16** — uses `proxy.ts` (not `middleware.ts`) for edge proxy/middleware. The exported function must be named `proxy`.
+- **React ^19** with server components by default; `'use client'` directive for client components.
+- **Tailwind CSS v4** — theme tokens defined in `globals.css` via `@theme`. Use semantic classes like `text-text-primary`, `bg-panel-bg`, `border-border` (not raw `rgb(var(...))` syntax).
+- **Zod v4** — used for API route input validation via `lib/validation.ts`.
+- **Sonner** — toast notifications. Use `id` param to deduplicate toasts.
+- **nuqs** — URL state management via query string params.
+- **vaul** — mobile drawer component.
+- **mapbox-gl** — map rendering (client-side only).
+
+## File Conventions (Next.js 16)
+
+- `proxy.ts` at project root = edge proxy (replaces `middleware.ts` from Next.js 15).
+- `app/` directory with App Router.
+- API routes in `app/api/`.
+
+## Before Making Assumptions
+
+- Check `package.json` for actual dependency versions before assuming API shapes.
+- When unsure about a framework convention, consult official docs for the **installed major version**.

@@ -66,7 +66,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="w-9 h-9 flex items-center justify-center rounded-md bg-secondary-bg text-text-secondary border border-border/40 hover:text-text-primary hover:bg-[rgb(var(--secondary-hover))] transition-colors"
+      className="w-9 h-9 flex items-center justify-center rounded-md bg-secondary-bg text-text-secondary border border-border/40 hover:text-text-primary hover:bg-secondary-hover transition-colors"
       aria-label={`Current theme: ${theme}. Click to toggle.`}
       title={`Theme: ${theme}`}
     >

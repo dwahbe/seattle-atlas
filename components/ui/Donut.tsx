@@ -88,7 +88,7 @@ export function Donut({
         </text>
       </svg>
       {label && (
-        <span className="text-xs text-[rgb(var(--text-secondary))] font-medium">{label}</span>
+        <span className="text-xs text-text-secondary font-medium">{label}</span>
       )}
     </div>
   );

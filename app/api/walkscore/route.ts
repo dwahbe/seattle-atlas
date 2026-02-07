@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { walkscoreQuerySchema, parseSearchParams } from '@/lib/validation';
 
 export interface WalkScoreResponse {
   walkscore: number | null;
@@ -16,26 +17,12 @@ export interface WalkScoreResponse {
  * Proxies requests to Walk Score API to protect the API key.
  */
 export async function GET(request: NextRequest): Promise<NextResponse<WalkScoreResponse>> {
-  const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get('lat');
-  const lng = searchParams.get('lng');
-  const address = searchParams.get('address') || '';
-
-  // Validate required params
-  if (!lat || !lng) {
-    return NextResponse.json(
-      {
-        walkscore: null,
-        description: null,
-        transit_score: null,
-        bike_score: null,
-        logo_url: '',
-        more_info_link: '',
-        error: 'Missing required parameters: lat, lng',
-      },
-      { status: 400 }
-    );
+  const parsed = parseSearchParams(walkscoreQuerySchema, request.nextUrl.searchParams);
+  if (!parsed.success) {
+    return parsed.response as NextResponse<WalkScoreResponse>;
   }
+
+  const { lat, lng, address } = parsed.data;
 
   const apiKey = process.env.WALKSCORE_API_KEY;
   if (!apiKey) {
@@ -59,8 +46,8 @@ export async function GET(request: NextRequest): Promise<NextResponse<WalkScoreR
     // Docs: https://www.walkscore.com/professional/api.php
     const params = new URLSearchParams({
       format: 'json',
-      lat,
-      lon: lng,
+      lat: String(lat),
+      lon: String(lng),
       transit: '1', // Include transit score
       bike: '1', // Include bike score
       wsapikey: apiKey,

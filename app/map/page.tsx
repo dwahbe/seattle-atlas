@@ -25,7 +25,7 @@ function MapLoading() {
 export default function MapPage() {
   return (
     <>
-      <main className="w-full h-screen overflow-hidden">
+      <main id="main-content" className="w-full h-screen overflow-hidden">
         <Suspense fallback={<MapLoading />}>
           <MapContainer />
         </Suspense>

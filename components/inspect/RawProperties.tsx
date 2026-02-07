@@ -18,8 +18,8 @@ export function RawProperties({ feature, compact = false }: RawPropertiesProps) 
       <dl className="grid grid-cols-2 gap-x-4 gap-y-2">
         {displayProperties.map(({ key, label, value }) => (
           <div key={key}>
-            <dt className="text-xs text-[rgb(var(--text-secondary))] truncate">{label}</dt>
-            <dd className="text-sm font-medium text-[rgb(var(--text-primary))] truncate">
+            <dt className="text-xs text-text-secondary truncate">{label}</dt>
+            <dd className="text-sm font-medium text-text-primary truncate">
               {value}
             </dd>
           </div>
@@ -32,8 +32,8 @@ export function RawProperties({ feature, compact = false }: RawPropertiesProps) 
     <dl className="space-y-2">
       {displayProperties.map(({ key, label, value }) => (
         <div key={key} className="flex justify-between gap-4">
-          <dt className="text-sm text-[rgb(var(--text-secondary))]">{label}</dt>
-          <dd className="text-sm font-medium text-[rgb(var(--text-primary))] text-right truncate max-w-[60%]">
+          <dt className="text-sm text-text-secondary">{label}</dt>
+          <dd className="text-sm font-medium text-text-primary text-right truncate max-w-[60%]">
             {value}
           </dd>
         </div>

@@ -46,7 +46,6 @@ export default function Image() {
           justifyContent: 'center',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={spaceNeedleSvg} width={200} height={290} alt="" />
       </div>
 

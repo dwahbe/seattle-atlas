@@ -62,8 +62,8 @@ export function InspectPanel({
     <div
       className={`
         absolute right-0 top-0 bottom-0 w-96 z-10
-        bg-[rgb(var(--panel-bg))] 
-        border-l border-[rgb(var(--border-color))]
+        bg-panel-bg 
+        border-l border-border
         shadow-lg
         transition-transform duration-300 ease-in-out
         flex flex-col
@@ -82,7 +82,7 @@ export function InspectPanel({
       />
 
       {/* Content */}
-      <div className="flex-1 overflow-y-scroll">
+      <div className="flex-1 overflow-y-scroll" aria-live="polite">
         {/* Zoning Summary */}
         {data.isZoning && data.zoneInfo && (
           <ZoningSummary zoneInfo={data.zoneInfo} landmark={data.landmark} />
@@ -106,7 +106,7 @@ export function InspectPanel({
 
         {/* Transit Info */}
         {data.isTransit && feature && (
-          <div className="p-4 border-b border-[rgb(var(--border-color))]">
+          <div className="p-4 border-b border-border">
             <TransitInfo feature={feature} />
           </div>
         )}
@@ -124,8 +124,8 @@ export function InspectPanel({
 
         {/* Raw Properties - For non-zoning layers */}
         {!data.isZoning && feature && (
-          <div className="p-4 border-b border-[rgb(var(--border-color))]">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+          <div className="p-4 border-b border-border">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
               Properties
             </h3>
             <RawProperties feature={feature} />

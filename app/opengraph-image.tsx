@@ -89,7 +89,6 @@ export default function Image() {
           marginLeft: '60px',
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={spaceNeedleSvg} width={180} height={260} alt="" />
       </div>
     </div>,

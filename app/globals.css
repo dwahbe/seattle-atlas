@@ -63,6 +63,9 @@
   --color-text-secondary: rgb(var(--text-secondary));
   --color-accent: rgb(var(--accent));
   --color-border: rgb(var(--border-color));
+  --color-text-tertiary: rgb(var(--text-tertiary));
+  --color-secondary-hover: rgb(var(--secondary-hover));
+  --color-accent-hover: rgb(var(--accent-hover));
   --font-family-sans: var(--font-sans);
   --font-family-mono: var(--font-mono);
 }
@@ -326,7 +329,7 @@ body.scroll-lock {
   }
 
   /* Disable hover states that cause sticky behavior on touch */
-  .hover\:bg-\[rgb\(var\(--secondary-bg\)\)\]:hover {
+  .hover\:bg-secondary-bg:hover {
     background-color: inherit;
   }
 
@@ -363,6 +366,29 @@ body.scroll-lock {
   left: 0;
   right: 0;
   height: 200%;
+}
+
+/* ============================================================================
+   Reduced Motion
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .transition-panel {
+    transition: none;
+  }
+
+  [data-vaul-drawer] {
+    transition: none;
+  }
 }
 
 /* ============================================================================

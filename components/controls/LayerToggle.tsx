@@ -10,7 +10,7 @@ interface LayerToggleProps {
 
 export function LayerToggle({ layer, isActive, onToggle }: LayerToggleProps) {
   return (
-    <label className="flex items-start gap-3 py-2 px-1 cursor-pointer hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors group">
+    <label className="flex items-start gap-3 py-2 px-1 cursor-pointer hover:bg-secondary-bg rounded transition-colors group">
       <div className="relative flex items-center justify-center mt-0.5">
         <input type="checkbox" checked={isActive} onChange={onToggle} className="sr-only peer" />
         <div
@@ -18,8 +18,8 @@ export function LayerToggle({ layer, isActive, onToggle }: LayerToggleProps) {
             w-4 h-4 rounded border-2 transition-colors
             ${
               isActive
-                ? 'bg-[rgb(var(--accent))] border-[rgb(var(--accent))]'
-                : 'bg-transparent border-[rgb(var(--border-color))] group-hover:border-[rgb(var(--text-secondary))]'
+                ? 'bg-accent border-accent'
+                : 'bg-transparent border-border group-hover:border-text-secondary'
             }
           `}
         >
@@ -37,13 +37,13 @@ export function LayerToggle({ layer, isActive, onToggle }: LayerToggleProps) {
         </div>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-[rgb(var(--text-primary))]">{layer.name}</div>
+        <div className="text-sm font-medium text-text-primary">{layer.name}</div>
         {layer.description && (
-          <div className="text-xs text-[rgb(var(--text-secondary))] mt-0.5 line-clamp-2">
+          <div className="text-xs text-text-secondary mt-0.5 line-clamp-2">
             {layer.description}
           </div>
         )}
-        <div className="text-xs text-[rgb(var(--text-tertiary))] mt-1">Source: {layer.source}</div>
+        <div className="text-xs text-text-tertiary mt-1">Source: {layer.source}</div>
       </div>
     </label>
   );

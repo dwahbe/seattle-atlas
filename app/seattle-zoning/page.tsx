@@ -132,7 +132,7 @@ export default function SeattleZoningPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article>
           <header className="mb-8">
             <p className="text-sm uppercase tracking-wide text-accent mb-2">Land use guide</p>

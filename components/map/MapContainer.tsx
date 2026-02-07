@@ -10,6 +10,12 @@ import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
+import dynamic from 'next/dynamic';
+
+const OnboardingTour = dynamic(
+  () => import('@/components/ui/OnboardingTour').then((mod) => mod.OnboardingTour),
+  { ssr: false }
+);
 import { useUrlState } from '@/hooks/useUrlState';
 import { useMapState } from '@/hooks/useMapState';
 import { useLayers } from '@/hooks/useLayers';
@@ -355,6 +361,9 @@ export function MapContainer() {
           <ShareBar onCopy={handleCopyUrl} />
         </>
       )}
+
+      {/* Onboarding tour for first-time desktop users */}
+      {!isMobile && <OnboardingTour />}
     </div>
   );
 }

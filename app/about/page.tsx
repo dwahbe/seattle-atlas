@@ -12,19 +12,19 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[rgb(var(--panel-bg))]">
+    <div className="min-h-screen bg-panel-bg">
       {/* Header */}
-      <header className="border-b border-[rgb(var(--border-color))]">
+      <header className="border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
           <Link href="/map" className="group flex items-center">
-            <span className="text-lg font-bold leading-none text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+            <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
               Seattle Atlas
             </span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
               href="/map"
-              className="h-9 flex items-center text-sm text-[rgb(var(--accent))] hover:text-[rgb(var(--text-primary))] transition-colors whitespace-nowrap"
+              className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
               View Map
             </Link>
@@ -34,13 +34,13 @@ export default function AboutPage() {
       </header>
 
       {/* Content */}
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+      <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article className="prose prose-slate dark:prose-invert max-w-none">
-          <h1 className="text-3xl font-bold text-[rgb(var(--text-primary))] mb-6">
+          <h1 className="text-3xl font-bold text-text-primary mb-6">
             About Seattle Atlas
           </h1>
 
-          <div className="space-y-6 text-[rgb(var(--text-secondary))]">
+          <div className="space-y-6 text-text-secondary">
             <p>
               Seattle Atlas is an interactive map for exploring land use, transit, and urban
               planning in Seattle. View zoning rules, transit routes, bike infrastructure, and
@@ -48,12 +48,12 @@ export default function AboutPage() {
             </p>
 
             <section>
-              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
+              <h2 className="text-lg font-semibold text-text-primary mb-3">
                 What&apos;s on the Map
               </h2>
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">
+                  <h3 className="font-medium text-text-primary mb-1">
                     Zoning &amp; Land Use
                   </h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
@@ -67,7 +67,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">Transit</h3>
+                  <h3 className="font-medium text-text-primary mb-1">Transit</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>Bus and ferry routes (King County Metro, Sound Transit)</li>
                     <li>Transit stops across Seattle</li>
@@ -79,7 +79,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-[rgb(var(--text-primary))] mb-1">
+                  <h3 className="font-medium text-text-primary mb-1">
                     Development Proposals
                   </h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
@@ -93,7 +93,7 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
+              <h2 className="text-lg font-semibold text-text-primary mb-3">
                 Data Sources
               </h2>
               <ul className="list-disc list-inside space-y-1 ml-2">
@@ -114,7 +114,7 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
+              <h2 className="text-lg font-semibold text-text-primary mb-3">
                 Methodology
               </h2>
               <p className="mb-3">
@@ -130,7 +130,7 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-[rgb(var(--text-primary))] mb-3">
+              <h2 className="text-lg font-semibold text-text-primary mb-3">
                 Open Source
               </h2>
               <p>
@@ -139,7 +139,7 @@ export default function AboutPage() {
                   href="https://github.com/dwahbe/seattle-atlas"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[rgb(var(--accent))] hover:underline"
+                  className="text-accent hover:underline"
                 >
                   GitHub
                 </a>
@@ -147,7 +147,7 @@ export default function AboutPage() {
               </p>
             </section>
 
-            <p className="text-sm pt-4 border-t border-[rgb(var(--border-color))]">
+            <p className="text-sm pt-4 border-t border-border">
               Seattle Atlas is not affiliated with the City of Seattle, King County, or any
               government agency. Data may not reflect the most recent changes—verify with official
               sources for legal determinations.

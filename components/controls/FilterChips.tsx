@@ -51,7 +51,7 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
           <div key={filter.id}>
             {/* Filter label - matches section header style */}
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+              <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
                 {filter.label}
               </h2>
               <button
@@ -60,7 +60,7 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
                   text-xs transition-colors
                   ${
                     hasSelection
-                      ? 'text-[rgb(var(--accent))] hover:text-[rgb(var(--accent-hover))]'
+                      ? 'text-accent hover:text-accent-hover'
                       : 'text-transparent pointer-events-none'
                   }
                 `}
@@ -116,8 +116,8 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
                       border
                       ${
                         isSelected
-                          ? 'bg-[rgb(var(--accent))] text-white border-[rgb(var(--accent))]'
-                          : 'bg-[rgb(var(--secondary-bg))] text-[rgb(var(--text-secondary))] hover:bg-[rgb(var(--secondary-hover))] hover:text-[rgb(var(--text-primary))] border-[rgb(var(--border-color))]'
+                          ? 'bg-accent text-white border-accent'
+                          : 'bg-secondary-bg text-text-secondary hover:bg-secondary-hover hover:text-text-primary border-border'
                       }
                     `}
                   >

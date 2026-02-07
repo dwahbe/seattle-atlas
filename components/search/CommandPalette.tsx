@@ -3,6 +3,7 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { geocodeAddress, type GeocodingResult } from '@/lib/mapbox';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import type { SearchResult } from '@/types';
 
 // Popular Seattle neighborhoods for quick navigation
@@ -49,7 +50,11 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Focus trap: keep Tab cycling within the search overlay when open
+  useFocusTrap(portalRef, isOpen);
 
   const isMobile = variant === 'mobile';
   const isVisible = isOpen || isClosing;
@@ -227,14 +232,14 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       <div
         className={`
           flex items-center gap-2 px-3
-          bg-[rgb(var(--panel-bg))]
-          border border-[rgb(var(--border-color))]
+          bg-panel-bg
+          border border-border
           ${isOpen ? 'rounded-t-lg border-b-transparent' : 'rounded-lg'}
           ${isMobile ? 'py-2.5' : 'py-2'}
         `}
       >
         <svg
-          className="w-4 h-4 shrink-0 text-[rgb(var(--text-secondary))]"
+          className="w-4 h-4 shrink-0 text-text-secondary"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -255,8 +260,8 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           placeholder={isOpen ? 'Search address or neighborhood...' : 'Search address...'}
           className="
             flex-1 bg-transparent
-            text-sm text-[rgb(var(--text-primary))]
-            placeholder:text-[rgb(var(--text-secondary))]
+            text-sm text-text-primary
+            placeholder:text-text-secondary
             [border:none] [outline:none] [box-shadow:none]
             focus:[border:none] focus:[outline:none] focus:[box-shadow:none]
           "
@@ -266,7 +271,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           spellCheck={false}
         />
         {isLoading && (
-          <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
         )}
         {isOpen && query && (
           <button
@@ -275,10 +280,10 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
               setResults([]);
               inputRef.current?.focus();
             }}
-            className="p-0.5 hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors"
+            className="p-0.5 hover:bg-secondary-bg rounded transition-colors"
           >
             <svg
-              className="w-4 h-4 text-[rgb(var(--text-tertiary))]"
+              className="w-4 h-4 text-text-tertiary"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -289,12 +294,12 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           </button>
         )}
         {!isOpen && !isMobile && (
-          <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] rounded border border-[rgb(var(--border-color))]">
+          <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-text-tertiary bg-secondary-bg rounded border border-border">
             <span className="text-sm">⌘</span>K
           </kbd>
         )}
         {isOpen && (
-          <kbd className="px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] rounded border border-[rgb(var(--border-color))]">
+          <kbd className="px-1.5 py-0.5 text-xs font-medium text-text-tertiary bg-secondary-bg rounded border border-border">
             Esc
           </kbd>
         )}
@@ -304,19 +309,27 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       {isOpen && (
         <div
           className={`
-            bg-[rgb(var(--panel-bg))]
-            border border-[rgb(var(--border-color))] border-t-0
+            bg-panel-bg
+            border border-border border-t-0
             rounded-b-lg
             overflow-hidden
             animate-in slide-in-from-top-1 duration-150
             ${isMobile ? 'max-h-[40vh]' : 'max-h-[50vh]'}
           `}
         >
+          {/* Screen reader announcement of result count */}
+          <div className="sr-only" aria-live="assertive" role="status">
+            {!isLoading &&
+              query.trim() &&
+              (filteredNeighborhoods.length + results.length > 0
+                ? `${filteredNeighborhoods.length + results.length} results found`
+                : `No results found for ${query}`)}
+          </div>
           <div ref={listRef} className="overflow-y-auto max-h-[inherit] overscroll-contain">
             {/* Neighborhoods */}
             {filteredNeighborhoods.length > 0 && (
               <div className="py-1">
-                <div className="px-3 py-1.5 text-xs font-medium text-[rgb(var(--text-tertiary))] uppercase tracking-wider">
+                <div className="px-3 py-1.5 text-xs font-medium text-text-tertiary uppercase tracking-wider">
                   Neighborhoods
                 </div>
                 {filteredNeighborhoods.map((neighborhood, idx) => {
@@ -331,7 +344,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
                         w-full flex items-center gap-3 px-3 py-2
                         text-sm text-left
                         transition-colors duration-75
-                        ${isSelected ? 'bg-[rgb(var(--accent))]/10 text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))]'}
+                        ${isSelected ? 'bg-accent/10 text-accent' : 'text-text-primary hover:bg-secondary-bg'}
                       `}
                     >
                       <svg
@@ -362,8 +375,8 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
 
             {/* Search Results */}
             {results.length > 0 && (
-              <div className="py-1 border-t border-[rgb(var(--border-color))]">
-                <div className="px-3 py-1.5 text-xs font-medium text-[rgb(var(--text-tertiary))] uppercase tracking-wider">
+              <div className="py-1 border-t border-border">
+                <div className="px-3 py-1.5 text-xs font-medium text-text-tertiary uppercase tracking-wider">
                   Places
                 </div>
                 {results.map((result, idx) => {
@@ -379,7 +392,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
                         w-full flex items-center gap-3 px-3 py-2
                         text-sm text-left
                         transition-colors duration-75
-                        ${isSelected ? 'bg-[rgb(var(--accent))]/10 text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-primary))] hover:bg-[rgb(var(--secondary-bg))]'}
+                        ${isSelected ? 'bg-accent/10 text-accent' : 'text-text-primary hover:bg-secondary-bg'}
                       `}
                     >
                       <svg
@@ -416,8 +429,24 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
               !isLoading &&
               results.length === 0 &&
               filteredNeighborhoods.length === 0 && (
-                <div className="px-4 py-6 text-center text-sm text-[rgb(var(--text-secondary))]">
-                  No results found for &ldquo;{query}&rdquo;
+                <div className="px-4 py-8 text-center">
+                  <svg
+                    className="w-8 h-8 mx-auto mb-2 text-text-tertiary"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    aria-hidden="true"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                  </svg>
+                  <p className="text-sm font-medium text-text-secondary">
+                    No results for &ldquo;{query}&rdquo;
+                  </p>
+                  <p className="text-xs text-text-tertiary mt-1">
+                    Try a different address or neighborhood name
+                  </p>
                 </div>
               )}
           </div>
@@ -446,6 +475,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
             />
             {/* Floating search panel - above the backdrop, expands wider on desktop */}
             <div
+              ref={portalRef}
               className="fixed z-50"
               style={
                 {

@@ -14,16 +14,16 @@ export function CollapsibleSection({
   children,
 }: CollapsibleSectionProps) {
   return (
-    <div className="border-b border-[rgb(var(--border-color))]">
+    <div className="border-b border-border">
       <button
         onClick={onToggle}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-[rgb(var(--secondary-bg))] transition-colors"
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-secondary-bg transition-colors"
       >
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
           {title}
         </h3>
         <svg
-          className={`w-4 h-4 text-[rgb(var(--text-secondary))] transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-text-secondary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

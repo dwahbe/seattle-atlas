@@ -12,40 +12,40 @@ interface DevelopmentRulesProps {
 export function DevelopmentRules({ zoneInfo, compact = false }: DevelopmentRulesProps) {
   if (compact) {
     return (
-      <div className="px-4 pt-2 pb-3 border-b border-[rgb(var(--border-color))]">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+      <div className="px-4 pt-2 pb-3 border-b border-border">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
           Development Rules
         </h3>
         <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
           <div>
-            <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+            <dt className="text-text-secondary flex items-center gap-1">
               Zone Code
               <InfoTooltip text="Official zoning designation from Seattle Municipal Code." />
             </dt>
-            <dd className="font-medium text-[rgb(var(--text-primary))]">{zoneInfo.code}</dd>
+            <dd className="font-medium text-text-primary">{zoneInfo.code}</dd>
           </div>
           <div>
-            <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+            <dt className="text-text-secondary flex items-center gap-1">
               Lot Coverage
               <InfoTooltip text="Max % of lot that can be covered by buildings." />
             </dt>
-            <dd className="font-medium text-[rgb(var(--text-primary))]">{zoneInfo.lotCoverage}</dd>
+            <dd className="font-medium text-text-primary">{zoneInfo.lotCoverage}</dd>
           </div>
           <div>
-            <dt className="text-[rgb(var(--text-secondary))] flex items-center gap-1">
+            <dt className="text-text-secondary flex items-center gap-1">
               FAR
               <InfoTooltip text="Floor Area Ratio: total floor area ÷ lot size. FAR 1.0 = floor area equal to lot." />
             </dt>
-            <dd className="font-medium text-[rgb(var(--text-primary))]">{zoneInfo.far}</dd>
+            <dd className="font-medium text-text-primary">{zoneInfo.far}</dd>
           </div>
           <div>
-            <dt className="text-[rgb(var(--text-secondary))]">Code</dt>
+            <dt className="text-text-secondary">Code</dt>
             <dd>
               <a
                 href={zoneInfo.smcLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[rgb(var(--accent))] font-medium"
+                className="text-accent font-medium"
               >
                 SMC {zoneInfo.smcSection} →
               </a>
@@ -96,17 +96,17 @@ function RuleRow({
 }) {
   return (
     <div className="flex justify-between gap-4">
-      <dt className="text-sm text-[rgb(var(--text-secondary))] flex items-center gap-1">
+      <dt className="text-sm text-text-secondary flex items-center gap-1">
         {label}
         {tooltip && <InfoTooltip text={tooltip} />}
       </dt>
-      <dd className="text-sm font-medium text-[rgb(var(--text-primary))] text-right">
+      <dd className="text-sm font-medium text-text-primary text-right">
         {link ? (
           <a
             href={link}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[rgb(var(--accent))] hover:underline"
+            className="text-accent hover:underline"
           >
             {value} →
           </a>

@@ -23,14 +23,14 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         {/* Expanded touch area (invisible) */}
         <span className="absolute inset-[-8px]" aria-hidden="true" />
         {/* Visual indicator - smaller on mobile */}
-        <span className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-[rgb(var(--text-tertiary))] text-[rgb(var(--panel-bg))] text-[10px] font-medium flex items-center justify-center hover:bg-[rgb(var(--text-secondary))] transition-colors pointer-events-none">
+        <span className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-text-tertiary text-panel-bg text-[10px] font-medium flex items-center justify-center hover:bg-text-secondary transition-colors pointer-events-none">
           ?
         </span>
       </button>
       {isVisible && (
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 md:w-48 p-2 text-xs text-[rgb(var(--text-primary))] bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg z-50">
+        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 md:w-48 p-2 text-xs text-text-primary bg-panel-bg border border-border rounded-lg shadow-lg z-50">
           {text}
-          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[rgb(var(--border-color))]" />
+          <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border" />
         </div>
       )}
     </span>

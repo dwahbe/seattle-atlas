@@ -233,7 +233,7 @@ export function SearchBar({
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           {isLoading ? (
             <svg
-              className="w-5 h-5 text-[rgb(var(--text-secondary))] animate-spin"
+              className="w-5 h-5 text-text-secondary animate-spin"
               viewBox="0 0 24 24"
               fill="none"
             >
@@ -253,7 +253,7 @@ export function SearchBar({
             </svg>
           ) : (
             <svg
-              className="w-5 h-5 text-[rgb(var(--text-secondary))]"
+              className="w-5 h-5 text-text-secondary"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -274,12 +274,12 @@ export function SearchBar({
           placeholder={placeholder}
           className="
             w-full pl-10 pr-4 py-3
-            bg-[rgb(var(--panel-bg))]
-            border border-[rgb(var(--border-color))]
+            bg-panel-bg
+            border border-border
             rounded-lg
-            text-sm text-[rgb(var(--text-primary))]
-            placeholder:text-[rgb(var(--text-secondary))]
-            focus:outline-none focus:ring-2 focus:ring-[rgb(var(--accent))] focus:border-transparent
+            text-sm text-text-primary
+            placeholder:text-text-secondary
+            focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent
             shadow-lg
           "
         />
@@ -296,7 +296,7 @@ export function SearchBar({
               className="flex items-center"
             >
               <svg
-                className="w-4 h-4 text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]"
+                className="w-4 h-4 text-text-secondary hover:text-text-primary"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -306,7 +306,7 @@ export function SearchBar({
               </svg>
             </button>
           ) : (
-            <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-[rgb(var(--text-tertiary))] bg-[rgb(var(--secondary-bg))] border border-[rgb(var(--border-color))] rounded">
+            <kbd className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 text-xs font-medium text-text-tertiary bg-secondary-bg border border-border rounded">
               <span className="text-sm">⌘</span>K
             </kbd>
           )}
@@ -315,9 +315,9 @@ export function SearchBar({
 
       {/* Quick Neighborhoods dropdown */}
       {isOpen && showNeighborhoods && (
-        <div className="absolute w-full mt-2 bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg overflow-hidden z-50">
-          <div className="px-4 py-2 border-b border-[rgb(var(--border-color))]">
-            <span className="text-xs font-medium uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+        <div className="absolute w-full mt-2 bg-panel-bg border border-border rounded-lg shadow-lg overflow-hidden z-50">
+          <div className="px-4 py-2 border-b border-border">
+            <span className="text-xs font-medium uppercase tracking-wide text-text-secondary">
               Jump to Neighborhood
             </span>
           </div>
@@ -332,15 +332,15 @@ export function SearchBar({
                   transition-colors
                   ${
                     selectedIndex === index
-                      ? 'bg-[rgb(var(--secondary-bg))]'
-                      : 'hover:bg-[rgb(var(--secondary-bg))]'
+                      ? 'bg-secondary-bg'
+                      : 'hover:bg-secondary-bg'
                   }
                 `}
               >
-                <span className="text-[rgb(var(--text-secondary))]">
+                <span className="text-text-secondary">
                   {getTypeIcon('neighborhood')}
                 </span>
-                <span className="text-sm text-[rgb(var(--text-primary))]">{neighborhood.name}</span>
+                <span className="text-sm text-text-primary">{neighborhood.name}</span>
               </button>
             ))}
           </div>
@@ -349,7 +349,7 @@ export function SearchBar({
 
       {/* Results dropdown */}
       {isOpen && !showNeighborhoods && results.length > 0 && (
-        <div className="absolute w-full mt-2 bg-[rgb(var(--panel-bg))] border border-[rgb(var(--border-color))] rounded-lg shadow-lg overflow-hidden z-50">
+        <div className="absolute w-full mt-2 bg-panel-bg border border-border rounded-lg shadow-lg overflow-hidden z-50">
           {results.map((result, index) => (
             <button
               key={result.id}
@@ -360,17 +360,17 @@ export function SearchBar({
                 transition-colors
                 ${
                   selectedIndex === index
-                    ? 'bg-[rgb(var(--secondary-bg))]'
-                    : 'hover:bg-[rgb(var(--secondary-bg))]'
+                    ? 'bg-secondary-bg'
+                    : 'hover:bg-secondary-bg'
                 }
               `}
             >
-              <span className="text-[rgb(var(--text-secondary))]">{getTypeIcon(result.type)}</span>
+              <span className="text-text-secondary">{getTypeIcon(result.type)}</span>
               <div className="flex-1 min-w-0">
-                <div className="text-sm text-[rgb(var(--text-primary))] truncate">
+                <div className="text-sm text-text-primary truncate">
                   {result.name}
                 </div>
-                <div className="text-xs text-[rgb(var(--text-secondary))] capitalize">
+                <div className="text-xs text-text-secondary capitalize">
                   {result.type}
                 </div>
               </div>

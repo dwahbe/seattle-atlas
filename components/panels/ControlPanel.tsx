@@ -60,44 +60,46 @@ export function ControlPanel({
       <div
         className={`
           absolute left-0 top-0 bottom-0 w-80 z-10
-          bg-[rgb(var(--panel-bg))] 
-          border-r border-[rgb(var(--border-color))]
+          bg-panel-bg 
+          border-r border-border
           shadow-lg
           transition-transform duration-300 ease-in-out
           flex flex-col
         `}
       >
         {/* Header */}
-        <div className="flex-none p-4 border-b border-[rgb(var(--border-color))]">
+        <div className="flex-none p-4 border-b border-border">
           <div className="flex items-center gap-2 mb-3">
             <Link href="/" className="group">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+                <h1 className="text-lg font-bold text-text-primary group-hover:text-accent transition-colors">
                   Seattle Atlas
                 </h1>
-                <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap border bg-[rgb(var(--accent))] text-white border-[rgb(var(--accent))]">
+                <span className="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium rounded-full whitespace-nowrap border bg-accent text-white border-accent">
                   Beta
                 </span>
               </div>
             </Link>
           </div>
           {/* Search */}
-          <PanelSearch onSelect={onSearchSelect} variant="desktop" />
+          <div data-tour="search">
+            <PanelSearch onSelect={onSearchSelect} variant="desktop" />
+          </div>
         </div>
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-scroll">
           {/* Layers */}
-          <div className="px-4 py-4">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+          <div className="px-4 py-4" data-tour="layers">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
               Layers
             </h2>
             <div className="space-y-1">
               {/* Zoning Toggle */}
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Zoning</div>
-                  <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                  <div className="font-medium text-sm text-text-primary">Zoning</div>
+                  <div className="text-xs text-text-secondary truncate">
                     What can be built
                   </div>
                 </div>
@@ -109,8 +111,8 @@ export function ControlPanel({
               {/* Transit Toggle */}
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-[rgb(var(--text-primary))]">Transit</div>
-                  <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                  <div className="font-medium text-sm text-text-primary">Transit</div>
+                  <div className="text-xs text-text-secondary truncate">
                     Bus & lightrail routes
                   </div>
                 </div>
@@ -122,10 +124,10 @@ export function ControlPanel({
               {/* Bike Infrastructure Toggle */}
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                  <div className="font-medium text-sm text-text-primary">
                     Bike Infrastructure
                   </div>
-                  <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                  <div className="text-xs text-text-secondary truncate">
                     Bike lanes, trails & greenways
                   </div>
                 </div>
@@ -148,29 +150,29 @@ export function ControlPanel({
           )}
 
           {/* Legend */}
-          <div className="px-4 py-4 border-t border-[rgb(var(--border-color))]">
+          <div className="px-4 py-4 border-t border-border">
             <Legend layers={layers} activeLayers={activeLayers} />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex-none p-4 border-t border-[rgb(var(--border-color))] bg-[rgb(var(--secondary-bg))]">
+        <div className="flex-none p-4 border-t border-border bg-secondary-bg">
           <div className="flex flex-col gap-3">
             {/* Zoning Mode Toggle - only show when zoning is enabled */}
             {activeBaseLayer && (
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
+                <span className="text-xs font-medium text-text-secondary">
                   Zoning View
                 </span>
-                <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--secondary-hover))]">
+                <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
                   <button
                     onClick={() => onBaseLayerChange('zoning')}
                     className={`
                       touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                       ${
                         activeBaseLayer === 'zoning'
-                          ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
-                          : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                          ? 'bg-panel-bg text-text-primary shadow-sm'
+                          : 'text-text-secondary hover:text-text-primary'
                       }
                     `}
                   >
@@ -182,8 +184,8 @@ export function ControlPanel({
                       touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                       ${
                         activeBaseLayer === 'zoning_detailed'
-                          ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
-                          : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                          ? 'bg-panel-bg text-text-primary shadow-sm'
+                          : 'text-text-secondary hover:text-text-primary'
                       }
                     `}
                   >
@@ -195,7 +197,7 @@ export function ControlPanel({
 
             <div className="flex items-center justify-between">
               <ThemeToggle />
-              <p className="text-xs text-[rgb(var(--text-tertiary))]">Data: {DATA_FRESHNESS}</p>
+              <p className="text-xs text-text-tertiary">Data: {DATA_FRESHNESS}</p>
             </div>
           </div>
         </div>

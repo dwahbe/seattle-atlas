@@ -24,14 +24,14 @@ export function LayerGroup({
   const activeCount = layers.filter((l) => activeLayers.includes(l.id)).length;
 
   return (
-    <div className="border-b border-[rgb(var(--border-color))] last:border-b-0">
+    <div className="border-b border-border last:border-b-0">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between py-3 px-4 hover:bg-[rgb(var(--secondary-bg))] transition-colors"
+        className="w-full flex items-center justify-between py-3 px-4 hover:bg-secondary-bg transition-colors"
       >
         <div className="flex items-center gap-2">
           <svg
-            className={`w-4 h-4 text-[rgb(var(--text-secondary))] transition-transform ${
+            className={`w-4 h-4 text-text-secondary transition-transform ${
               isExpanded ? 'rotate-90' : ''
             }`}
             viewBox="0 0 24 24"
@@ -41,9 +41,9 @@ export function LayerGroup({
           >
             <path d="M9 18l6-6-6-6" />
           </svg>
-          <span className="font-semibold text-sm text-[rgb(var(--text-primary))]">{name}</span>
+          <span className="font-semibold text-sm text-text-primary">{name}</span>
         </div>
-        <span className="text-xs text-[rgb(var(--text-secondary))] bg-[rgb(var(--secondary-bg))] px-2 py-0.5 rounded-full">
+        <span className="text-xs text-text-secondary bg-secondary-bg px-2 py-0.5 rounded-full">
           {activeCount}/{layers.length}
         </span>
       </button>

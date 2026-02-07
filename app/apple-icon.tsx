@@ -25,7 +25,6 @@ export default function Icon() {
         borderRadius: 40,
       }}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={spaceNeedleSvg} width={160} height={160} alt="" />
     </div>,
     {

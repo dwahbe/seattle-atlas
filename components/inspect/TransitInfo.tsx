@@ -11,8 +11,8 @@ interface TransitInfoProps {
 export function TransitInfo({ feature, compact = false }: TransitInfoProps) {
   const props = feature.properties;
   const headingClass = compact
-    ? 'text-base font-semibold text-[rgb(var(--text-primary))] mb-1'
-    : 'text-lg font-semibold text-[rgb(var(--text-primary))] mb-2';
+    ? 'text-base font-semibold text-text-primary mb-1'
+    : 'text-lg font-semibold text-text-primary mb-2';
 
   // Transit stop
   if (feature.layerId === 'transit_stops') {
@@ -20,7 +20,7 @@ export function TransitInfo({ feature, compact = false }: TransitInfoProps) {
       <div>
         <h3 className={headingClass}>{String(props.stop_name || 'Transit Stop')}</h3>
         {props.routes != null && (
-          <p className="text-sm text-[rgb(var(--text-secondary))]">
+          <p className="text-sm text-text-secondary">
             Routes: {String(props.routes)}
           </p>
         )}
@@ -36,12 +36,12 @@ export function TransitInfo({ feature, compact = false }: TransitInfoProps) {
           Route {String(props.route_short_name || props.route_id || '')}
         </h3>
         {props.route_long_name != null && (
-          <p className="text-sm text-[rgb(var(--text-secondary))]">
+          <p className="text-sm text-text-secondary">
             {String(props.route_long_name)}
           </p>
         )}
         {props.agency_name != null && (
-          <p className="text-xs text-[rgb(var(--text-tertiary))] mt-1">
+          <p className="text-xs text-text-tertiary mt-1">
             {String(props.agency_name)}
           </p>
         )}

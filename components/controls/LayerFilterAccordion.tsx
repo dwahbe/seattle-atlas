@@ -18,7 +18,7 @@ export function LayerFilterAccordion({ filters, values, onChange }: LayerFilterA
     <div className="ml-7 mt-1 mb-2">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-1 text-xs text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))] transition-colors py-1"
+        className="flex items-center gap-1 text-xs text-text-secondary hover:text-text-primary transition-colors py-1"
       >
         <svg
           className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
@@ -58,7 +58,7 @@ function FilterControl({ filter, selectedValues, onChange }: FilterControlProps)
   if (filter.type === 'multiselect' && filter.options) {
     return (
       <div>
-        <div className="text-xs font-medium text-[rgb(var(--text-secondary))] mb-2">
+        <div className="text-xs font-medium text-text-secondary mb-2">
           {filter.label}
         </div>
         <div className="space-y-1">
@@ -79,7 +79,7 @@ function FilterControl({ filter, selectedValues, onChange }: FilterControlProps)
         {selectedValues.length > 0 && (
           <button
             onClick={() => onChange([])}
-            className="mt-2 text-xs text-[rgb(var(--accent))] hover:underline"
+            className="mt-2 text-xs text-accent hover:underline"
           >
             Clear filter
           </button>
@@ -92,13 +92,13 @@ function FilterControl({ filter, selectedValues, onChange }: FilterControlProps)
   if (filter.type === 'select' && filter.options) {
     return (
       <div>
-        <label className="text-xs font-medium text-[rgb(var(--text-secondary))] mb-1 block">
+        <label className="text-xs font-medium text-text-secondary mb-1 block">
           {filter.label}
         </label>
         <select
           value={selectedValues[0] || ''}
           onChange={(e) => onChange(e.target.value ? [e.target.value] : [])}
-          className="w-full text-sm bg-[rgb(var(--secondary-bg))] border border-[rgb(var(--border-color))] rounded px-2 py-1.5 text-[rgb(var(--text-primary))]"
+          className="w-full text-sm bg-secondary-bg border border-border rounded px-2 py-1.5 text-text-primary"
         >
           <option value="">All</option>
           {filter.options.map((option) => (
@@ -122,7 +122,7 @@ interface FilterCheckboxProps {
 
 function FilterCheckbox({ option, isSelected, onToggle }: FilterCheckboxProps) {
   return (
-    <label className="flex items-center gap-2 py-1.5 px-2 cursor-pointer hover:bg-[rgb(var(--secondary-bg))] rounded transition-colors min-h-[44px] md:min-h-0">
+    <label className="flex items-center gap-2 py-1.5 px-2 cursor-pointer hover:bg-secondary-bg rounded transition-colors min-h-[44px] md:min-h-0">
       <div className="relative flex items-center justify-center">
         <input type="checkbox" checked={isSelected} onChange={onToggle} className="sr-only peer" />
         <div
@@ -130,8 +130,8 @@ function FilterCheckbox({ option, isSelected, onToggle }: FilterCheckboxProps) {
             w-4 h-4 rounded border-2 transition-colors flex items-center justify-center
             ${
               isSelected
-                ? 'bg-[rgb(var(--accent))] border-[rgb(var(--accent))]'
-                : 'bg-transparent border-[rgb(var(--border-color))]'
+                ? 'bg-accent border-accent'
+                : 'bg-transparent border-border'
             }
           `}
         >
@@ -148,7 +148,7 @@ function FilterCheckbox({ option, isSelected, onToggle }: FilterCheckboxProps) {
           )}
         </div>
       </div>
-      <span className="text-sm text-[rgb(var(--text-primary))]">{option.label}</span>
+      <span className="text-sm text-text-primary">{option.label}</span>
     </label>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
 import type { ParcelData } from '@/hooks/useInspectData';
+import { Skeleton } from '@/components/ui';
 
 interface ParcelInfoProps {
   parcelData: ParcelData | null;
@@ -21,9 +22,12 @@ export function ParcelInfo({
   if (!isLoading && !parcelData) return null;
 
   const content = isLoading ? (
-    <div className="flex items-center gap-2 text-sm text-[rgb(var(--text-secondary))]">
-      <LoadingSpinner />
-      Loading property info...
+    <div className="space-y-2">
+      <div className="grid grid-cols-2 gap-2">
+        <Skeleton className="h-16 rounded-lg" />
+        <Skeleton className="h-16 rounded-lg" />
+      </div>
+      <Skeleton className="h-14 rounded-lg" />
     </div>
   ) : parcelData ? (
     <div className="space-y-2">
@@ -45,16 +49,16 @@ export function ParcelInfo({
         href={parcelData.assessorUrl || '#'}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center justify-between bg-[rgb(var(--secondary-bg))] hover:bg-[rgb(var(--secondary-hover))] rounded-lg p-3 transition-colors group"
+        className="flex items-center justify-between bg-secondary-bg hover:bg-secondary-hover rounded-lg p-3 transition-colors group"
       >
         <div>
-          <div className="text-xs text-[rgb(var(--text-secondary))]">King County Assessor</div>
-          <div className="text-sm font-semibold text-[rgb(var(--text-primary))]">
+          <div className="text-xs text-text-secondary">King County Assessor</div>
+          <div className="text-sm font-semibold text-text-primary">
             View assessed value, sale history & more
           </div>
         </div>
         <svg
-          className="w-5 h-5 text-[rgb(var(--text-secondary))] group-hover:text-[rgb(var(--accent))] transition-colors shrink-0"
+          className="w-5 h-5 text-text-secondary group-hover:text-accent transition-colors shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -75,8 +79,8 @@ export function ParcelInfo({
   }
 
   return (
-    <div className={`border-b border-[rgb(var(--border-color))] ${compact ? 'px-4 py-3' : 'p-4'}`}>
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+    <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
         Property Details
       </h3>
       {content}
@@ -96,8 +100,8 @@ function StatCard({
   compact?: boolean;
 }) {
   return (
-    <div className={`bg-[rgb(var(--secondary-bg))] rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
-      <div className={`text-xs text-[rgb(var(--text-secondary))] ${compact ? '' : 'mb-1'}`}>
+    <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
+      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>
         {label}
       </div>
       {link ? (
@@ -105,23 +109,17 @@ function StatCard({
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm font-semibold text-[rgb(var(--accent))] hover:underline truncate block"
+          className="text-sm font-semibold text-accent hover:underline truncate block"
           title="View on King County Assessor"
         >
           {value} →
         </a>
       ) : (
-        <div className="text-sm font-semibold text-[rgb(var(--text-primary))] break-words text-pretty">
+        <div className="text-sm font-semibold text-text-primary break-words text-pretty">
           {value}
         </div>
       )}
     </div>
-  );
-}
-
-function LoadingSpinner() {
-  return (
-    <div className="w-4 h-4 border-2 border-[rgb(var(--accent))] border-t-transparent rounded-full animate-spin" />
   );
 }
 

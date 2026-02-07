@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { coordsSchema, parseSearchParams } from '@/lib/validation';
 
 export interface ParcelResponse {
   pin: string;
@@ -17,25 +18,12 @@ export interface ParcelResponse {
  * Returns property information for the parcel at the given coordinates.
  */
 export async function GET(request: NextRequest): Promise<NextResponse<ParcelResponse>> {
-  const searchParams = request.nextUrl.searchParams;
-  const lat = searchParams.get('lat');
-  const lng = searchParams.get('lng');
-
-  // Validate required params
-  if (!lat || !lng) {
-    return NextResponse.json(
-      {
-        pin: '',
-        acres: null,
-        lotSqFt: null,
-        zoning: null,
-        presentUse: null,
-        assessorUrl: '',
-        error: 'Missing required parameters: lat, lng',
-      },
-      { status: 400 }
-    );
+  const parsed = parseSearchParams(coordsSchema, request.nextUrl.searchParams);
+  if (!parsed.success) {
+    return parsed.response as NextResponse<ParcelResponse>;
   }
+
+  const { lat, lng } = parsed.data;
 
   try {
     // King County GIS ArcGIS REST API - Parcels layer (has full coverage)

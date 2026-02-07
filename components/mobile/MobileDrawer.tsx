@@ -117,12 +117,12 @@ export function MobileDrawer({
       dismissible={false}
     >
       <Drawer.Portal>
-        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-[rgb(var(--panel-bg))] border-t border-[rgb(var(--border-color))] shadow-2xl h-full">
+        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-panel-bg border-t border-border shadow-2xl h-full">
           <Drawer.Title className="sr-only">Seattle Atlas Controls</Drawer.Title>
           {/* Drag handle */}
           <div className="flex-none pt-3 pb-2 px-4">
             <div
-              className="mx-auto w-12 h-1.5 rounded-full bg-[rgb(var(--text-tertiary))]"
+              className="mx-auto w-12 h-1.5 rounded-full bg-text-tertiary"
               aria-hidden="true"
             />
           </div>
@@ -132,10 +132,10 @@ export function MobileDrawer({
             <div className="flex items-center">
               <Link href="/" className="group flex items-center min-h-[36px]">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-base font-bold text-[rgb(var(--text-primary))] group-hover:text-[rgb(var(--accent))] transition-colors">
+                  <h1 className="text-base font-bold text-text-primary group-hover:text-accent transition-colors">
                     Seattle Atlas
                   </h1>
-                  <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap border bg-[rgb(var(--accent))] text-white border-[rgb(var(--accent))]">
+                  <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap border bg-accent text-white border-accent">
                     Beta
                   </span>
                 </div>
@@ -149,6 +149,7 @@ export function MobileDrawer({
             className="overflow-y-auto overscroll-contain"
             style={{ maxHeight: scrollableMaxHeight }}
             data-vaul-no-drag
+            aria-live="polite"
           >
             {isInspecting && inspectedFeature ? (
               /* ============================================================
@@ -192,7 +193,7 @@ export function MobileDrawer({
 
                 {/* Transit Info */}
                 {data.isTransit && (
-                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                  <div className="p-4 border-b border-border">
                     <TransitInfo feature={inspectedFeature} compact />
                   </div>
                 )}
@@ -204,8 +205,8 @@ export function MobileDrawer({
 
                 {/* Raw Properties - for non-zoning */}
                 {!data.isZoning && (
-                  <div className="p-4 border-b border-[rgb(var(--border-color))]">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+                  <div className="p-4 border-b border-border">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
                       Properties
                     </h3>
                     <RawProperties feature={inspectedFeature} compact />
@@ -214,8 +215,8 @@ export function MobileDrawer({
 
                 {/* Nearby Permits - compact */}
                 {data.isZoning && (
-                  <div className="px-4 pt-2 pb-3 border-b border-[rgb(var(--border-color))]">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-2">
+                  <div className="px-4 pt-2 pb-3 border-b border-border">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
                       Nearby Activity
                     </h3>
                     <PermitsSection
@@ -229,7 +230,7 @@ export function MobileDrawer({
                 {/* Related Proposals - compact */}
                 {data.relatedProposals.length > 0 && (
                   <div className="p-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
                       Related Proposals
                     </h3>
                     <ProposalsSection proposals={data.relatedProposals} compact />
@@ -243,9 +244,9 @@ export function MobileDrawer({
               <div className="flex flex-col min-h-full">
                 <div className="flex-1">
                   {/* Layers */}
-                  <div className="border-b border-[rgb(var(--border-color))]">
+                  <div className="border-b border-border">
                     <div className="px-4 py-3">
-                      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))]">
+                      <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
                         Layers
                       </h2>
                     </div>
@@ -253,10 +254,10 @@ export function MobileDrawer({
                       {/* Zoning Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                          <div className="font-medium text-sm text-text-primary">
                             Zoning
                           </div>
-                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                          <div className="text-xs text-text-secondary truncate">
                             What can be built
                           </div>
                         </div>
@@ -268,10 +269,10 @@ export function MobileDrawer({
                       {/* Transit Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                          <div className="font-medium text-sm text-text-primary">
                             Transit
                           </div>
-                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                          <div className="text-xs text-text-secondary truncate">
                             Bus & Lightrail Routes
                           </div>
                         </div>
@@ -283,10 +284,10 @@ export function MobileDrawer({
                       {/* Bike Infrastructure Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-[rgb(var(--text-primary))]">
+                          <div className="font-medium text-sm text-text-primary">
                             Bike Infrastructure
                           </div>
-                          <div className="text-xs text-[rgb(var(--text-secondary))] truncate">
+                          <div className="text-xs text-text-secondary truncate">
                             Bike lanes, trails & greenways
                           </div>
                         </div>
@@ -300,7 +301,7 @@ export function MobileDrawer({
 
                   {/* Filters for active base layer */}
                   {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-                    <div className="p-4 border-b border-[rgb(var(--border-color))]">
+                    <div className="p-4 border-b border-border">
                       <FilterChips
                         filters={activeBaseLayerConfig.filters}
                         values={
@@ -314,7 +315,7 @@ export function MobileDrawer({
                   )}
 
                   {/* Legend */}
-                  <div className="border-b border-[rgb(var(--border-color))]">
+                  <div className="border-b border-border">
                     <div className="p-4">
                       <Legend layers={layers} activeLayers={activeLayers} />
                     </div>
@@ -322,23 +323,23 @@ export function MobileDrawer({
                 </div>
 
                 {/* Footer with toggle */}
-                <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-[rgb(var(--secondary-bg))] border-t border-[rgb(var(--border-color))]">
+                <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-secondary-bg border-t border-border">
                   <div className="flex flex-col gap-3">
                     {/* Zoning Mode Toggle - only show when zoning is enabled */}
                     {activeBaseLayer && (
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-[rgb(var(--text-secondary))]">
+                        <span className="text-xs font-medium text-text-secondary">
                           Zoning View
                         </span>
-                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-[rgb(var(--secondary-hover))]">
+                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
                           <button
                             onClick={() => onBaseLayerChange('zoning')}
                             className={`
                               touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                               ${
                                 activeBaseLayer === 'zoning'
-                                  ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
-                                  : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                                  ? 'bg-panel-bg text-text-primary shadow-sm'
+                                  : 'text-text-secondary hover:text-text-primary'
                               }
                             `}
                           >
@@ -350,8 +351,8 @@ export function MobileDrawer({
                               touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
                               ${
                                 activeBaseLayer === 'zoning_detailed'
-                                  ? 'bg-[rgb(var(--panel-bg))] text-[rgb(var(--text-primary))] shadow-sm'
-                                  : 'text-[rgb(var(--text-secondary))] hover:text-[rgb(var(--text-primary))]'
+                                  ? 'bg-panel-bg text-text-primary shadow-sm'
+                                  : 'text-text-secondary hover:text-text-primary'
                               }
                             `}
                           >
@@ -363,7 +364,7 @@ export function MobileDrawer({
 
                     <div className="flex items-center justify-between">
                       <ThemeToggle />
-                      <span className="text-xs text-[rgb(var(--text-tertiary))]">
+                      <span className="text-xs text-text-tertiary">
                         Data: Jan 2025
                       </span>
                     </div>

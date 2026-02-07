@@ -43,7 +43,7 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
 
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-[rgb(var(--text-secondary))] mb-3">
+      <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
         Legend
       </h2>
       <div className="space-y-4">
@@ -109,8 +109,8 @@ function LegendRow({
   const baseClasses = `
     flex items-center gap-2 py-1 pr-1.5 rounded transition-colors
     ${isInteractive ? 'cursor-pointer' : ''}
-    ${isFiltered ? 'bg-[rgb(var(--accent))]/10 ring-1 ring-[rgb(var(--accent))]/30' : ''}
-    ${isHovered && !isFiltered ? 'bg-[rgb(var(--secondary-bg))]' : ''}
+    ${isFiltered ? 'bg-accent/10 ring-1 ring-accent/30' : ''}
+    ${isHovered && !isFiltered ? 'bg-secondary-bg' : ''}
   `;
 
   // Touch devices need larger targets
@@ -120,13 +120,13 @@ function LegendRow({
     <>
       <LegendSwatch type={layerType} color={item.color} isActive={isFiltered || isHovered} />
       <span
-        className={`text-xs flex-1 ${isFiltered ? 'text-[rgb(var(--accent))] font-medium' : 'text-[rgb(var(--text-primary))]'}`}
+        className={`text-xs flex-1 ${isFiltered ? 'text-accent font-medium' : 'text-text-primary'}`}
       >
         {item.label}
       </span>
       {item.percentage !== undefined && (
         <span
-          className={`text-xs font-medium ${isFiltered ? 'text-[rgb(var(--accent))]' : 'text-[rgb(var(--text-tertiary))]'}`}
+          className={`text-xs font-medium ${isFiltered ? 'text-accent' : 'text-text-tertiary'}`}
         >
           {item.percentage.toFixed(1)}%
         </span>
@@ -161,7 +161,7 @@ interface LegendSwatchProps {
 }
 
 function LegendSwatch({ type, color, isActive = false }: LegendSwatchProps) {
-  const ringClass = isActive ? 'ring-2 ring-[rgb(var(--accent))]/50' : '';
+  const ringClass = isActive ? 'ring-2 ring-accent/50' : '';
 
   switch (type) {
     case 'fill':

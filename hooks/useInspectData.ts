@@ -6,6 +6,7 @@ import { getZoneInfo, type ZoneInfo } from '@/lib/zoning-info';
 import { isZoningLayer, isTransitLayer } from '@/lib/property-display';
 import { getRepresentativePoint, isWithinRadius } from '@/lib/spatial';
 import { reverseGeocode } from '@/lib/mapbox';
+import { toast } from 'sonner';
 
 const SPACE_NEEDLE_COORD: [number, number] = [-122.3493, 47.6205];
 const SPACE_NEEDLE_RADIUS_METERS = 350;
@@ -106,7 +107,7 @@ export function useInspectData(
   const featurePoint = useMemo<[number, number] | null>(() => {
     if (!feature?.geometry) return null;
     return getRepresentativePoint(feature.geometry);
-  }, [feature?.geometry]);
+  }, [feature]);
 
   // Derived: landmark detection (Space Needle)
   const landmark = useMemo<'space-needle' | null>(() => {
@@ -145,7 +146,10 @@ export function useInspectData(
     fetch(`/api/walkscore?lat=${lat}&lng=${lng}`)
       .then((res) => res.json())
       .then((data) => setWalkScore(data))
-      .catch(() => setWalkScore(null))
+      .catch(() => {
+        setWalkScore(null);
+        toast.error('Failed to load Walk Score', { id: 'walkscore-error' });
+      })
       .finally(() => setIsLoadingWalkScore(false));
   }, [featurePoint, isZoning]);
 
@@ -159,7 +163,10 @@ export function useInspectData(
     fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=5`)
       .then((res) => res.json())
       .then((data) => setPermits(data))
-      .catch(() => setPermits(null))
+      .catch(() => {
+        setPermits(null);
+        toast.error('Failed to load permits', { id: 'permits-error' });
+      })
       .finally(() => setIsLoadingPermits(false));
   }, [featurePoint, isZoning]);
 
@@ -195,7 +202,10 @@ export function useInspectData(
           setParcelData(data);
         }
       })
-      .catch(() => setParcelData(null))
+      .catch(() => {
+        setParcelData(null);
+        toast.error('Failed to load property data', { id: 'parcel-error' });
+      })
       .finally(() => setIsLoadingParcel(false));
   }, [clickPoint, featurePoint, isZoning]);
 
