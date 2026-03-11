@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { InspectedFeature, Proposal, LayerConfig } from '@/types';
 import { useInspectData } from '@/hooks/useInspectData';
 import {
@@ -40,9 +40,18 @@ export function InspectPanel({
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['parcel', 'rules', 'permits', 'proposals'])
   );
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Use shared data fetching hook
   const data = useInspectData(feature, layerConfigs, proposals, clickPoint);
+
+  // Move focus into panel when a new feature is inspected
+  const featureId = feature?.id;
+  useEffect(() => {
+    if (isOpen && featureId != null && panelRef.current) {
+      panelRef.current.focus();
+    }
+  }, [isOpen, featureId]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
@@ -60,13 +69,17 @@ export function InspectPanel({
 
   return (
     <div
+      ref={panelRef}
+      tabIndex={-1}
+      aria-label="Feature details"
       className={`
         absolute right-0 top-0 bottom-0 w-96 z-10
-        bg-panel-bg 
+        bg-panel-bg
         border-l border-border
         shadow-lg
         transition-transform duration-300 ease-in-out
         flex flex-col
+        focus:outline-none
         ${isOpen ? 'translate-x-0' : 'translate-x-full'}
       `}
     >

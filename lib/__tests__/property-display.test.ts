@@ -95,6 +95,10 @@ describe('isTransitLayer', () => {
     expect(isTransitLayer('transit_routes')).toBe(true);
   });
 
+  test('returns true for "light_rail"', () => {
+    expect(isTransitLayer('light_rail')).toBe(true);
+  });
+
   test('returns false for "zoning"', () => {
     expect(isTransitLayer('zoning')).toBe(false);
   });

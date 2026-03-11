@@ -8,6 +8,12 @@ import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
+import {
+  BASE_LAYER_IDS,
+  TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  URBAN_VILLAGES_LAYER_ID,
+} from '@/lib/constants';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
 import dynamic from 'next/dynamic';
@@ -220,9 +226,8 @@ export function MapContainer() {
   // Base layer change handler (mutually exclusive)
   const handleBaseLayerChange = useCallback(
     (layerId: string | null) => {
-      const baseLayerIds = ['zoning', 'zoning_detailed'];
       // Remove all base layers first
-      const withoutBaseLayers = activeLayers.filter((id) => !baseLayerIds.includes(id));
+      const withoutBaseLayers = activeLayers.filter((id) => !BASE_LAYER_IDS.includes(id));
       // Add the new base layer if specified
       if (layerId) {
         setUrlActiveLayers([layerId, ...withoutBaseLayers]);
@@ -236,10 +241,9 @@ export function MapContainer() {
   // Transit toggle handler (combines routes and stops)
   const handleTransitToggle = useCallback(
     (enabled: boolean) => {
-      const transitLayerIds = ['transit_routes', 'transit_stops', 'light_rail'];
-      const withoutTransit = activeLayers.filter((id) => !transitLayerIds.includes(id));
+      const withoutTransit = activeLayers.filter((id) => !TRANSIT_LAYER_IDS.includes(id));
       if (enabled) {
-        setUrlActiveLayers([...withoutTransit, ...transitLayerIds]);
+        setUrlActiveLayers([...withoutTransit, ...TRANSIT_LAYER_IDS]);
       } else {
         setUrlActiveLayers(withoutTransit);
       }
@@ -250,12 +254,24 @@ export function MapContainer() {
   // Bike infrastructure toggle handler
   const handleBikeToggle = useCallback(
     (enabled: boolean) => {
-      const bikeLayerId = 'bike_facilities';
-      const withoutBike = activeLayers.filter((id) => id !== bikeLayerId);
+      const withoutBike = activeLayers.filter((id) => id !== BIKE_LAYER_ID);
       if (enabled) {
-        setUrlActiveLayers([...withoutBike, bikeLayerId]);
+        setUrlActiveLayers([...withoutBike, BIKE_LAYER_ID]);
       } else {
         setUrlActiveLayers(withoutBike);
+      }
+    },
+    [activeLayers, setUrlActiveLayers]
+  );
+
+  // Urban villages toggle handler
+  const handleUrbanVillagesToggle = useCallback(
+    (enabled: boolean) => {
+      const withoutUrbanVillages = activeLayers.filter((id) => id !== URBAN_VILLAGES_LAYER_ID);
+      if (enabled) {
+        setUrlActiveLayers([...withoutUrbanVillages, URBAN_VILLAGES_LAYER_ID]);
+      } else {
+        setUrlActiveLayers(withoutUrbanVillages);
       }
     },
     [activeLayers, setUrlActiveLayers]
@@ -313,6 +329,7 @@ export function MapContainer() {
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
             onBikeToggle={handleBikeToggle}
+            onUrbanVillagesToggle={handleUrbanVillagesToggle}
             onFilterChange={setFilter}
             inspectedFeature={inspectedFeature}
             proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
@@ -333,6 +350,7 @@ export function MapContainer() {
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
             onBikeToggle={handleBikeToggle}
+            onUrbanVillagesToggle={handleUrbanVillagesToggle}
             onFilterChange={setFilter}
             onSearchSelect={handleSearchSelect}
           />

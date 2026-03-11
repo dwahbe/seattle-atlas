@@ -5,14 +5,14 @@
  * Handles field filtering, formatting, and transformation.
  */
 
-export interface DisplayField {
+interface DisplayField {
   key: string;
   label: string;
   transform?: 'none' | 'yesNo' | 'date' | 'number' | 'zoneCode' | 'uppercase';
   priority: number; // Lower = shown first
 }
 
-export interface LayerDisplayConfig {
+interface LayerDisplayConfig {
   layerId: string;
   displayFields: DisplayField[];
   hiddenFields: string[];
@@ -162,13 +162,6 @@ export function formatPropertyValue(value: unknown, transform?: DisplayField['tr
 }
 
 /**
- * Get the display configuration for a layer.
- */
-export function getLayerDisplayConfig(layerId: string): LayerDisplayConfig | null {
-  return LAYER_DISPLAY_CONFIGS[layerId] || null;
-}
-
-/**
  * Check if a field should be hidden for a layer.
  */
 export function isFieldHidden(layerId: string, fieldKey: string): boolean {
@@ -260,5 +253,5 @@ export function isZoningLayer(layerId: string): boolean {
  * Check if a layer is a transit layer.
  */
 export function isTransitLayer(layerId: string): boolean {
-  return layerId === 'transit_stops' || layerId === 'transit_routes';
+  return layerId === 'transit_stops' || layerId === 'transit_routes' || layerId === 'light_rail';
 }

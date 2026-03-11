@@ -37,7 +37,7 @@ export function getLayerGroups(): LayerGroup[] {
 }
 
 // Get all layer IDs
-export function getAllLayerIds(): string[] {
+function getAllLayerIds(): string[] {
   return getLayers().map((layer) => layer.id);
 }
 

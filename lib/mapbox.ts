@@ -2,12 +2,13 @@
 
 import mapboxgl from 'mapbox-gl';
 import type { LayerConfig } from '@/types';
+import { HIGHLIGHT_COLOR } from '@/lib/constants';
 
 // Mapbox access token from environment
 export const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
 
 // Seattle bounds for geocoding
-export const SEATTLE_BOUNDS: [number, number, number, number] = [
+const SEATTLE_BOUNDS: [number, number, number, number] = [
   -122.4596, // west
   47.4919, // south
   -122.2244, // east
@@ -58,7 +59,7 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
       'fill-outline-color': [
         'case',
         ['boolean', ['feature-state', 'inspected'], false],
-        '#3B82F6', // Blue outline for inspected
+        HIGHLIGHT_COLOR, // Blue outline for inspected
         (basePaint['fill-outline-color'] as string) ?? '#000000',
       ],
     };
@@ -70,7 +71,7 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
       'line-color': [
         'case',
         ['boolean', ['feature-state', 'inspected'], false],
-        '#3B82F6',
+        HIGHLIGHT_COLOR,
         colorExpr,
       ],
       'line-width': typeof baseWidth === 'number' ? inspectedStrokeExpr(baseWidth) : baseWidth,
@@ -91,7 +92,7 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
       'circle-stroke-color': [
         'case',
         ['boolean', ['feature-state', 'inspected'], false],
-        '#3B82F6',
+        HIGHLIGHT_COLOR,
         (basePaint['circle-stroke-color'] as string) ?? '#ffffff',
       ],
       ...basePaint,
@@ -204,7 +205,6 @@ export async function geocodeAddress(query: string): Promise<GeocodingResult[]> 
   try {
     const response = await fetch(url.toString());
     if (!response.ok) {
-      console.error('Geocoding error:', response.status);
       return [];
     }
 
@@ -216,8 +216,7 @@ export async function geocodeAddress(query: string): Promise<GeocodingResult[]> 
       center: feature.center as [number, number],
       bbox: feature.bbox as [number, number, number, number] | undefined,
     }));
-  } catch (error) {
-    console.error('Geocoding error:', error);
+  } catch {
     return [];
   }
 }
@@ -298,8 +297,7 @@ export async function reverseGeocode(
       address: shortAddress,
       neighborhood,
     };
-  } catch (error) {
-    console.error('Reverse geocoding error:', error);
+  } catch {
     return null;
   }
 }

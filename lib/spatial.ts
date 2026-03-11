@@ -2,71 +2,21 @@
  * Spatial Utilities
  *
  * Functions for calculating distances and spatial relationships.
- * Uses Turf.js for calculations.
+ * Uses individual Turf.js subpackages to minimize bundle size.
  */
 
-import * as turf from '@turf/turf';
-import type { Feature, Point, Geometry } from 'geojson';
-
-export interface NearestTransitResult {
-  distance: number; // Distance in miles
-  distanceMeters: number; // Distance in meters
-  stopName: string;
-  stopId: string;
-  routes?: string[];
-}
-
-/**
- * Find the nearest transit stop to a point.
- *
- * @param point - The point to search from [lng, lat]
- * @param stops - Array of transit stop features
- * @returns The nearest stop info or null if no stops provided
- */
-export function findNearestTransitStop(
-  point: [number, number],
-  stops: Feature<Point>[]
-): NearestTransitResult | null {
-  if (!stops || stops.length === 0) {
-    return null;
-  }
-
-  const fromPoint = turf.point(point);
-  let nearest: Feature<Point> | null = null;
-  let nearestDistance = Infinity;
-
-  for (const stop of stops) {
-    if (!stop.geometry || stop.geometry.type !== 'Point') continue;
-
-    const distance = turf.distance(fromPoint, stop, { units: 'meters' });
-    if (distance < nearestDistance) {
-      nearestDistance = distance;
-      nearest = stop;
-    }
-  }
-
-  if (!nearest) {
-    return null;
-  }
-
-  const props = nearest.properties || {};
-
-  return {
-    distance: metersToMiles(nearestDistance),
-    distanceMeters: nearestDistance,
-    stopName: props.stop_name || props.name || 'Unknown Stop',
-    stopId: props.stop_id || props.id || '',
-    routes: parseRoutes(props.routes),
-  };
-}
+import { point as turfPoint } from '@turf/helpers';
+import turfDistance from '@turf/distance';
+import turfCentroid from '@turf/centroid';
+import type { Geometry } from 'geojson';
 
 /**
  * Get the centroid of a geometry.
  */
 export function getCentroid(geometry: Geometry): [number, number] | null {
   try {
-    const centroid = turf.centroid({ type: 'Feature', geometry, properties: {} });
-    return centroid.geometry.coordinates as [number, number];
+    const c = turfCentroid({ type: 'Feature', geometry, properties: {} });
+    return c.geometry.coordinates as [number, number];
   } catch {
     return null;
   }
@@ -133,27 +83,6 @@ export function formatDistance(miles: number): string {
 }
 
 /**
- * Parse routes string into array.
- */
-function parseRoutes(routes: unknown): string[] | undefined {
-  if (!routes) return undefined;
-
-  if (Array.isArray(routes)) {
-    return routes.map(String);
-  }
-
-  if (typeof routes === 'string') {
-    // Handle comma-separated or space-separated routes
-    return routes
-      .split(/[,\s]+/)
-      .map((r) => r.trim())
-      .filter(Boolean);
-  }
-
-  return undefined;
-}
-
-/**
  * Check if a point is within a given radius of another point.
  *
  * @param center - Center point [lng, lat]
@@ -165,18 +94,7 @@ export function isWithinRadius(
   point: [number, number],
   radiusMeters: number
 ): boolean {
-  const distance = turf.distance(turf.point(center), turf.point(point), { units: 'meters' });
-  return distance <= radiusMeters;
+  const dist = turfDistance(turfPoint(center), turfPoint(point), { units: 'meters' });
+  return dist <= radiusMeters;
 }
 
-/**
- * Get bounding box for a geometry.
- */
-export function getBoundingBox(geometry: Geometry): [number, number, number, number] | null {
-  try {
-    const bbox = turf.bbox({ type: 'Feature', geometry, properties: {} });
-    return bbox as [number, number, number, number];
-  } catch {
-    return null;
-  }
-}

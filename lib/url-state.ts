@@ -1,5 +1,3 @@
-import { createSearchParamsCache, parseAsBoolean, parseAsFloat, parseAsString } from 'nuqs/server';
-
 // Default map center: Seattle
 export const SEATTLE_CENTER = {
   lat: 47.6062,
@@ -8,21 +6,7 @@ export const SEATTLE_CENTER = {
 };
 
 // Default visible layers
-export const DEFAULT_LAYERS = ['zoning'];
-
-// Search params parsers for server-side parsing
-export const searchParamsParsers = {
-  lat: parseAsFloat.withDefault(SEATTLE_CENTER.lat),
-  lng: parseAsFloat.withDefault(SEATTLE_CENTER.lng),
-  z: parseAsFloat.withDefault(SEATTLE_CENTER.zoom),
-  layers: parseAsString.withDefault(DEFAULT_LAYERS.join(',')),
-  filters: parseAsString.withDefault(''),
-  inspect: parseAsString.withDefault(''),
-  compare: parseAsBoolean.withDefault(false),
-};
-
-// Create the search params cache for server components
-export const searchParamsCache = createSearchParamsCache(searchParamsParsers);
+const DEFAULT_LAYERS = ['zoning'];
 
 // Parse layers string to array
 // Empty string = no layers (user unchecked all)

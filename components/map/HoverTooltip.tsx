@@ -51,9 +51,6 @@ export function HoverTooltip({ x, y, properties, layerConfig }: HoverTooltipProp
   // Get neighborhood if available
   const neighborhood = getNeighborhood(properties);
 
-  // Debug: log available properties
-  console.log('Hover properties:', Object.keys(properties), properties);
-
   return (
     <div
       className="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-full"

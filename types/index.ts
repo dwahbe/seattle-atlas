@@ -1,11 +1,3 @@
-// NOTE: Do NOT import mapbox-gl types here directly - it breaks Turbopack
-// because mapbox-gl has browser-only initialization code.
-// Use inline types or import from 'mapbox-gl' only in 'use client' components.
-
-// Minimal type aliases to avoid importing mapbox-gl in shared types
-export type MapboxMap = unknown;
-export type LngLatLike = [number, number] | { lng: number; lat: number };
-
 // ============================================================================
 // Layer Types
 // ============================================================================
@@ -101,14 +93,6 @@ export interface FilterState {
   };
 }
 
-export interface MapState {
-  view: MapViewState;
-  layers: string[];
-  filters: FilterState;
-  inspectedFeatureId: string | null;
-  compareMode: boolean;
-}
-
 // ============================================================================
 // Feature Types
 // ============================================================================
@@ -118,10 +102,6 @@ export interface InspectedFeature {
   layerId: string;
   properties: Record<string, unknown>;
   geometry: GeoJSON.Geometry;
-}
-
-export interface FeatureProperties {
-  [key: string]: unknown;
 }
 
 // ============================================================================
@@ -141,92 +121,6 @@ export interface SearchResult {
 // ============================================================================
 
 export type Theme = 'light' | 'dark' | 'system';
-
-// ============================================================================
-// Component Props Types
-// ============================================================================
-
-export interface MapContainerProps {
-  initialState?: Partial<MapState>;
-}
-
-export interface ControlPanelProps {
-  layers: LayerConfig[];
-  activeLayers: string[];
-  filters: FilterState;
-  onLayerToggle: (layerId: string) => void;
-  onFilterChange: (layerId: string, filterId: string, value: string | string[]) => void;
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
-}
-
-export interface InspectPanelProps {
-  feature: InspectedFeature | null;
-  proposals: Proposal[];
-  onClose: () => void;
-  isOpen: boolean;
-}
-
-export interface ShareBarProps {
-  onCopy: () => void;
-}
-
-export interface LayerToggleProps {
-  layer: LayerConfig;
-  isActive: boolean;
-  onToggle: () => void;
-}
-
-export interface LegendProps {
-  layers: LayerConfig[];
-  activeLayers: string[];
-}
-
-export interface SearchBarProps {
-  onSelect: (result: SearchResult) => void;
-  placeholder?: string;
-}
-
-// ============================================================================
-// Hook Return Types
-// ============================================================================
-
-export interface UseMapStateReturn {
-  map: MapboxMap | null;
-  setMap: (map: MapboxMap | null) => void;
-  viewState: MapViewState;
-  setViewState: (state: MapViewState) => void;
-  flyTo: (center: LngLatLike, zoom?: number) => void;
-}
-
-export interface UseLayersReturn {
-  layers: LayerConfig[];
-  activeLayers: string[];
-  toggleLayer: (layerId: string) => void;
-  setActiveLayers: (layerIds: string[]) => void;
-  getLayerById: (layerId: string) => LayerConfig | undefined;
-  layerGroups: LayerGroup[];
-}
-
-export interface UseInspectReturn {
-  inspectedFeature: InspectedFeature | null;
-  setInspectedFeature: (feature: InspectedFeature | null) => void;
-  relatedProposals: Proposal[];
-}
-
-// ============================================================================
-// URL State Types
-// ============================================================================
-
-export interface UrlStateParams {
-  lat: number;
-  lng: number;
-  z: number;
-  layers: string;
-  filters: string;
-  inspect: string;
-  compare: boolean;
-}
 
 // ============================================================================
 // External API Types
@@ -257,12 +151,4 @@ export interface PermitsData {
   permits: PermitData[];
   total: number;
   error?: string;
-}
-
-export interface NearestTransit {
-  distance: number;
-  distanceMeters: number;
-  stopName: string;
-  stopId: string;
-  routes?: string[];
 }

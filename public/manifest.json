@@ -1,0 +1,21 @@
+{
+  "name": "Seattle Atlas",
+  "short_name": "Seattle Atlas",
+  "description": "Interactive Seattle zoning map and planning atlas. Explore zoning rules, transit routes, and proposed land use changes.",
+  "start_url": "/map",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

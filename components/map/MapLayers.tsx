@@ -118,8 +118,8 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
               try {
                 map.addLayer(casingSpec, beforeId);
                 addedLayers.current.add(casingId);
-              } catch (error) {
-                console.error(`[MapLayers] Failed to add casing: ${casingId}`, error);
+              } catch {
+                // Layer may already exist after rapid style changes
               }
             }
           }
@@ -142,12 +142,10 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
           }
 
           try {
-            // For line layers, insert after the casing (so main layer is above casing)
-            const insertBeforeId = config.type === 'line' ? beforeId : beforeId;
-            map.addLayer(layerSpec, insertBeforeId);
+            map.addLayer(layerSpec, beforeId);
             addedLayers.current.add(layerId);
-          } catch (error) {
-            console.error(`[MapLayers] Failed to add layer: ${layerId}`, error);
+          } catch {
+            // Layer may already exist after rapid style changes
           }
         }
       }

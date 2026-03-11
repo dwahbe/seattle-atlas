@@ -27,6 +27,7 @@ interface MapGLProps {
   showControls?: boolean;
 }
 
+import { HIGHLIGHT_COLOR } from '@/lib/constants';
 const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
 const HIGHLIGHT_LAYER_ID = 'neighborhood-highlight-layer';
 const HIGHLIGHT_OUTLINE_LAYER_ID = 'neighborhood-highlight-outline';
@@ -56,9 +57,11 @@ export function MapGL({
   useEffect(() => {
     if (!mapContainer.current || isInitialized.current) return;
     if (!MAPBOX_TOKEN) {
-      console.error(
-        'Mapbox token not found. Please set NEXT_PUBLIC_MAPBOX_TOKEN in your .env.local file.'
-      );
+      if (process.env.NODE_ENV === 'development') {
+        console.error(
+          'Mapbox token not found. Please set NEXT_PUBLIC_MAPBOX_TOKEN in your .env.local file.'
+        );
+      }
       return;
     }
 
@@ -248,8 +251,8 @@ export function MapGL({
             source: inspectedFeature.layerId,
             id: inspectedFeature.id,
           };
-        } catch (error) {
-          console.warn('Failed to set feature state:', error);
+        } catch {
+          // Feature state may fail if source was removed during style change
         }
       }
     }
@@ -311,7 +314,7 @@ export function MapGL({
         type: 'fill',
         source: HIGHLIGHT_SOURCE_ID,
         paint: {
-          'fill-color': '#3B82F6',
+          'fill-color': HIGHLIGHT_COLOR,
           'fill-opacity': 0.08,
         },
       });
@@ -322,7 +325,7 @@ export function MapGL({
         type: 'line',
         source: HIGHLIGHT_SOURCE_ID,
         paint: {
-          'line-color': '#3B82F6',
+          'line-color': HIGHLIGHT_COLOR,
           'line-width': 3,
           'line-opacity': 0.8,
           'line-dasharray': [2, 2],
@@ -349,7 +352,7 @@ export function MapGL({
     // Add new marker if position provided and map is ready
     if (markerPosition && map.current) {
       const marker = new mapboxgl.Marker({
-        color: '#3B82F6', // Match the highlight color
+        color: HIGHLIGHT_COLOR,
       })
         .setLngLat(markerPosition)
         .addTo(map.current);

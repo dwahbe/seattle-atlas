@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
   { href: '/seattle-zoning', label: 'Seattle Zoning Guide' },
@@ -11,6 +12,7 @@ const NAV_LINKS = [
 export function NavMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
 
   // Close on click outside
   useEffect(() => {
@@ -92,20 +94,24 @@ export function NavMenu() {
           "
         >
           <nav className="py-1">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                className="
-                  block px-4 py-2.5 text-sm
-                  text-text-primary hover:bg-secondary-bg
-                  transition-colors
-                "
-              >
-                {link.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`
+                    block px-4 py-2.5 text-sm
+                    transition-colors
+                    ${isActive ? 'text-accent bg-secondary-bg font-medium' : 'text-text-primary hover:bg-secondary-bg'}
+                  `}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       )}

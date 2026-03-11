@@ -18,16 +18,14 @@ import {
   RawProperties,
 } from '@/components/inspect';
 import type { LayerConfig, InspectedFeature, Proposal, FilterState } from '@/types';
+import {
+  BASE_LAYER_IDS,
+  TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  URBAN_VILLAGES_LAYER_ID,
+  DATA_FRESHNESS,
+} from '@/lib/constants';
 import Link from 'next/link';
-
-// Base layer configuration
-const BASE_LAYER_IDS = ['zoning', 'zoning_detailed'];
-
-// Transit layers combined into single toggle
-const TRANSIT_LAYER_IDS = ['transit_routes', 'transit_stops', 'light_rail'];
-
-// Bike infrastructure layer
-const BIKE_LAYER_ID = 'bike_facilities';
 
 // Snap points for the drawer (peek, half, full)
 const SNAP_POINT_PEEK = 0.15;
@@ -43,6 +41,7 @@ interface MobileDrawerProps {
   onBaseLayerChange: (layerId: string | null) => void;
   onTransitToggle: (enabled: boolean) => void;
   onBikeToggle: (enabled: boolean) => void;
+  onUrbanVillagesToggle: (enabled: boolean) => void;
   onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
   // Inspect
   inspectedFeature: InspectedFeature | null;
@@ -62,6 +61,8 @@ export function MobileDrawer({
   onBaseLayerChange,
   onTransitToggle,
   onBikeToggle,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- wired up, toggle commented out until tileset uploaded
+  onUrbanVillagesToggle,
   onFilterChange,
   inspectedFeature,
   proposals,
@@ -89,6 +90,9 @@ export function MobileDrawer({
 
   // Check if bike layer is enabled
   const isBikeActive = activeLayers.includes(BIKE_LAYER_ID);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- toggle commented out until tileset uploaded
+  const isUrbanVillagesActive = activeLayers.includes(URBAN_VILLAGES_LAYER_ID);
 
   // Get base layers for filter display
   const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
@@ -131,14 +135,9 @@ export function MobileDrawer({
           <div className="flex-none px-4 pb-3">
             <div className="flex items-center">
               <Link href="/" className="group flex items-center min-h-[36px]">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base font-bold text-text-primary group-hover:text-accent transition-colors">
-                    Seattle Atlas
-                  </h1>
-                  <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap border bg-accent text-white border-accent">
-                    Beta
-                  </span>
-                </div>
+                <h1 className="text-base font-bold text-text-primary group-hover:text-accent transition-colors">
+                  Seattle Atlas
+                </h1>
               </Link>
             </div>
           </div>
@@ -296,6 +295,22 @@ export function MobileDrawer({
                           onChange={() => onBikeToggle(!isBikeActive)}
                         />
                       </div>
+                      {/* Urban Villages Toggle — disabled until tileset is uploaded to Mapbox
+                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-sm text-text-primary">
+                            Urban Villages
+                          </div>
+                          <div className="text-xs text-text-secondary truncate">
+                            Growth centers & urban villages
+                          </div>
+                        </div>
+                        <Switch
+                          checked={isUrbanVillagesActive}
+                          onChange={() => onUrbanVillagesToggle(!isUrbanVillagesActive)}
+                        />
+                      </div>
+                      */}
                     </div>
                   </div>
 
@@ -365,7 +380,7 @@ export function MobileDrawer({
                     <div className="flex items-center justify-between">
                       <ThemeToggle />
                       <span className="text-xs text-text-tertiary">
-                        Data: Jan 2025
+                        Data: {DATA_FRESHNESS}
                       </span>
                     </div>
                   </div>

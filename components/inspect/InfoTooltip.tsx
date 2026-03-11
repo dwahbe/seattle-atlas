@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useId } from 'react';
 
 interface InfoTooltipProps {
   text: string;
@@ -8,6 +8,7 @@ interface InfoTooltipProps {
 
 export function InfoTooltip({ text }: InfoTooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
+  const tooltipId = useId();
 
   return (
     <span className="relative inline-flex items-center justify-center">
@@ -17,8 +18,11 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         className="touch-target-inline relative w-5 h-5 flex items-center justify-center"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
+        onFocus={() => setIsVisible(true)}
+        onBlur={() => setIsVisible(false)}
         onClick={() => setIsVisible(!isVisible)}
         aria-label="More information"
+        aria-describedby={isVisible ? tooltipId : undefined}
       >
         {/* Expanded touch area (invisible) */}
         <span className="absolute inset-[-8px]" aria-hidden="true" />
@@ -28,7 +32,11 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         </span>
       </button>
       {isVisible && (
-        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 md:w-48 p-2 text-xs text-text-primary bg-panel-bg border border-border rounded-lg shadow-lg z-50">
+        <div
+          id={tooltipId}
+          role="tooltip"
+          className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-40 md:w-48 p-2 text-xs text-text-primary bg-panel-bg border border-border rounded-lg shadow-lg z-50"
+        >
           {text}
           <div className="absolute left-1/2 -translate-x-1/2 top-full w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-border" />
         </div>
