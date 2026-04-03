@@ -96,33 +96,232 @@ export default function AboutPage() {
               <h2 className="text-lg font-semibold text-text-primary mb-3">
                 Data Sources
               </h2>
-              <ul className="list-disc list-inside space-y-1 ml-2">
-                <li>
-                  <strong>Zoning &amp; Urban Villages:</strong> City of Seattle Open Data Portal
-                </li>
-                <li>
-                  <strong>Transit Routes &amp; Stops:</strong> King County Metro GTFS, Sound Transit
-                </li>
-                <li>
-                  <strong>Bike Infrastructure:</strong> Seattle Department of Transportation (SDOT)
-                </li>
-                <li>
-                  <strong>Development Proposals:</strong> Seattle Office of Planning &amp; Community
-                  Development (OPCD)
-                </li>
-              </ul>
+              <p className="text-sm mb-4">
+                All data is sourced from official government agencies and public datasets.
+                Each zone&apos;s detail view links directly to its governing code section.
+              </p>
+
+              <div className="space-y-5">
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">
+                    Zoning &amp; Land Use
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://data.seattle.gov/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        City of Seattle Open Data Portal
+                      </a>
+                      {' '}&mdash; zoning boundaries, urban village boundaries
+                    </li>
+                    <li>
+                      <a
+                        href="https://library.municode.com/wa/seattle/codes/municipal_code?nodeId=TIT23LAUSCO"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Seattle Municipal Code, Title 23
+                      </a>
+                      {' '}&mdash; zone classifications and development standards
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/sdci/codes/codes-we-enforce-(a-z)/land-use-code"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        SDCI Land Use Code
+                      </a>
+                      {' '}&mdash; official code descriptions and enforcement
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/dpd/Research/gis/webplots/legend.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        SDCI Map Books Legend (PDF)
+                      </a>
+                      {' '}&mdash; zone code reference for official maps
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">
+                    Property &amp; Parcels
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://gismaps.kingcounty.gov/arcgis/rest/services/Property/KingCo_Parcels/MapServer"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        King County GIS
+                      </a>
+                      {' '}&mdash; parcel boundaries, lot size, property use
+                    </li>
+                    <li>
+                      <a
+                        href="https://blue.kingcounty.com/Assessor/eRealProperty/Dashboard.aspx"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        King County Assessor
+                      </a>
+                      {' '}&mdash; assessed values, sales history
+                    </li>
+                    <li>
+                      <a
+                        href="https://data.seattle.gov/Permitting/Building-Permits/76t5-zqzr"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Seattle Open Data &mdash; Building Permits
+                      </a>
+                      {' '}&mdash; nearby permits and project costs
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.walkscore.com/professional/api.php"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Walk Score API
+                      </a>
+                      {' '}&mdash; walkability, transit, and bike scores
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">Transit</h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://metro.kingcounty.gov/GTFS/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        King County Metro (GTFS)
+                      </a>
+                      {' '}&mdash; bus and ferry routes, stop locations
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.soundtransit.org/help-contacts/business-information/open-transit-data-otd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Sound Transit (GTFS)
+                      </a>
+                      {' '}&mdash; Link Light Rail, Sounder commuter rail
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">
+                    Bike Infrastructure
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://data-seattlecitygis.opendata.arcgis.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Seattle Department of Transportation (SDOT)
+                      </a>
+                      {' '}&mdash; protected lanes, greenways, multi-use trails, sharrows
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">
+                    Planning &amp; Policy
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/opcd/one-seattle-plan"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        One Seattle Plan / Comprehensive Plan 2044
+                      </a>
+                      {' '}&mdash; citywide growth and land use policies
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/opcd/station-area-planning"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Station Area Planning
+                      </a>
+                      {' '}&mdash; proposed rezones around light rail stations
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/sdci/codes/changes-to-code/accessory-dwelling-units-code-updates"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        ADU Code Updates
+                      </a>
+                      {' '}&mdash; accessory dwelling unit policy changes
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.seattle.gov/opcd/current-projects/industrial-and-maritime-strategy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Industrial &amp; Maritime Strategy
+                      </a>
+                      {' '}&mdash; industrial zone updates and protections
+                    </li>
+                    <li>
+                      <a
+                        href="https://www.soundtransit.org/system-expansion/ballard-link-extension"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Ballard Link Extension
+                      </a>
+                      {' '}&mdash; planned light rail expansion (Sound Transit)
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </section>
 
             <section>
               <h2 className="text-lg font-semibold text-text-primary mb-3">
                 Methodology
               </h2>
-              <p className="mb-3">
-                All geographic data is sourced from official government datasets. Zoning boundaries
-                follow Seattle Municipal Code Title 23 designations. Transit data comes from GTFS
-                feeds published by transit agencies. Bike infrastructure reflects SDOT&apos;s master
-                plan.
-              </p>
               <p>
                 Source data is processed into vector tiles using Tippecanoe and hosted on Mapbox.
                 The app is built with Next.js, React, and TypeScript.

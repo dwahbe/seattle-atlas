@@ -232,7 +232,7 @@
         "percentage": 1.4
       },
       {
-        "label": "PSM - Pike/Pine Seattle Mixed",
+        "label": "PSM - Pioneer Square Mixed",
         "color": "#38BDF8",
         "value": "PSM",
         "percentage": 0.2
@@ -316,13 +316,13 @@
         "percentage": 0
       },
       {
-        "label": "IDM - Industrial/Commercial",
+        "label": "IDM - International District Mixed",
         "color": "#78716C",
         "value": "IDM",
         "percentage": 0.1
       },
       {
-        "label": "IDR - Industrial/Residential",
+        "label": "IDR - International District Residential",
         "color": "#A8A29E",
         "value": "IDR",
         "percentage": 0
@@ -334,7 +334,7 @@
         "percentage": 0.1
       },
       {
-        "label": "PMM - Port Maritime Manufacturing",
+        "label": "PMM - Pike Market Mixed",
         "color": "#334155",
         "value": "PMM",
         "percentage": 0
@@ -362,7 +362,7 @@
           { "label": "Commercial", "value": "C1" },
           { "label": "Commercial", "value": "C2" },
           { "label": "Seattle Mixed", "value": "SM" },
-          { "label": "Seattle Mixed", "value": "PSM" },
+          { "label": "Downtown", "value": "PSM" },
           { "label": "Downtown", "value": "DMC" },
           { "label": "Downtown", "value": "DMR" },
           { "label": "Downtown", "value": "DOC1" },
@@ -376,9 +376,9 @@
           { "label": "Industrial", "value": "IB" },
           { "label": "Industrial", "value": "MML" },
           { "label": "Industrial", "value": "II" },
-          { "label": "Industrial", "value": "IDM" },
-          { "label": "Industrial", "value": "IDR" },
-          { "label": "Industrial", "value": "PMM" },
+          { "label": "Downtown", "value": "IDM" },
+          { "label": "Downtown", "value": "IDR" },
+          { "label": "Downtown", "value": "PMM" },
           { "label": "Master Planned", "value": "MPC" }
         ]
       }

@@ -40,9 +40,9 @@ const faqs = [
       'By restricting the supply of housing in high-demand areas, exclusionary zoning contributes to higher housing costs. When only one home can be built on a lot that could support four or more units, fewer people can live in desirable neighborhoods with good transit and jobs access. [3][4]',
   },
   {
-    question: 'What zoning changes is Seattle considering?',
+    question: 'What zoning changes has Seattle made?',
     answer:
-      'Seattle is evaluating several zoning reforms as part of its Comprehensive Plan 2044, including expanding allowances for ADUs (accessory dwelling units), increasing density near transit stations, and potentially allowing more housing types in traditionally single-family zones. [8][10]',
+      'Seattle adopted its Comprehensive Plan 2044 in 2025, which includes major zoning reforms: former single-family zones were renamed Neighborhood Residential and now allow duplexes, triplexes, and ADUs. The city is also increasing density near transit stations and expanding urban villages. Implementation is ongoing. [8][10]',
   },
 ];
 
@@ -173,9 +173,11 @@ export default function SeattleZoningPage() {
               </h2>
               <p>
                 A large share of Seattle&apos;s residential land has historically been zoned
-                exclusively for detached single-family homes. This means that on much of
-                Seattle&apos;s residential land, it is illegal to build a duplex, a small apartment
-                building, or even—until recently—an accessory dwelling unit.
+                exclusively for detached single-family homes. For decades, it was illegal to build
+                a duplex, a small apartment building, or even an accessory dwelling unit on most
+                residential lots. Recent reforms now allow duplexes, triplexes, and ADUs in these
+                areas—renamed &quot;Neighborhood Residential&quot;—but the low-density pattern
+                remains dominant.
                 <sup>
                   <a href="#fn-2" className="text-accent hover:underline">
                     2
@@ -281,9 +283,17 @@ export default function SeattleZoningPage() {
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-text-primary">What&apos;s changing</h2>
               <p>
-                Seattle is in the midst of updating its Comprehensive Plan, the document that guides
-                land use policy for the next 20 years. Several zoning reforms are under
-                consideration:
+                In 2025, Seattle adopted its{' '}
+                <a
+                  href="https://www.seattle.gov/opcd/one-seattle-plan"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Comprehensive Plan 2044
+                </a>
+                , the document that guides land use policy for the next 20 years. The plan includes
+                significant zoning reforms:
                 <sup>
                   <a href="#fn-8" className="text-accent hover:underline">
                     8
@@ -292,29 +302,29 @@ export default function SeattleZoningPage() {
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li>
-                  <strong>Station area rezoning:</strong> Increasing allowed density near light rail
+                  <strong>Neighborhood Residential reform:</strong> Former single-family zones now
+                  allow duplexes, triplexes, and ADUs
+                </li>
+                <li>
+                  <strong>Station area rezoning:</strong> Increased density near light rail
                   stations
                 </li>
                 <li>
-                  <strong>ADU expansion:</strong> Making it easier to build backyard cottages and
+                  <strong>ADU expansion:</strong> Easier to build backyard cottages and
                   basement apartments
                 </li>
                 <li>
-                  <strong>Missing middle legalization:</strong> Allowing duplexes, triplexes, and
-                  small apartments in more areas
-                </li>
-                <li>
-                  <strong>Urban village expansion:</strong> Extending areas designated for growth
+                  <strong>Urban village expansion:</strong> Extended areas designated for growth
                 </li>
               </ul>
               <p>
-                These changes face political opposition from some homeowners who prefer to maintain
-                existing neighborhood character. The debate reflects a fundamental tension in urban
-                policy: the interests of current residents versus the needs of future residents and
-                the broader region.
+                Implementation of these changes is ongoing. Some reforms are already in effect,
+                while others are moving through phased rollouts. The debate continues to reflect a
+                fundamental tension in urban policy: the interests of current residents versus the
+                needs of future residents and the broader region.
               </p>
               <p>
-                Similar debates are playing out nationally as cities reconsider zoning to increase
+                Similar reforms are playing out nationally as cities reconsider zoning to increase
                 housing supply and reuse underutilized space.
                 <sup>
                   <a href="#fn-9" className="text-accent hover:underline">
@@ -451,12 +461,12 @@ export default function SeattleZoningPage() {
                 <li id="fn-8">
                   City of Seattle,{' '}
                   <a
-                    href="https://www.seattle.gov/opcd/ongoing-initiatives/comprehensive-plan"
+                    href="https://www.seattle.gov/opcd/one-seattle-plan"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-accent hover:underline"
                   >
-                    Comprehensive Plan 2044
+                    One Seattle Plan / Comprehensive Plan 2044
                   </a>
                 </li>
                 <li id="fn-9">
