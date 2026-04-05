@@ -173,8 +173,8 @@ export default function SeattleZoningPage() {
               </h2>
               <p>
                 A large share of Seattle&apos;s residential land has historically been zoned
-                exclusively for detached single-family homes. For decades, it was illegal to build
-                a duplex, a small apartment building, or even an accessory dwelling unit on most
+                exclusively for detached single-family homes. For decades, it was illegal to build a
+                duplex, a small apartment building, or even an accessory dwelling unit on most
                 residential lots. Recent reforms now allow duplexes, triplexes, and ADUs in these
                 areas—renamed &quot;Neighborhood Residential&quot;—but the low-density pattern
                 remains dominant.
@@ -306,12 +306,11 @@ export default function SeattleZoningPage() {
                   allow duplexes, triplexes, and ADUs
                 </li>
                 <li>
-                  <strong>Station area rezoning:</strong> Increased density near light rail
-                  stations
+                  <strong>Station area rezoning:</strong> Increased density near light rail stations
                 </li>
                 <li>
-                  <strong>ADU expansion:</strong> Easier to build backyard cottages and
-                  basement apartments
+                  <strong>ADU expansion:</strong> Easier to build backyard cottages and basement
+                  apartments
                 </li>
                 <li>
                   <strong>Urban village expansion:</strong> Extended areas designated for growth

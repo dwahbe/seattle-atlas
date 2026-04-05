@@ -36,9 +36,7 @@ export default function AboutPage() {
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article className="prose prose-slate dark:prose-invert max-w-none">
-          <h1 className="text-3xl font-bold text-text-primary mb-6">
-            About Seattle Atlas
-          </h1>
+          <h1 className="text-3xl font-bold text-text-primary mb-6">About Seattle Atlas</h1>
 
           <div className="space-y-6 text-text-secondary">
             <p>
@@ -53,9 +51,7 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1">
-                    Zoning &amp; Land Use
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1">Zoning &amp; Land Use</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>
                       Simplified view showing what can be built (houses, apartments, mixed-use,
@@ -79,9 +75,7 @@ export default function AboutPage() {
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1">
-                    Development Proposals
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1">Development Proposals</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>Station area rezoning around light rail</li>
                     <li>ADU policy updates</li>
@@ -93,19 +87,15 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">
-                Data Sources
-              </h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-3">Data Sources</h2>
               <p className="text-sm mb-4">
-                All data is sourced from official government agencies and public datasets.
-                Each zone&apos;s detail view links directly to its governing code section.
+                All data is sourced from official government agencies and public datasets. Each
+                zone&apos;s detail view links directly to its governing code section.
               </p>
 
               <div className="space-y-5">
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1.5">
-                    Zoning &amp; Land Use
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1.5">Zoning &amp; Land Use</h3>
                   <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
                     <li>
                       <a
@@ -115,8 +105,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         City of Seattle Open Data Portal
-                      </a>
-                      {' '}&mdash; zoning boundaries, urban village boundaries
+                      </a>{' '}
+                      &mdash; zoning boundaries, urban village boundaries
                     </li>
                     <li>
                       <a
@@ -126,8 +116,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Seattle Municipal Code, Title 23
-                      </a>
-                      {' '}&mdash; zone classifications and development standards
+                      </a>{' '}
+                      &mdash; zone classifications and development standards
                     </li>
                     <li>
                       <a
@@ -137,8 +127,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         SDCI Land Use Code
-                      </a>
-                      {' '}&mdash; official code descriptions and enforcement
+                      </a>{' '}
+                      &mdash; official code descriptions and enforcement
                     </li>
                     <li>
                       <a
@@ -148,16 +138,14 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         SDCI Map Books Legend (PDF)
-                      </a>
-                      {' '}&mdash; zone code reference for official maps
+                      </a>{' '}
+                      &mdash; zone code reference for official maps
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1.5">
-                    Property &amp; Parcels
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1.5">Property &amp; Parcels</h3>
                   <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
                     <li>
                       <a
@@ -167,8 +155,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         King County GIS
-                      </a>
-                      {' '}&mdash; parcel boundaries, lot size, property use
+                      </a>{' '}
+                      &mdash; parcel boundaries, lot size, property use
                     </li>
                     <li>
                       <a
@@ -178,8 +166,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         King County Assessor
-                      </a>
-                      {' '}&mdash; assessed values, sales history
+                      </a>{' '}
+                      &mdash; assessed values, sales history
                     </li>
                     <li>
                       <a
@@ -189,8 +177,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Seattle Open Data &mdash; Building Permits
-                      </a>
-                      {' '}&mdash; nearby permits and project costs
+                      </a>{' '}
+                      &mdash; nearby permits and project costs
                     </li>
                     <li>
                       <a
@@ -200,8 +188,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Walk Score API
-                      </a>
-                      {' '}&mdash; walkability, transit, and bike scores
+                      </a>{' '}
+                      &mdash; walkability, transit, and bike scores
                     </li>
                   </ul>
                 </div>
@@ -217,8 +205,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         King County Metro (GTFS)
-                      </a>
-                      {' '}&mdash; bus and ferry routes, stop locations
+                      </a>{' '}
+                      &mdash; bus and ferry routes, stop locations
                     </li>
                     <li>
                       <a
@@ -228,16 +216,14 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Sound Transit (GTFS)
-                      </a>
-                      {' '}&mdash; Link Light Rail, Sounder commuter rail
+                      </a>{' '}
+                      &mdash; Link Light Rail, Sounder commuter rail
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1.5">
-                    Bike Infrastructure
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1.5">Bike Infrastructure</h3>
                   <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
                     <li>
                       <a
@@ -247,16 +233,14 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Seattle Department of Transportation (SDOT)
-                      </a>
-                      {' '}&mdash; protected lanes, greenways, multi-use trails, sharrows
+                      </a>{' '}
+                      &mdash; protected lanes, greenways, multi-use trails, sharrows
                     </li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1.5">
-                    Planning &amp; Policy
-                  </h3>
+                  <h3 className="font-medium text-text-primary mb-1.5">Planning &amp; Policy</h3>
                   <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
                     <li>
                       <a
@@ -266,8 +250,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         One Seattle Plan / Comprehensive Plan 2044
-                      </a>
-                      {' '}&mdash; citywide growth and land use policies
+                      </a>{' '}
+                      &mdash; citywide growth and land use policies
                     </li>
                     <li>
                       <a
@@ -277,8 +261,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Station Area Planning
-                      </a>
-                      {' '}&mdash; proposed rezones around light rail stations
+                      </a>{' '}
+                      &mdash; proposed rezones around light rail stations
                     </li>
                     <li>
                       <a
@@ -288,8 +272,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         ADU Code Updates
-                      </a>
-                      {' '}&mdash; accessory dwelling unit policy changes
+                      </a>{' '}
+                      &mdash; accessory dwelling unit policy changes
                     </li>
                     <li>
                       <a
@@ -299,8 +283,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Industrial &amp; Maritime Strategy
-                      </a>
-                      {' '}&mdash; industrial zone updates and protections
+                      </a>{' '}
+                      &mdash; industrial zone updates and protections
                     </li>
                     <li>
                       <a
@@ -310,8 +294,8 @@ export default function AboutPage() {
                         className="text-accent hover:underline"
                       >
                         Ballard Link Extension
-                      </a>
-                      {' '}&mdash; planned light rail expansion (Sound Transit)
+                      </a>{' '}
+                      &mdash; planned light rail expansion (Sound Transit)
                     </li>
                   </ul>
                 </div>
@@ -319,9 +303,7 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">
-                Methodology
-              </h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-3">Methodology</h2>
               <p>
                 Source data is processed into vector tiles using Tippecanoe and hosted on Mapbox.
                 The app is built with Next.js, React, and TypeScript.
@@ -329,9 +311,7 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">
-                Open Source
-              </h2>
+              <h2 className="text-lg font-semibold text-text-primary mb-3">Open Source</h2>
               <p>
                 Seattle Atlas is open source. View the code on{' '}
                 <a

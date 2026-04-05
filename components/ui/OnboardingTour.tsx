@@ -20,8 +20,7 @@ const STEPS: TourStep[] = [
   },
   {
     title: 'Click a parcel',
-    description:
-      'Click anywhere on the map to see zoning rules, Walk Score, permits, and more.',
+    description: 'Click anywhere on the map to see zoning rules, Walk Score, permits, and more.',
     target: 'map',
   },
   {
@@ -43,7 +42,12 @@ function getTargetRect(target: TourStep['target']): {
       const el = document.querySelector('[data-tour="search"]') as HTMLElement | null;
       if (el) {
         const rect = el.getBoundingClientRect();
-        return { top: rect.top - 8, left: rect.left - 8, width: rect.width + 16, height: rect.height + 16 };
+        return {
+          top: rect.top - 8,
+          left: rect.left - 8,
+          width: rect.width + 16,
+          height: rect.height + 16,
+        };
       }
       // Fallback: top-left area where search lives
       return { top: 60, left: 16, width: 296, height: 48 };
@@ -60,7 +64,12 @@ function getTargetRect(target: TourStep['target']): {
       const el = document.querySelector('[data-tour="layers"]') as HTMLElement | null;
       if (el) {
         const rect = el.getBoundingClientRect();
-        return { top: rect.top - 8, left: rect.left - 8, width: rect.width + 16, height: rect.height + 16 };
+        return {
+          top: rect.top - 8,
+          left: rect.left - 8,
+          width: rect.width + 16,
+          height: rect.height + 16,
+        };
       }
       // Fallback: left panel layers area
       return { top: 140, left: 16, width: 296, height: 160 };

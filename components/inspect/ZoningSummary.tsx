@@ -13,9 +13,7 @@ interface ZoningSummaryProps {
 
 export function ZoningSummary({ zoneInfo, compact = false, landmark = null }: ZoningSummaryProps) {
   return (
-    <div
-      className={`border-b border-border ${compact ? 'px-4 pt-3 pb-2' : 'p-4'}`}
-    >
+    <div className={`border-b border-border ${compact ? 'px-4 pt-3 pb-2' : 'p-4'}`}>
       {/* Building type graphic */}
       <BuildingGraphic
         category={zoneInfo.category}
@@ -57,9 +55,7 @@ function StatCard({
 }) {
   return (
     <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
-      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>
-        {label}
-      </div>
+      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>{label}</div>
       <div className="text-sm font-semibold text-text-primary">{value}</div>
     </div>
   );

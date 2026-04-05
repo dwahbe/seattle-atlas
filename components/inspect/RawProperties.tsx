@@ -19,9 +19,7 @@ export function RawProperties({ feature, compact = false }: RawPropertiesProps) 
         {displayProperties.map(({ key, label, value }) => (
           <div key={key}>
             <dt className="text-xs text-text-secondary truncate">{label}</dt>
-            <dd className="text-sm font-medium text-text-primary truncate">
-              {value}
-            </dd>
+            <dd className="text-sm font-medium text-text-primary truncate">{value}</dd>
           </div>
         ))}
       </dl>

@@ -125,10 +125,7 @@ export function MobileDrawer({
           <Drawer.Title className="sr-only">Seattle Atlas Controls</Drawer.Title>
           {/* Drag handle */}
           <div className="flex-none pt-3 pb-2 px-4">
-            <div
-              className="mx-auto w-12 h-1.5 rounded-full bg-text-tertiary"
-              aria-hidden="true"
-            />
+            <div className="mx-auto w-12 h-1.5 rounded-full bg-text-tertiary" aria-hidden="true" />
           </div>
 
           {/* Header */}
@@ -253,9 +250,7 @@ export function MobileDrawer({
                       {/* Zoning Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-text-primary">
-                            Zoning
-                          </div>
+                          <div className="font-medium text-sm text-text-primary">Zoning</div>
                           <div className="text-xs text-text-secondary truncate">
                             What can be built
                           </div>
@@ -268,9 +263,7 @@ export function MobileDrawer({
                       {/* Transit Toggle */}
                       <div className="flex items-center gap-3 p-2 rounded-lg">
                         <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-text-primary">
-                            Transit
-                          </div>
+                          <div className="font-medium text-sm text-text-primary">Transit</div>
                           <div className="text-xs text-text-secondary truncate">
                             Bus & Lightrail Routes
                           </div>
@@ -343,9 +336,7 @@ export function MobileDrawer({
                     {/* Zoning Mode Toggle - only show when zoning is enabled */}
                     {activeBaseLayer && (
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-text-secondary">
-                          Zoning View
-                        </span>
+                        <span className="text-xs font-medium text-text-secondary">Zoning View</span>
                         <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
                           <button
                             onClick={() => onBaseLayerChange('zoning')}
@@ -379,9 +370,7 @@ export function MobileDrawer({
 
                     <div className="flex items-center justify-between">
                       <ThemeToggle />
-                      <span className="text-xs text-text-tertiary">
-                        Data: {DATA_FRESHNESS}
-                      </span>
+                      <span className="text-xs text-text-tertiary">Data: {DATA_FRESHNESS}</span>
                     </div>
                   </div>
                 </div>

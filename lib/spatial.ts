@@ -97,4 +97,3 @@ export function isWithinRadius(
   const dist = turfDistance(turfPoint(center), turfPoint(point), { units: 'meters' });
   return dist <= radiusMeters;
 }
-

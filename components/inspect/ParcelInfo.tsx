@@ -101,9 +101,7 @@ function StatCard({
 }) {
   return (
     <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
-      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>
-        {label}
-      </div>
+      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>{label}</div>
       {link ? (
         <a
           href={link}

@@ -87,9 +87,7 @@ export function Donut({
           {Math.round(value)}
         </text>
       </svg>
-      {label && (
-        <span className="text-xs text-text-secondary font-medium">{label}</span>
-      )}
+      {label && <span className="text-xs text-text-secondary font-medium">{label}</span>}
     </div>
   );
 }

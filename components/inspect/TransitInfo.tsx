@@ -20,9 +20,7 @@ export function TransitInfo({ feature, compact = false }: TransitInfoProps) {
       <div>
         <h3 className={headingClass}>{String(props.stop_name || 'Transit Stop')}</h3>
         {props.routes != null && (
-          <p className="text-sm text-text-secondary">
-            Routes: {String(props.routes)}
-          </p>
+          <p className="text-sm text-text-secondary">Routes: {String(props.routes)}</p>
         )}
       </div>
     );
@@ -36,14 +34,10 @@ export function TransitInfo({ feature, compact = false }: TransitInfoProps) {
           Route {String(props.route_short_name || props.route_id || '')}
         </h3>
         {props.route_long_name != null && (
-          <p className="text-sm text-text-secondary">
-            {String(props.route_long_name)}
-          </p>
+          <p className="text-sm text-text-secondary">{String(props.route_long_name)}</p>
         )}
         {props.agency_name != null && (
-          <p className="text-xs text-text-tertiary mt-1">
-            {String(props.agency_name)}
-          </p>
+          <p className="text-xs text-text-tertiary mt-1">{String(props.agency_name)}</p>
         )}
       </div>
     );

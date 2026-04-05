@@ -13,14 +13,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       'inline-flex items-center justify-center font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
 
     const variantClasses = {
-      primary:
-        'bg-accent text-white hover:bg-accent-hover focus:ring-accent',
-      secondary:
-        'bg-secondary-bg text-text-primary hover:bg-secondary-hover focus:ring-accent',
-      ghost:
-        'text-text-primary hover:bg-secondary-bg focus:ring-accent',
-      outline:
-        'border border-border text-text-primary hover:bg-secondary-bg focus:ring-accent',
+      primary: 'bg-accent text-white hover:bg-accent-hover focus:ring-accent',
+      secondary: 'bg-secondary-bg text-text-primary hover:bg-secondary-hover focus:ring-accent',
+      ghost: 'text-text-primary hover:bg-secondary-bg focus:ring-accent',
+      outline: 'border border-border text-text-primary hover:bg-secondary-bg focus:ring-accent',
     };
 
     const sizeClasses = {

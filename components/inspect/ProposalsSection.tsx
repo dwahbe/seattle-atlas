@@ -17,10 +17,7 @@ export function ProposalsSection({ proposals, compact = false }: ProposalsSectio
   return (
     <div className={compact ? 'space-y-2' : 'space-y-3'}>
       {proposals.slice(0, maxProposals).map((proposal) => (
-        <div
-          key={proposal.id}
-          className={`bg-secondary-bg rounded-lg ${compact ? 'p-3' : 'p-3'}`}
-        >
+        <div key={proposal.id} className={`bg-secondary-bg rounded-lg ${compact ? 'p-3' : 'p-3'}`}>
           <div className="flex items-start justify-between gap-2">
             <h4
               className={`font-medium text-text-primary ${compact ? 'text-sm line-clamp-1' : 'text-sm'}`}

@@ -96,9 +96,7 @@ export function ControlPanel({
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-text-primary">Zoning</div>
-                  <div className="text-xs text-text-secondary truncate">
-                    What can be built
-                  </div>
+                  <div className="text-xs text-text-secondary truncate">What can be built</div>
                 </div>
                 <Switch
                   checked={activeBaseLayer !== null}
@@ -109,9 +107,7 @@ export function ControlPanel({
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-text-primary">Transit</div>
-                  <div className="text-xs text-text-secondary truncate">
-                    Bus & lightrail routes
-                  </div>
+                  <div className="text-xs text-text-secondary truncate">Bus & lightrail routes</div>
                 </div>
                 <Switch
                   checked={isTransitActive}
@@ -121,9 +117,7 @@ export function ControlPanel({
               {/* Bike Infrastructure Toggle */}
               <div className="flex items-center gap-3 py-1 rounded-lg">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-text-primary">
-                    Bike Infrastructure
-                  </div>
+                  <div className="font-medium text-sm text-text-primary">Bike Infrastructure</div>
                   <div className="text-xs text-text-secondary truncate">
                     Bike lanes, trails & greenways
                   </div>
@@ -171,9 +165,7 @@ export function ControlPanel({
             {/* Zoning Mode Toggle - only show when zoning is enabled */}
             {activeBaseLayer && (
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-text-secondary">
-                  Zoning View
-                </span>
+                <span className="text-xs font-medium text-text-secondary">Zoning View</span>
                 <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
                   <button
                     onClick={() => onBaseLayerChange('zoning')}

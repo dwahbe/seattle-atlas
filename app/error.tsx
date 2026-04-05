@@ -29,9 +29,7 @@ export default function Error({
             <path d="M12 9v4M12 17h.01" />
           </svg>
         </div>
-        <h1 className="text-2xl font-bold text-text-primary mb-3">
-          Something went wrong
-        </h1>
+        <h1 className="text-2xl font-bold text-text-primary mb-3">Something went wrong</h1>
         <p className="text-text-secondary mb-8">
           We encountered an unexpected error. Please try again or return to the map.
         </p>
