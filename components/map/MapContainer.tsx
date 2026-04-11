@@ -8,13 +8,7 @@ import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
-import {
-  BASE_LAYER_IDS,
-  TRANSIT_LAYER_IDS,
-  BIKE_LAYER_ID,
-  URBAN_VILLAGES_LAYER_ID,
-  PARKS_LAYER_ID,
-} from '@/lib/constants';
+import { BASE_LAYER_IDS, TRANSIT_LAYER_IDS, BIKE_LAYER_ID, PARKS_LAYER_ID } from '@/lib/constants';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
 import dynamic from 'next/dynamic';
@@ -267,19 +261,6 @@ export function MapContainer() {
     [activeLayers, setUrlActiveLayers]
   );
 
-  // Urban villages toggle handler
-  const handleUrbanVillagesToggle = useCallback(
-    (enabled: boolean) => {
-      const withoutUrbanVillages = activeLayers.filter((id) => id !== URBAN_VILLAGES_LAYER_ID);
-      if (enabled) {
-        setUrlActiveLayers([...withoutUrbanVillages, URBAN_VILLAGES_LAYER_ID]);
-      } else {
-        setUrlActiveLayers(withoutUrbanVillages);
-      }
-    },
-    [activeLayers, setUrlActiveLayers]
-  );
-
   // Copy URL handler
   const handleCopyUrl = useCallback(() => {
     const fullUrl = window.location.origin + shareableUrl;
@@ -333,7 +314,6 @@ export function MapContainer() {
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
             onBikeToggle={handleBikeToggle}
-            onUrbanVillagesToggle={handleUrbanVillagesToggle}
             onFilterChange={setFilter}
             inspectedFeature={inspectedFeature}
             proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
@@ -354,7 +334,6 @@ export function MapContainer() {
             onBaseLayerChange={handleBaseLayerChange}
             onTransitToggle={handleTransitToggle}
             onBikeToggle={handleBikeToggle}
-            onUrbanVillagesToggle={handleUrbanVillagesToggle}
             onFilterChange={setFilter}
             onSearchSelect={handleSearchSelect}
           />

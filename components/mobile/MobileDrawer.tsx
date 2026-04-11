@@ -19,13 +19,7 @@ import {
   RawProperties,
 } from '@/components/inspect';
 import type { LayerConfig, InspectedFeature, Proposal, FilterState } from '@/types';
-import {
-  BASE_LAYER_IDS,
-  TRANSIT_LAYER_IDS,
-  BIKE_LAYER_ID,
-  URBAN_VILLAGES_LAYER_ID,
-  DATA_FRESHNESS,
-} from '@/lib/constants';
+import { BASE_LAYER_IDS, TRANSIT_LAYER_IDS, BIKE_LAYER_ID, DATA_FRESHNESS } from '@/lib/constants';
 import Link from 'next/link';
 
 // Snap points for the drawer (peek, half, full)
@@ -42,7 +36,6 @@ interface MobileDrawerProps {
   onBaseLayerChange: (layerId: string | null) => void;
   onTransitToggle: (enabled: boolean) => void;
   onBikeToggle: (enabled: boolean) => void;
-  onUrbanVillagesToggle: (enabled: boolean) => void;
   onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
   // Inspect
   inspectedFeature: InspectedFeature | null;
@@ -62,8 +55,6 @@ export function MobileDrawer({
   onBaseLayerChange,
   onTransitToggle,
   onBikeToggle,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- wired up, toggle commented out until tileset uploaded
-  onUrbanVillagesToggle,
   onFilterChange,
   inspectedFeature,
   proposals,
@@ -91,9 +82,6 @@ export function MobileDrawer({
 
   // Check if bike layer is enabled
   const isBikeActive = activeLayers.includes(BIKE_LAYER_ID);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- toggle commented out until tileset uploaded
-  const isUrbanVillagesActive = activeLayers.includes(URBAN_VILLAGES_LAYER_ID);
 
   // Get base layers for filter display
   const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
@@ -294,22 +282,6 @@ export function MobileDrawer({
                           onChange={() => onBikeToggle(!isBikeActive)}
                         />
                       </div>
-                      {/* Urban Villages Toggle — disabled until tileset is uploaded to Mapbox
-                      <div className="flex items-center gap-3 p-2 rounded-lg">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm text-text-primary">
-                            Urban Villages
-                          </div>
-                          <div className="text-xs text-text-secondary truncate">
-                            Growth centers & urban villages
-                          </div>
-                        </div>
-                        <Switch
-                          checked={isUrbanVillagesActive}
-                          onChange={() => onUrbanVillagesToggle(!isUrbanVillagesActive)}
-                        />
-                      </div>
-                      */}
                     </div>
                   </div>
 

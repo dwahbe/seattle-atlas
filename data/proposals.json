@@ -60,7 +60,7 @@
         "url": "https://www.seattle.gov/documents/Departments/OPCD/SeattlePlan/OneSeattlePlanFEISExecutiveSummary2025.pdf"
       }
     ],
-    "layers": ["proposal_station_area", "urban_villages"],
+    "layers": ["proposal_station_area"],
     "effectiveDate": "2025-06-01",
     "jurisdiction": "City of Seattle"
   },

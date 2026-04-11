@@ -562,67 +562,6 @@
     "updated": "2025"
   },
   {
-    "id": "urban_villages",
-    "name": "Urban Villages",
-    "group": "planning",
-    "tileset": "mapbox://dwahbe.seattle-urban-villages",
-    "sourceLayer": "urban-villages",
-    "type": "fill",
-    "zOrder": 2,
-    "defaultVisible": false,
-    "description": "Areas where Seattle is directing growth with improved transit, housing, and services.",
-    "legend": [
-      {
-        "label": "Urban Center",
-        "color": "#10B981",
-        "value": "Urban Center",
-        "percentage": 3.2
-      },
-      {
-        "label": "Hub Urban Village",
-        "color": "#34D399",
-        "value": "Hub Urban Village",
-        "percentage": 4.1
-      },
-      {
-        "label": "Residential Urban Village",
-        "color": "#6EE7B7",
-        "value": "Residential Urban Village",
-        "percentage": 5.8
-      }
-    ],
-    "filters": [
-      {
-        "id": "village_type",
-        "label": "Village Type",
-        "property": "UV_DESIG",
-        "type": "multiselect",
-        "options": [
-          { "label": "Urban Center", "value": "Urban Center" },
-          { "label": "Hub Urban Village", "value": "Hub Urban Village" },
-          { "label": "Residential Urban Village", "value": "Residential Urban Village" }
-        ]
-      }
-    ],
-    "paint": {
-      "fill-color": [
-        "match",
-        ["get", "UV_DESIG"],
-        "Urban Center",
-        "#10B981",
-        "Hub Urban Village",
-        "#34D399",
-        "Residential Urban Village",
-        "#6EE7B7",
-        "#10B981"
-      ],
-      "fill-opacity": 0.2,
-      "fill-outline-color": "#059669"
-    },
-    "source": "City of Seattle Open Data",
-    "updated": "2025"
-  },
-  {
     "id": "bike_facilities",
     "name": "Bike Infrastructure",
     "group": "bike",

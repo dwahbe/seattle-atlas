@@ -29,7 +29,7 @@ export type LayerType = 'fill' | 'line' | 'circle' | 'symbol';
 export interface LayerConfig {
   id: string;
   name: string;
-  group: 'base' | 'transit' | 'proposals' | 'derived' | 'planning' | 'bike';
+  group: 'base' | 'transit' | 'proposals' | 'derived' | 'bike';
   tileset: string;
   sourceLayer: string;
   type: LayerType;

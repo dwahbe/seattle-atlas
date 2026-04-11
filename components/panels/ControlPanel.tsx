@@ -5,13 +5,7 @@ import { Legend } from '@/components/controls/Legend';
 import { PanelSearch } from '@/components/search';
 import { Switch, ThemeToggle } from '@/components/ui';
 import type { LayerConfig, FilterState, SearchResult } from '@/types';
-import {
-  BASE_LAYER_IDS,
-  TRANSIT_LAYER_IDS,
-  BIKE_LAYER_ID,
-  URBAN_VILLAGES_LAYER_ID,
-  DATA_FRESHNESS,
-} from '@/lib/constants';
+import { BASE_LAYER_IDS, TRANSIT_LAYER_IDS, BIKE_LAYER_ID, DATA_FRESHNESS } from '@/lib/constants';
 import Link from 'next/link';
 
 interface ControlPanelProps {
@@ -21,7 +15,6 @@ interface ControlPanelProps {
   onBaseLayerChange: (layerId: string | null) => void;
   onTransitToggle: (enabled: boolean) => void;
   onBikeToggle: (enabled: boolean) => void;
-  onUrbanVillagesToggle: (enabled: boolean) => void;
   onFilterChange: (layerId: string, filterId: string, values: string[]) => void;
   onSearchSelect: (result: SearchResult) => void;
 }
@@ -33,8 +26,6 @@ export function ControlPanel({
   onBaseLayerChange,
   onTransitToggle,
   onBikeToggle,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- wired up, toggle commented out until tileset uploaded
-  onUrbanVillagesToggle,
   onFilterChange,
   onSearchSelect,
 }: ControlPanelProps) {
@@ -46,9 +37,6 @@ export function ControlPanel({
 
   // Check if bike layer is enabled
   const isBikeActive = activeLayers.includes(BIKE_LAYER_ID);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars -- toggle commented out until tileset uploaded
-  const isUrbanVillagesActive = activeLayers.includes(URBAN_VILLAGES_LAYER_ID);
 
   // Get base layers and their configs
   const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
@@ -124,19 +112,6 @@ export function ControlPanel({
                 </div>
                 <Switch checked={isBikeActive} onChange={() => onBikeToggle(!isBikeActive)} />
               </div>
-              {/* Urban Villages Toggle — disabled until tileset is uploaded to Mapbox
-              <div className="flex items-center gap-3 py-1 rounded-lg">
-                <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm text-text-primary">
-                    Urban Villages
-                  </div>
-                  <div className="text-xs text-text-secondary truncate">
-                    Growth centers & urban villages
-                  </div>
-                </div>
-                <Switch checked={isUrbanVillagesActive} onChange={() => onUrbanVillagesToggle(!isUrbanVillagesActive)} />
-              </div>
-              */}
             </div>
           </div>
 
