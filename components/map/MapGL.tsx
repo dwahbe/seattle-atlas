@@ -25,6 +25,7 @@ interface MapGLProps {
   highlightedBounds?: [number, number, number, number] | null;
   markerPosition?: [number, number] | null;
   showControls?: boolean;
+  showHoverTooltip?: boolean;
 }
 
 import { HIGHLIGHT_COLOR } from '@/lib/constants';
@@ -44,11 +45,17 @@ export function MapGL({
   highlightedBounds,
   markerPosition,
   showControls = true,
+  showHoverTooltip = true,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
   const isInitialized = useRef(false);
+  // Tracks the style currently applied to the Mapbox instance so the
+  // isDark-change effect below can skip redundant setStyle() calls — notably
+  // when the very first render's server snapshot (`isDark=false`) resolves to
+  // match the pre-hydration DOM state we just initialized with.
+  const appliedIsDarkRef = useRef<boolean | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
   const previousInspectedRef = useRef<{ source: string; id: string | number } | null>(null);
@@ -68,9 +75,18 @@ export function MapGL({
     initializeMapbox();
     isInitialized.current = true;
 
+    // Read the actual theme from the DOM class set by the pre-hydration script
+    // in app/layout.tsx, not from the `isDark` prop. The prop is driven by
+    // useTheme's useSyncExternalStore, which returns the server snapshot on the
+    // first client render to avoid hydration mismatch — so if the user is in
+    // dark mode, the prop would lie as `false` here and the subsequent change
+    // effect would call `setStyle(dark)`, triggering a visible flash.
+    const initialIsDark = document.documentElement.classList.contains('dark');
+    appliedIsDarkRef.current = initialIsDark;
+
     const mapInstance = new mapboxgl.Map({
       container: mapContainer.current,
-      style: isDark ? MAP_STYLES.dark : MAP_STYLES.light,
+      style: initialIsDark ? MAP_STYLES.dark : MAP_STYLES.light,
       center: [viewState.lng, viewState.lat],
       zoom: viewState.zoom,
       attributionControl: false,
@@ -117,10 +133,14 @@ export function MapGL({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Handle style changes (dark/light mode)
+  // Handle style changes (dark/light mode). Skip if the requested style already
+  // matches what we last applied — e.g. the no-op transition from the first
+  // render's server-snapshot `isDark` to the client-snapshot `isDark` when both
+  // happen to resolve to the theme the pre-hydration script already set.
   useEffect(() => {
     if (!map.current) return;
-
+    if (appliedIsDarkRef.current === isDark) return;
+    appliedIsDarkRef.current = isDark;
     const newStyle = isDark ? MAP_STYLES.dark : MAP_STYLES.light;
     map.current.setStyle(newStyle);
   }, [isDark]);
@@ -165,6 +185,8 @@ export function MapGL({
 
       map.current.getCanvas().style.cursor = features.length > 0 ? 'pointer' : '';
 
+      if (!showHoverTooltip) return;
+
       if (features.length > 0) {
         const feature = features[0];
         setHoverState({
@@ -177,7 +199,7 @@ export function MapGL({
         setHoverState(null);
       }
     },
-    [activeLayers]
+    [activeLayers, showHoverTooltip]
   );
 
   // Handle mouse leave
@@ -380,7 +402,7 @@ export function MapGL({
         className="absolute inset-0 z-0"
         style={{ width: '100%', height: '100%' }}
       />
-      {hoverState && hoveredLayerConfig && (
+      {showHoverTooltip && hoverState && hoveredLayerConfig && (
         <HoverTooltip
           x={hoverState.x}
           y={hoverState.y}

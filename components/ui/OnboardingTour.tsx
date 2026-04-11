@@ -98,11 +98,12 @@ function getTooltipPosition(targetRect: ReturnType<typeof getTargetRect>) {
 }
 
 export function OnboardingTour() {
+  // `currentStep` starts null and is only set via the delayed setTimeout below, so
+  // the component always renders null during SSR and initial hydration. No separate
+  // `mounted` flag needed — the `currentStep === null` gate handles SSR safety.
   const [currentStep, setCurrentStep] = useState<number | null>(null);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Check if user has seen the tour
     try {
       if (localStorage.getItem(STORAGE_KEY)) return;
@@ -152,7 +153,7 @@ export function OnboardingTour() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentStep, dismiss, next]);
 
-  if (!mounted || currentStep === null) return null;
+  if (currentStep === null) return null;
 
   const step = STEPS[currentStep];
   const targetRect = getTargetRect(step.target);

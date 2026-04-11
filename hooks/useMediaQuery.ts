@@ -1,27 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
+/**
+ * Subscribes to a CSS media query. Uses `useSyncExternalStore` so the snapshot
+ * is read during render (not in an effect), which avoids the one-frame flash
+ * between initial render and effect-driven state updates.
+ */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      const media = window.matchMedia(query);
+      media.addEventListener('change', onChange);
+      return () => media.removeEventListener('change', onChange);
+    },
+    [query]
+  );
 
-  useEffect(() => {
-    const media = window.matchMedia(query);
+  const getSnapshot = useCallback(() => window.matchMedia(query).matches, [query]);
 
-    // Set initial value
-    setMatches(media.matches);
-
-    // Listen for changes
-    const listener = (event: MediaQueryListEvent) => {
-      setMatches(event.matches);
-    };
-
-    media.addEventListener('change', listener);
-    return () => media.removeEventListener('change', listener);
-  }, [query]);
-
-  return matches;
+  // During SSR there's no media query to read — default to `false`. Clients will
+  // re-render with the real value after hydration.
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
+
+const getServerSnapshot = () => false;
 
 // Convenience hook for mobile detection
 export function useIsMobile(): boolean {
