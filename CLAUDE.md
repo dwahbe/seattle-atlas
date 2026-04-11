@@ -17,8 +17,8 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 
 ## Tech Stack & Conventions
 
-- **Next.js 16** with App Router. Uses `proxy.ts` at project root (not `middleware.ts`) for edge proxy — exported function must be named `proxy`.
-- **React 19** — server components by default; add `'use client'` directive for client components.
+- **Next.js 16** with App Router. No `proxy.ts` / `middleware.ts` — server-side work happens in `app/api/*/route.ts` handlers.
+- **React 19** — server components by default; add `'use client'` for client components. Browser-state hooks (`useTheme`, `useMediaQuery`) use `useSyncExternalStore` with explicit server snapshots to avoid hydration flashes; new hooks reading `localStorage` / `matchMedia` should follow this pattern.
 - **Tailwind CSS v4** — theme tokens defined in `globals.css` via `@theme`. Use semantic classes (`text-text-primary`, `bg-panel-bg`, `border-border`), not raw `rgb(var(...))`.
 - **Zod v4** — API route input validation via `lib/validation.ts`. Use `parseSearchParams()` helper; return consistent error shape `{ error, details: [{ field, message }] }` with 400 status.
 - **nuqs** — all shareable UI state lives in URL query params, not React state.
@@ -26,7 +26,8 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 - **vaul** — mobile drawer component.
 - **mapbox-gl** — client-side only map rendering.
 - **Prettier** — semicolons, single quotes, 2-space indent, trailing commas (ES5), 100 char width.
-- **Bun** is the package manager.
+- **ESLint** — `react-hooks/set-state-in-effect` is intentionally downgraded to `warn`; setState in effects is used deliberately for data fetching and state resets. Prefer React's "setState during render" pattern (see `useInspectData.ts`, `MobileDrawer.tsx`) over `useEffect` for prop-derived state resets.
+- **Bun** is the package manager; tests use Bun's built-in `bun:test` runner.
 
 ## Architecture
 
@@ -47,7 +48,7 @@ Default center: Seattle (47.6062, -122.3321, zoom 12). Default layers: `zoning` 
 - Layer configuration lives in `/data/layers.json` — defines tileset sources, rendering type, paint/layout properties, filters, legends, and z-order.
 - `MapContainer.tsx` is the main orchestrator (client component). It composes `MapGL`, `MapLayers`, panels, and controls.
 - Feature-state expressions handle inspect highlighting (`HIGHLIGHT_COLOR = '#3B82F6'`).
-- Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit`, `planning`, `bike`.
+- Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit` (routes + stops + light rail, bundled together via `TRANSIT_LAYER_IDS` in `lib/constants.ts`), `planning`, `bike`.
 - `zoning` and `zoning_detailed` are mutually exclusive (see `BASE_LAYER_IDS` in `lib/constants.ts`) — switch between them via `handleBaseLayerChange`, never by toggling individual layers.
 
 ### API Routes
@@ -56,7 +57,9 @@ Default center: Seattle (47.6062, -122.3321, zoom 12). Default layers: `zoning` 
 
 ### Theming
 
-Light/dark mode via `.dark` class on `<html>`. Design tokens are CSS custom properties (`--panel-bg`, `--text-primary`, `--accent`, etc.) mapped to Tailwind utilities in `globals.css`. Theme preference stored in localStorage (`civic-atlas-theme`); read before hydration to prevent flash.
+Light/dark mode via `.dark` class on `<html>`. Design tokens are CSS custom properties (`--panel-bg`, `--text-primary`, `--accent`, etc.) mapped to Tailwind utilities in `globals.css`. Theme preference stored in localStorage (`civic-atlas-theme`).
+
+**Pre-hydration handling** (easy to break, preserve when editing theme or map init): an inline script in `app/layout.tsx` sets `.dark` before React hydrates to prevent a flash. `MapGL.tsx` reads `document.documentElement.classList.contains('dark')` on mount instead of the `isDark` prop, because `useSyncExternalStore` returns the server snapshot on first render and would otherwise trigger a visible Mapbox style swap.
 
 ## Environment Variables
 
