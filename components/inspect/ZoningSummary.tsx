@@ -2,7 +2,7 @@
 
 import type { ZoneInfo } from '@/lib/zoning-info';
 import { getCategoryLabel } from '@/lib/zoning-info';
-import { BuildingGraphic } from '@/components/ui';
+import { BuildingGraphic, StatCard } from '@/components/ui';
 
 interface ZoningSummaryProps {
   zoneInfo: ZoneInfo;
@@ -40,23 +40,6 @@ export function ZoningSummary({ zoneInfo, compact = false, landmark = null }: Zo
           />
         )}
       </div>
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  compact = false,
-}: {
-  label: string;
-  value: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
-      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>{label}</div>
-      <div className="text-sm font-semibold text-text-primary">{value}</div>
     </div>
   );
 }

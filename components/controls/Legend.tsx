@@ -1,7 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { LayerConfig, LegendItem } from '@/types';
+import { PARKS_LAYER_ID } from '@/lib/constants';
+import { InfoTooltip } from '@/components/inspect/InfoTooltip';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import parksStats from '@/data/parks-stats.json';
 
 interface LegendProps {
   layers: LayerConfig[];
@@ -12,19 +16,22 @@ interface LegendProps {
   activeFilters?: Record<string, string[]>;
 }
 
+// Parks overlay the underlying zoning (a park is still designated NR, MIO,
+// etc.), so their 12.1% would double-count against the zoning totals. We
+// surface the figure via a tooltip instead of showing it inline as a percentage.
+const PARKS_TOOLTIP = `Parks overlay zoning — ${parksStats.percentageOfSeattle}% of Seattle (${parksStats.totalParks} parks).`;
+
 export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {} }: LegendProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const [isTouch, setIsTouch] = useState(false);
+  // Reactively detect touch devices (remains in sync if the user plugs/unplugs a pointer).
+  const isTouch = useMediaQuery('(hover: none)');
 
-  // Detect touch device
-  useEffect(() => {
-    setIsTouch(window.matchMedia('(hover: none)').matches);
-  }, []);
-
-  // Get active layers with legends
+  // Get active layers with legends. Parks rides along with the zoning toggle
+  // (see MapContainer.handleBaseLayerChange) and flows through as a regular
+  // legend item alongside the other base layers when it's active.
   const activeLayersWithLegends = layers
     .filter((layer) => activeLayers.includes(layer.id) && layer.legend.length > 0)
-    .slice(0, 4); // Limit to avoid overcrowding
+    .slice(0, 5); // Limit to avoid overcrowding
 
   if (activeLayersWithLegends.length === 0) {
     return null;
@@ -53,6 +60,7 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
               {groupLayers.flatMap((layer) => {
                 const uniqueItems = deduplicateLegendItems(layer.legend);
                 const layerFilters = activeFilters[layer.id] || [];
+                const isParks = layer.id === PARKS_LAYER_ID;
 
                 return uniqueItems.map((item) => {
                   const isFiltered = layerFilters.includes(item.value);
@@ -70,7 +78,8 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
                       onClick={() => onFilterToggle?.(layer.id, item.value)}
                       onMouseEnter={() => !isTouch && setHoveredItem(itemKey)}
                       onMouseLeave={() => !isTouch && setHoveredItem(null)}
-                      isInteractive={!!onFilterToggle}
+                      isInteractive={!!onFilterToggle && !isParks}
+                      tooltip={isParks ? PARKS_TOOLTIP : undefined}
                     />
                   );
                 });
@@ -93,6 +102,8 @@ interface LegendRowProps {
   onMouseEnter: () => void;
   onMouseLeave: () => void;
   isInteractive: boolean;
+  /** When set, renders an info icon in place of the percentage. */
+  tooltip?: string;
 }
 
 function LegendRow({
@@ -105,6 +116,7 @@ function LegendRow({
   onMouseEnter,
   onMouseLeave,
   isInteractive,
+  tooltip,
 }: LegendRowProps) {
   const baseClasses = `
     flex items-center gap-2 py-1 pr-1.5 rounded transition-colors
@@ -120,11 +132,12 @@ function LegendRow({
     <>
       <LegendSwatch type={layerType} color={item.color} isActive={isFiltered || isHovered} />
       <span
-        className={`text-xs flex-1 ${isFiltered ? 'text-accent font-medium' : 'text-text-primary'}`}
+        className={`text-xs flex-1 flex items-center gap-1 min-w-0 ${isFiltered ? 'text-accent font-medium' : 'text-text-primary'}`}
       >
-        {item.label}
+        <span className="truncate">{item.label}</span>
+        {tooltip && <InfoTooltip text={tooltip} />}
       </span>
-      {item.percentage !== undefined && (
+      {!tooltip && item.percentage !== undefined && (
         <span
           className={`text-xs font-medium ${isFiltered ? 'text-accent' : 'text-text-tertiary'}`}
         >

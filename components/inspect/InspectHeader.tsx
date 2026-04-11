@@ -1,13 +1,16 @@
 'use client';
 
 import type { ZoneInfo } from '@/lib/zoning-info';
-import type { LocationData } from '@/hooks/useInspectData';
+import type { LocationData, ParkData } from '@/hooks/useInspectData';
+import { TreeIcon } from '@/components/ui';
 
 interface InspectHeaderProps {
   zoneInfo: ZoneInfo | null;
+  parkData: ParkData | null;
   layerName: string;
   location: LocationData | null;
   isZoning: boolean;
+  isPark: boolean;
   onClose: () => void;
   /** Mobile variant shows back button instead of close */
   variant?: 'desktop' | 'mobile';
@@ -19,25 +22,35 @@ interface InspectHeaderProps {
 
 export function InspectHeader({
   zoneInfo,
+  parkData,
   layerName,
   location,
   isZoning,
+  isPark,
   onClose,
   variant = 'desktop',
   onBack,
   searchedAddress,
 }: InspectHeaderProps) {
-  const title = isZoning && zoneInfo ? zoneInfo.name : layerName;
+  // Title is the category/eyebrow text, subtitle is the main headline.
+  const title =
+    isPark && parkData ? parkData.type : isZoning && zoneInfo ? zoneInfo.name : layerName;
 
   // Prioritize searched address (exact), fall back to reverse-geocoded location (approximate)
-  const subtitle = isZoning
-    ? searchedAddress
-      ? searchedAddress
-      : location
-        ? `Near ${location.address}`
-        : 'Loading...'
-    : 'Feature Details';
+  const subtitle =
+    isPark && parkData
+      ? parkData.name
+      : isZoning
+        ? searchedAddress
+          ? searchedAddress
+          : location
+            ? `Near ${location.address}`
+            : 'Loading...'
+        : 'Feature Details';
 
+  // `hasLocation` implies `isZoning`, which is mutually exclusive with `isPark`
+  // (a feature has exactly one layerId), so no `!isPark` guard is needed when
+  // rendering the location icon.
   const hasLocation = isZoning && (searchedAddress || location);
 
   if (variant === 'mobile') {
@@ -69,6 +82,7 @@ export function InspectHeader({
             {title}
           </div>
           <h2 className="text-lg font-semibold text-text-primary flex items-center gap-1.5">
+            {isPark && <TreeIcon className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400" />}
             {hasLocation && <LocationIcon />}
             {subtitle}
           </h2>
@@ -85,6 +99,7 @@ export function InspectHeader({
           {title}
         </div>
         <h2 className="text-lg font-semibold text-text-primary mt-1 truncate flex items-center gap-1.5">
+          {isPark && <TreeIcon className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400" />}
           {hasLocation && <LocationIcon />}
           <span className="truncate">{subtitle}</span>
         </h2>

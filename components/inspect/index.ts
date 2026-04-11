@@ -3,6 +3,7 @@ export { ZoningSummary } from './ZoningSummary';
 export { WalkScoreSection } from './WalkScoreSection';
 export { DevelopmentRules } from './DevelopmentRules';
 export { ParcelInfo } from './ParcelInfo';
+export { ParkInfo } from './ParkInfo';
 export { PermitsSection } from './PermitsSection';
 export { ProposalsSection } from './ProposalsSection';
 export { TransitInfo } from './TransitInfo';

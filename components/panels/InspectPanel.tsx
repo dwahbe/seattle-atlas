@@ -9,6 +9,7 @@ import {
   WalkScoreSection,
   DevelopmentRules,
   ParcelInfo,
+  ParkInfo,
   PermitsSection,
   ProposalsSection,
   TransitInfo,
@@ -86,9 +87,11 @@ export function InspectPanel({
       {/* Header */}
       <InspectHeader
         zoneInfo={data.zoneInfo}
+        parkData={data.parkData}
         layerName={data.layerName}
         location={data.location}
         isZoning={data.isZoning}
+        isPark={data.isPark}
         onClose={onClose}
         variant="desktop"
         searchedAddress={searchedAddress}
@@ -100,6 +103,9 @@ export function InspectPanel({
         {data.isZoning && data.zoneInfo && (
           <ZoningSummary zoneInfo={data.zoneInfo} landmark={data.landmark} />
         )}
+
+        {/* Park Info */}
+        {data.isPark && data.parkData && <ParkInfo parkData={data.parkData} />}
 
         {/* Walk Score */}
         {data.isZoning && (
@@ -135,8 +141,8 @@ export function InspectPanel({
           </CollapsibleSection>
         )}
 
-        {/* Raw Properties - For non-zoning layers */}
-        {!data.isZoning && feature && (
+        {/* Raw Properties - For non-zoning, non-park layers */}
+        {!data.isZoning && !data.isPark && feature && (
           <div className="p-4 border-b border-border">
             <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
               Properties

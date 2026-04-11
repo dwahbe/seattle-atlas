@@ -13,6 +13,7 @@ import {
   TRANSIT_LAYER_IDS,
   BIKE_LAYER_ID,
   URBAN_VILLAGES_LAYER_ID,
+  PARKS_LAYER_ID,
 } from '@/lib/constants';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
@@ -223,16 +224,18 @@ export function MapContainer() {
     }
   }, [highlightedBounds]);
 
-  // Base layer change handler (mutually exclusive)
+  // Base layer change handler (mutually exclusive). Parks rides along with
+  // zoning — it turns on when zoning turns on and off when zoning turns off.
   const handleBaseLayerChange = useCallback(
     (layerId: string | null) => {
-      // Remove all base layers first
-      const withoutBaseLayers = activeLayers.filter((id) => !BASE_LAYER_IDS.includes(id));
-      // Add the new base layer if specified
+      // Strip existing base layers and parks so we can rewrite them cleanly.
+      const withoutBase = activeLayers.filter(
+        (id) => !BASE_LAYER_IDS.includes(id) && id !== PARKS_LAYER_ID
+      );
       if (layerId) {
-        setUrlActiveLayers([layerId, ...withoutBaseLayers]);
+        setUrlActiveLayers([layerId, PARKS_LAYER_ID, ...withoutBase]);
       } else {
-        setUrlActiveLayers(withoutBaseLayers);
+        setUrlActiveLayers(withoutBase);
       }
     },
     [activeLayers, setUrlActiveLayers]
@@ -301,6 +304,7 @@ export function MapContainer() {
         highlightedBounds={highlightedBounds}
         markerPosition={markerPosition}
         showControls={!isMobile}
+        showHoverTooltip={!isMobile}
       />
 
       {/* Map Layers Manager */}

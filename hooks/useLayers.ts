@@ -13,7 +13,10 @@ export function useLayers({ activeLayers, onLayersChange }: UseLayersProps) {
   const layers = useMemo(() => getLayers(), []);
   const layerGroups = useMemo(() => getLayerGroups(), []);
 
-  // Validate active layers against available layers
+  // Validate active layers against available layers. Parks & Open Space is
+  // tied to the zoning toggle in MapContainer.handleBaseLayerChange — it
+  // comes on/off alongside the zoning layer rather than being independently
+  // toggleable.
   const validatedActiveLayers = useMemo(() => validateLayerIds(activeLayers), [activeLayers]);
 
   const toggleLayer = useCallback(

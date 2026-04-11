@@ -1,7 +1,7 @@
 'use client';
 
 import { Drawer } from 'vaul';
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
 import { Switch, ThemeToggle } from '@/components/ui';
@@ -12,6 +12,7 @@ import {
   WalkScoreSection,
   DevelopmentRules,
   ParcelInfo,
+  ParkInfo,
   PermitsSection,
   ProposalsSection,
   TransitInfo,
@@ -98,18 +99,18 @@ export function MobileDrawer({
   const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
   const activeBaseLayerConfig = baseLayers.find((l) => l.id === activeBaseLayer);
 
-  // Auto-expand when inspecting a feature
+  // Auto-expand when inspecting a feature.
+  // Uses the "setState during render" pattern from React docs:
+  // https://react.dev/reference/react/useState#storing-information-from-previous-renders
   const isInspecting = inspectedFeature !== null;
-  const wasInspecting = useRef(false);
-
-  // When starting to inspect, expand drawer to show content
-  useEffect(() => {
-    if (isInspecting && !wasInspecting.current) {
-      // Transitioning to inspect mode - expand drawer
+  const [prevIsInspecting, setPrevIsInspecting] = useState(isInspecting);
+  if (prevIsInspecting !== isInspecting) {
+    setPrevIsInspecting(isInspecting);
+    if (isInspecting) {
+      // Transitioning to inspect mode — expand drawer to show content
       setSnap(SNAP_POINT_HALF);
     }
-    wasInspecting.current = isInspecting;
-  }, [isInspecting]);
+  }
 
   return (
     <Drawer.Root
@@ -155,9 +156,11 @@ export function MobileDrawer({
                 {/* Header with back button */}
                 <InspectHeader
                   zoneInfo={data.zoneInfo}
+                  parkData={data.parkData}
                   layerName={data.layerName}
                   location={data.location}
                   isZoning={data.isZoning}
+                  isPark={data.isPark}
                   onClose={onCloseInspect}
                   variant="mobile"
                   onBack={onCloseInspect}
@@ -168,6 +171,9 @@ export function MobileDrawer({
                 {data.isZoning && data.zoneInfo && (
                   <ZoningSummary zoneInfo={data.zoneInfo} compact landmark={data.landmark} />
                 )}
+
+                {/* Park Info - compact */}
+                {data.isPark && data.parkData && <ParkInfo parkData={data.parkData} compact />}
 
                 {/* Walk Score - compact */}
                 {data.isZoning && (
@@ -199,8 +205,8 @@ export function MobileDrawer({
                   <DevelopmentRules zoneInfo={data.zoneInfo} compact />
                 )}
 
-                {/* Raw Properties - for non-zoning */}
-                {!data.isZoning && (
+                {/* Raw Properties - for non-zoning, non-park */}
+                {!data.isZoning && !data.isPark && (
                   <div className="p-4 border-b border-border">
                     <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
                       Properties

@@ -40,32 +40,23 @@ The URL is the source of truth for the map view. `useUrlState()` (via nuqs) sync
 - `inspect` — inspected feature ID
 - `compare` — compare mode toggle
 
-Default center: Seattle (47.6062, -122.3321, zoom 12). Default layer: `zoning`.
+Default center: Seattle (47.6062, -122.3321, zoom 12). Default layers: `zoning` + `parks_open_space` — parks is tied to the zoning toggle in `MapContainer.handleBaseLayerChange` and is not independently user-toggleable.
 
 ### Map & Layers
 
 - Layer configuration lives in `/data/layers.json` — defines tileset sources, rendering type, paint/layout properties, filters, legends, and z-order.
 - `MapContainer.tsx` is the main orchestrator (client component). It composes `MapGL`, `MapLayers`, panels, and controls.
 - Feature-state expressions handle inspect highlighting (`HIGHLIGHT_COLOR = '#3B82F6'`).
-- Layer groups: Base (zoning), Transit, Proposals, Planning, Bike, Derived.
+- Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit`, `planning`, `bike`.
+- `zoning` and `zoning_detailed` are mutually exclusive (see `BASE_LAYER_IDS` in `lib/constants.ts`) — switch between them via `handleBaseLayerChange`, never by toggling individual layers.
 
 ### API Routes
 
-Three server-side proxy routes in `app/api/`:
-
-- `/api/parcel?lat=X&lng=Y` — King County GIS (PIN, acres, zoning, assessor link)
-- `/api/permits?lat=X&lng=Y&radius=300` — nearby Seattle permits
-- `/api/walkscore?lat=X&lng=Y&address=...` — Walk Score proxy
-
-All use Zod validation via the shared `parseSearchParams()` pattern.
+`app/api/` holds server-side proxies for third-party data (parcel, permits, walkscore) — they exist to keep API keys server-side and bypass CORS. All follow the Zod validation convention above.
 
 ### Theming
 
 Light/dark mode via `.dark` class on `<html>`. Design tokens are CSS custom properties (`--panel-bg`, `--text-primary`, `--accent`, etc.) mapped to Tailwind utilities in `globals.css`. Theme preference stored in localStorage (`civic-atlas-theme`); read before hydration to prevent flash.
-
-### Hooks
-
-Custom hooks in `/hooks/` manage distinct concerns: `useUrlState`, `useMapState`, `useLayers`, `useInspect`, `useInspectData`, `useTheme`, `useMediaQuery`, `useFocusTrap`.
 
 ## Environment Variables
 

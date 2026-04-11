@@ -27,7 +27,7 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         {/* Expanded touch area (invisible) */}
         <span className="absolute inset-[-8px]" aria-hidden="true" />
         {/* Visual indicator - smaller on mobile */}
-        <span className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full bg-text-tertiary text-panel-bg text-[10px] font-medium flex items-center justify-center hover:bg-text-secondary transition-colors pointer-events-none">
+        <span className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border border-text-tertiary text-text-tertiary text-[10px] font-medium flex items-center justify-center hover:border-text-secondary hover:text-text-secondary transition-colors pointer-events-none">
           ?
         </span>
       </button>

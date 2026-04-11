@@ -1,7 +1,7 @@
 'use client';
 
 import type { ParcelData } from '@/hooks/useInspectData';
-import { Skeleton } from '@/components/ui';
+import { Skeleton, StatCard } from '@/components/ui';
 
 interface ParcelInfoProps {
   parcelData: ParcelData | null;
@@ -84,39 +84,6 @@ export function ParcelInfo({
         Property Details
       </h3>
       {content}
-    </div>
-  );
-}
-
-function StatCard({
-  label,
-  value,
-  link,
-  compact = false,
-}: {
-  label: string;
-  value: string;
-  link?: string;
-  compact?: boolean;
-}) {
-  return (
-    <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
-      <div className={`text-xs text-text-secondary ${compact ? '' : 'mb-1'}`}>{label}</div>
-      {link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-semibold text-accent hover:underline truncate block"
-          title="View on King County Assessor"
-        >
-          {value} →
-        </a>
-      ) : (
-        <div className="text-sm font-semibold text-text-primary break-words text-pretty">
-          {value}
-        </div>
-      )}
     </div>
   );
 }

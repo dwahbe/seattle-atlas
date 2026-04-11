@@ -1,0 +1,35 @@
+{
+  "source": "Seattle Parks & Recreation — Park_Boundary_(details)",
+  "sourceUrl": "https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::park-boundary-details",
+  "computedAt": "2026-04-09T16:04:02.670Z",
+  "totalParks": 488,
+  "totalParcels": 2826,
+  "totalAreaSqFt": 282116496,
+  "totalAreaAcres": 6476.5,
+  "totalAreaSqMi": 10.12,
+  "seattleLandAreaAcres": 53658,
+  "percentageOfSeattle": 12.1,
+  "largestPark": {
+    "name": "Discovery Park",
+    "acres": 547.4
+  },
+  "countByType": {
+    "Park": 212,
+    "Special Use": 32,
+    "Greenbelt / Natural Area": 76,
+    "Boulevard": 15,
+    "Golf Course": 3,
+    "Trail": 2,
+    "Playfield": 24,
+    "Playground": 30,
+    "Viewpoint": 11,
+    "P-Patch": 8,
+    "Boat Launch": 5,
+    "Maintenance Facility": 3,
+    "Swimming Pool": 5,
+    "Community Center": 3,
+    "Triangle / Square": 50,
+    "Centerstrip": 4,
+    "Garden": 5
+  }
+}

@@ -45,3 +45,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# generated tileset source — regenerate with: bun run scripts/prepare-parks-data.ts
+data/seattle-parks-clean.geojson

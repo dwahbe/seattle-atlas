@@ -5,8 +5,9 @@ export const SEATTLE_CENTER = {
   zoom: 12,
 };
 
-// Default visible layers
-const DEFAULT_LAYERS = ['zoning'];
+// Default visible layers. Parks rides along with the zoning toggle (see
+// MapContainer.handleBaseLayerChange), so the two appear together on first load.
+const DEFAULT_LAYERS = ['zoning', 'parks_open_space'];
 
 // Parse layers string to array
 // Empty string = no layers (user unchecked all)

@@ -5,6 +5,8 @@
  * Handles field filtering, formatting, and transformation.
  */
 
+import { PARKS_LAYER_ID } from '@/lib/constants';
+
 interface DisplayField {
   key: string;
   label: string;
@@ -77,6 +79,18 @@ const LAYER_DISPLAY_CONFIGS: Record<string, LayerDisplayConfig> = {
       'EFFECTIVE_PREV',
       ...GLOBAL_HIDDEN_FIELDS,
     ],
+  },
+  parks_open_space: {
+    layerId: 'parks_open_space',
+    displayFields: [
+      { key: 'name', label: 'Park Name', priority: 1 },
+      { key: 'type', label: 'Type', priority: 2 },
+      { key: 'address', label: 'Address', priority: 3 },
+      { key: 'areaAcres', label: 'Size', transform: 'number', priority: 4 },
+      { key: 'acquiredYear', label: 'Acquired', priority: 5 },
+      { key: 'owner', label: 'Owner', priority: 6 },
+    ],
+    hiddenFields: ['areaSqFt', 'parcelCount', ...GLOBAL_HIDDEN_FIELDS],
   },
   transit_stops: {
     layerId: 'transit_stops',
@@ -254,4 +268,11 @@ export function isZoningLayer(layerId: string): boolean {
  */
 export function isTransitLayer(layerId: string): boolean {
   return layerId === 'transit_stops' || layerId === 'transit_routes' || layerId === 'light_rail';
+}
+
+/**
+ * Check if a layer is the parks & open space layer.
+ */
+export function isParkLayer(layerId: string): boolean {
+  return layerId === PARKS_LAYER_ID;
 }

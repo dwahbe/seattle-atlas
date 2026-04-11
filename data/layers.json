@@ -391,6 +391,31 @@
     "updated": "2025"
   },
   {
+    "id": "parks_open_space",
+    "name": "Parks & Open Space",
+    "group": "base",
+    "tileset": "mapbox://dwahbe.4tqk418n",
+    "sourceLayer": "seattle-parks-clean-bfshjm",
+    "type": "fill",
+    "zOrder": 2,
+    "defaultVisible": true,
+    "description": "Public parks, greenbelts, and open space. 488 parks covering 12.1% of Seattle's land area. Not available for private development, regardless of underlying zoning.",
+    "legend": [
+      {
+        "label": "Parks & Open Space",
+        "color": "#86EFAC",
+        "value": "park",
+        "percentage": 12.1
+      }
+    ],
+    "paint": {
+      "fill-opacity": 0.85,
+      "fill-outline-color": "#16A34A"
+    },
+    "source": "Seattle Parks & Recreation",
+    "updated": "2025"
+  },
+  {
     "id": "transit_routes",
     "name": "Transit Routes",
     "group": "transit",

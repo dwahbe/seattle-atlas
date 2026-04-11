@@ -22,6 +22,7 @@
       "devDependencies": {
         "@next/eslint-plugin-next": "^16.1.6",
         "@tailwindcss/postcss": "^4.1.18",
+        "@turf/area": "^7.3.4",
         "@types/mapbox-gl": "^3.4.1",
         "@types/node": "^25.2.1",
         "@types/react": "^19.2.13",
@@ -268,6 +269,8 @@
     "@tailwindcss/oxide-win32-x64-msvc": ["@tailwindcss/oxide-win32-x64-msvc@4.1.18", "", { "os": "win32", "cpu": "x64" }, "sha512-bJWbyYpUlqamC8dpR7pfjA0I7vdF6t5VpUGMWRkXVE3AXgIZjYUYAK7II1GNaxR8J1SSrSrppRar8G++JekE3Q=="],
 
     "@tailwindcss/postcss": ["@tailwindcss/postcss@4.1.18", "", { "dependencies": { "@alloc/quick-lru": "^5.2.0", "@tailwindcss/node": "4.1.18", "@tailwindcss/oxide": "4.1.18", "postcss": "^8.4.41", "tailwindcss": "4.1.18" } }, "sha512-Ce0GFnzAOuPyfV5SxjXGn0CubwGcuDB0zcdaPuCSzAa/2vII24JTkH+I6jcbXLb1ctjZMZZI6OjDaLPJQL1S0g=="],
+
+    "@turf/area": ["@turf/area@7.3.4", "", { "dependencies": { "@turf/helpers": "7.3.4", "@turf/meta": "7.3.4", "@types/geojson": "^7946.0.10", "tslib": "^2.8.1" } }, "sha512-UEQQFw2XwHpozSBAMEtZI3jDsAad4NnHL/poF7/S6zeDCjEBCkt3MYd6DSGH/cvgcOozxH/ky3/rIVSMZdx4vA=="],
 
     "@turf/bbox": ["@turf/bbox@7.3.4", "", { "dependencies": { "@turf/helpers": "7.3.4", "@turf/meta": "7.3.4", "@types/geojson": "^7946.0.10", "tslib": "^2.8.1" } }, "sha512-D5ErVWtfQbEPh11yzI69uxqrcJmbPU/9Y59f1uTapgwAwQHQztDWgsYpnL3ns8r1GmPWLP8sGJLVTIk2TZSiYA=="],
 
