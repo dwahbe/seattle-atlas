@@ -39,21 +39,21 @@
   },
   {
     "id": "comprehensive_plan_2044",
-    "name": "Seattle Comprehensive Plan 2044",
-    "status": "Adopted",
-    "summary": "Major update to Seattle's Comprehensive Plan setting land use and growth policies through 2044. Includes proposals for expanding urban villages, increasing allowed density in transit corridors, and updating neighborhood plans. This update is required under Washington State's Growth Management Act.",
+    "name": "Seattle Comprehensive Plan 2044 / One Seattle Plan",
+    "status": "In Effect",
+    "summary": "Seattle's Comprehensive Plan 2044, adopted December 2025, sets land use and growth policies through 2044. The first wave of implementing legislation — Ordinance 127376 — repealed and replaced SMC Chapter 23.44, collapsing NR1/NR2/NR3 into a unified Neighborhood Residential zone that allows houses, townhomes, and up to 6-unit multiplexes by right (9 with stacked-flat bonuses). Centers and Corridors follow-on legislation is rolling out through 2026. Required under Washington State's Growth Management Act and HB 1110 middle-housing law.",
     "links": [
       {
         "title": "One Seattle Plan",
         "url": "https://www.seattle.gov/opcd/one-seattle-plan"
       },
       {
-        "title": "Project Documents",
-        "url": "https://www.seattle.gov/opcd/one-seattle-plan/project-documents"
+        "title": "Ordinance 127376 (NR code)",
+        "url": "https://www.seattle.gov/documents/departments/sdci/codes/nrordinance127376.pdf"
       },
       {
-        "title": "Community Engagement",
-        "url": "https://www.seattle.gov/opcd/one-seattle-plan/engagement"
+        "title": "Project Documents",
+        "url": "https://www.seattle.gov/opcd/one-seattle-plan/project-documents"
       },
       {
         "title": "Final EIS Summary",
@@ -61,7 +61,7 @@
       }
     ],
     "layers": ["proposal_station_area"],
-    "effectiveDate": "2025-06-01",
+    "effectiveDate": "2026-01-21",
     "jurisdiction": "City of Seattle"
   },
   {

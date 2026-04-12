@@ -54,10 +54,13 @@ export default function AboutPage() {
                   <h3 className="font-medium text-text-primary mb-1">Zoning &amp; Land Use</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>
-                      Simplified view showing what can be built (houses, apartments, mixed-use,
-                      etc.)
+                      Simplified view showing what can be built (houses &amp; townhomes, apartments,
+                      mixed-use, etc.)
                     </li>
-                    <li>Detailed technical zoning codes (NR1, LR2, NC3, etc.)</li>
+                    <li>
+                      Detailed technical zoning codes (NR, LR2, NC3, etc.), reflecting the Jan 21,
+                      2026 adoption of One Seattle Plan Ordinance 127376
+                    </li>
                   </ul>
                 </div>
 

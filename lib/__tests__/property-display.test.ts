@@ -46,7 +46,7 @@ describe('formatPropertyValue', () => {
   });
 
   test('uppercase transform uppercases string', () => {
-    expect(formatPropertyValue('nr1', 'uppercase')).toBe('NR1');
+    expect(formatPropertyValue('nr', 'uppercase')).toBe('NR');
   });
 
   test('zoneCode transform uppercases string', () => {
@@ -129,13 +129,13 @@ describe('isFieldHidden', () => {
 describe('getDisplayProperties', () => {
   test('returns configured fields for zoning layer', () => {
     const props = getDisplayProperties('zoning', {
-      ZONELUT: 'NR1',
-      CATEGORY_DESC: 'Residential',
+      ZONELUT: 'NR',
+      CATEGORY_DESC: 'Neighborhood Residential',
       OBJECTID: 123,
     });
     expect(props.length).toBe(2); // ZONELUT and CATEGORY_DESC, not OBJECTID
     expect(props[0].label).toBe('Zone Code');
-    expect(props[0].value).toBe('NR1');
+    expect(props[0].value).toBe('NR');
   });
 
   test('returns all non-hidden fields for unknown layer', () => {

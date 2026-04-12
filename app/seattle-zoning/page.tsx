@@ -32,7 +32,7 @@ const faqs = [
   {
     question: 'What is missing middle housing?',
     answer:
-      'Missing middle housing refers to building types between single-family homes and large apartment complexes: duplexes, triplexes, fourplexes, townhouses, and small apartment buildings. These housing types were common before modern zoning but are now prohibited in most Seattle neighborhoods. [5]',
+      "Missing middle housing refers to building types between single-family homes and large apartment complexes: duplexes, triplexes, fourplexes, townhouses, and small apartment buildings. These housing types were common before modern zoning and—under Ordinance 127376, effective January 21, 2026—are once again legal by right across Seattle's Neighborhood Residential zones. [5][10]",
   },
   {
     question: 'How does zoning affect housing costs?',
@@ -42,7 +42,7 @@ const faqs = [
   {
     question: 'What zoning changes has Seattle made?',
     answer:
-      'Seattle adopted its Comprehensive Plan 2044 in December 2025, which includes major zoning reforms: former single-family zones were renamed Neighborhood Residential and now allow duplexes, triplexes, and ADUs. The city is also creating new growth centers (renamed from urban villages) and increasing density near transit stations. Phase 1 took effect January 2026; later phases are rolling out. [8][10]',
+      'Seattle adopted its Comprehensive Plan 2044 in December 2025, and Ordinance 127376 repealed and replaced the old single-family chapter of the Municipal Code (SMC Ch. 23.44), effective January 21, 2026. The new Neighborhood Residential zone allows houses, townhomes, duplexes through sixplexes, stacked flats, cottage housing, courtyard apartments, and ADUs on a single lot—with density of up to 6 units (9 with stacked-flat bonuses) and corner-store commercial uses. The previous NR1/NR2/NR3 sub-zones were collapsed into a single NR zone with uniform rules. Additional Centers and Corridors legislation is rolling out through 2026. [8][10]',
   },
 ];
 
@@ -172,15 +172,20 @@ export default function SeattleZoningPage() {
                 The scale of single-family zoning
               </h2>
               <p>
-                A large share of Seattle&apos;s residential land has historically been zoned
-                exclusively for detached single-family homes. For decades, it was illegal to build a
-                duplex, a small apartment building, or even an accessory dwelling unit on most
-                residential lots. Recent reforms now allow duplexes, triplexes, and ADUs in these
-                areas—renamed &quot;Neighborhood Residential&quot;—but the low-density pattern
-                remains dominant.
+                For most of the 20th century, a large share of Seattle&apos;s residential land was
+                zoned exclusively for detached single-family homes. For decades, it was illegal to
+                build a duplex, a small apartment building, or even an accessory dwelling unit on
+                most residential lots. That changed on January 21, 2026, when Ordinance 127376 took
+                effect and the old single-family chapter of the Municipal Code was repealed and
+                replaced with the new Neighborhood Residential (NR) zone—covering roughly 61% of
+                Seattle&apos;s land and legalizing houses, townhomes, and up to six-unit multiplexes
+                by right.
                 <sup>
                   <a href="#fn-2" className="text-accent hover:underline">
                     2
+                  </a>
+                  <a href="#fn-10" className="text-accent hover:underline">
+                    10
                   </a>
                 </sup>
               </p>
@@ -235,10 +240,11 @@ export default function SeattleZoningPage() {
                 existence.
               </p>
               <p>
-                Recent policy changes have begun to address this. Seattle now allows accessory
-                dwelling units (ADUs) in single-family zones, and the city is considering broader
-                reforms. However, the pace of change remains slow relative to the scale of the
-                housing shortage.
+                The 2026 Neighborhood Residential reform reopened the door to missing middle
+                housing. Townhomes, cottage courts, courtyard apartments, stacked flats, and
+                multiplexes are once again legal by right on most residential lots—though the scale
+                of new construction will still be shaped by market feasibility, lot geometry, and
+                the Mandatory Housing Affordability fees that apply in some zones.
               </p>
             </section>
 
@@ -302,15 +308,18 @@ export default function SeattleZoningPage() {
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li>
-                  <strong>Neighborhood Residential reform:</strong> Former single-family zones now
-                  allow duplexes, triplexes, and ADUs
+                  <strong>Neighborhood Residential reform:</strong> Ordinance 127376 repealed and
+                  replaced SMC Ch. 23.44, collapsing NR1/NR2/NR3 into a single Neighborhood
+                  Residential zone that allows houses, townhomes, duplex through sixplex, stacked
+                  flats, cottage housing, and courtyard apartments—up to 6 units per lot (9 with
+                  stacked-flat bonuses), plus corner-store commercial uses
                 </li>
                 <li>
                   <strong>Station area rezoning:</strong> Increased density near light rail stations
                 </li>
                 <li>
-                  <strong>ADU expansion:</strong> Easier to build backyard cottages and basement
-                  apartments
+                  <strong>ADU expansion:</strong> Up to two ADUs or DADUs per lot, now counted
+                  toward the lot&apos;s overall density
                 </li>
                 <li>
                   <strong>New growth centers:</strong> 30 new Neighborhood Centers in previously
@@ -319,10 +328,10 @@ export default function SeattleZoningPage() {
                 </li>
               </ul>
               <p>
-                Phase 1 of the plan took effect in January 2026, with additional phases rolling out
-                through 2026. Implementation reflects a fundamental tension in urban policy: the
-                interests of current residents versus the needs of future residents and the broader
-                region.
+                The Neighborhood Residential changes took effect January 21, 2026. Centers and
+                Corridors follow-on legislation is rolling out through 2026. Implementation reflects
+                a fundamental tension in urban policy: the interests of current residents versus the
+                needs of future residents and the broader region.
               </p>
               <p>
                 Similar reforms are playing out nationally as cities reconsider zoning to increase

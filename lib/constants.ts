@@ -10,4 +10,4 @@ export const PARKS_LAYER_ID = 'parks_open_space';
 export const HIGHLIGHT_COLOR = '#3B82F6';
 
 /** When the underlying map data was last refreshed */
-export const DATA_FRESHNESS = 'Jan 2025';
+export const DATA_FRESHNESS = 'Jan 2026';

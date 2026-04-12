@@ -3,31 +3,25 @@
     "id": "zoning",
     "name": "What Can Be Built",
     "group": "base",
-    "tileset": "mapbox://dwahbe.seattle-zoning",
-    "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
+    "tileset": "mapbox://dwahbe.2zqp7y0u23eu",
+    "sourceLayer": "43f1d4f38b1bbfa3b7d2",
     "type": "fill",
     "zOrder": 0,
     "defaultVisible": true,
-    "description": "See what types of buildings are allowed across Seattle — from single-family homes to high-rises.",
+    "description": "See what types of buildings are allowed across Seattle — from houses and townhomes to high-rises.",
     "colorProperty": "CATEGORY_DESC",
     "legend": [
       {
-        "label": "Houses Only",
-        "color": "#FCE8C8",
-        "value": "Residential Small Lot",
-        "percentage": 2.3
-      },
-      {
-        "label": "Houses Only",
+        "label": "Houses & Townhomes",
         "color": "#FCE8C8",
         "value": "Neighborhood Residential",
-        "percentage": 61.1
+        "percentage": 61.4
       },
       {
         "label": "Small Apartments",
         "color": "#F4A261",
         "value": "Lowrise Multi-Family",
-        "percentage": 10.4
+        "percentage": 12.4
       },
       {
         "label": "Taller Apartments",
@@ -80,11 +74,7 @@
         "type": "multiselect",
         "options": [
           {
-            "label": "Houses Only",
-            "value": "Residential Small Lot"
-          },
-          {
-            "label": "Houses Only",
+            "label": "Houses & Townhomes",
             "value": "Neighborhood Residential"
           },
           {
@@ -127,49 +117,31 @@
       "fill-outline-color": "#374151"
     },
     "source": "City of Seattle",
-    "updated": "2025"
+    "updated": "Jan 2026"
   },
   {
     "id": "zoning_detailed",
     "name": "Zoning Codes (Technical)",
     "group": "base",
-    "tileset": "mapbox://dwahbe.seattle-zoning",
-    "sourceLayer": "Current_Land_Use_Zoning_Detai-2zg4tu",
+    "tileset": "mapbox://dwahbe.2zqp7y0u23eu",
+    "sourceLayer": "43f1d4f38b1bbfa3b7d2",
     "type": "fill",
     "zOrder": 1,
     "defaultVisible": false,
-    "description": "Full zoning designations using official Seattle Municipal Code terminology.",
+    "description": "Full zoning designations using official Seattle Municipal Code terminology, as adopted Jan 21, 2026 under Ordinance 127376.",
     "colorProperty": "ZONELUT",
     "legend": [
       {
-        "label": "RSL - Residential Small Lot",
-        "color": "#FCD34D",
-        "value": "RSL",
-        "percentage": 2.3
-      },
-      {
-        "label": "NR1 - Neighborhood Residential 1",
-        "color": "#D9F99D",
-        "value": "NR1",
-        "percentage": 4.4
-      },
-      {
-        "label": "NR2 - Neighborhood Residential 2",
+        "label": "NR - Neighborhood Residential",
         "color": "#BEF264",
-        "value": "NR2",
-        "percentage": 19.8
-      },
-      {
-        "label": "NR3 - Neighborhood Residential 3",
-        "color": "#A3E635",
-        "value": "NR3",
-        "percentage": 36.9
+        "value": "NR",
+        "percentage": 61.4
       },
       {
         "label": "LR1 - Lowrise 1",
         "color": "#FED7AA",
         "value": "LR1",
-        "percentage": 2.7
+        "percentage": 4.8
       },
       {
         "label": "LR2 - Lowrise 2",
@@ -241,7 +213,7 @@
         "label": "DMC - Downtown Mixed Commercial",
         "color": "#6366F1",
         "value": "DMC",
-        "percentage": 0.4
+        "percentage": 0.5
       },
       {
         "label": "DMR - Downtown Mixed Residential",
@@ -347,10 +319,7 @@
         "property": "ZONELUT",
         "type": "multiselect",
         "options": [
-          { "label": "Residential Small Lot", "value": "RSL" },
-          { "label": "Neighborhood Residential", "value": "NR1" },
-          { "label": "Neighborhood Residential", "value": "NR2" },
-          { "label": "Neighborhood Residential", "value": "NR3" },
+          { "label": "Neighborhood Residential", "value": "NR" },
           { "label": "Lowrise", "value": "LR1" },
           { "label": "Lowrise", "value": "LR2" },
           { "label": "Lowrise", "value": "LR3" },
@@ -388,7 +357,7 @@
       "fill-outline-color": "#1f2937"
     },
     "source": "City of Seattle",
-    "updated": "2025"
+    "updated": "Jan 2026"
   },
   {
     "id": "parks_open_space",

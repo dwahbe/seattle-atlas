@@ -1025,7 +1025,7 @@ const LANDMARK_COMPONENTS: Record<LandmarkType, React.FC> = {
 };
 
 const BUILDING_LABELS: Record<BuildingType, string> = {
-  house: 'Single-Family Homes, Duplexes & ADUs',
+  house: 'Houses, Townhomes & Multiplexes',
   townhouse: 'Townhouses & Small Apartments',
   lowrise: 'Townhouses & Low-Rise Apartments',
   midrise: 'Mid-Rise Apartments',

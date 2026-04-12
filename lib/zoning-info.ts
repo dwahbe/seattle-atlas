@@ -23,61 +23,46 @@ const SMC_BASE_URL = 'https://library.municode.com/wa/seattle/codes/municipal_co
 
 /**
  * Comprehensive mapping of Seattle zone codes to human-readable information.
- * Heights and development standards from SMC 23.
+ * Heights and development standards from SMC Title 23.
  */
 const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
-  // Neighborhood Residential (formerly Single Family)
-  NR1: {
-    code: 'NR1',
-    name: 'Neighborhood Residential 1',
+  // Neighborhood Residential — the previous NR1/NR2/NR3 sub-zones were
+  // collapsed into a single NR zone by Ordinance 127376 (One Seattle Plan
+  // state-zoning compliance), effective Jan 21, 2026. SMC Ch. 23.44 was
+  // repealed and replaced in its entirety — the chapter number is unchanged
+  // but its contents are new. Minimum lot size is now uniformly 5,000 sf,
+  // and development standards are uniform across the old NR1/2/3 footprints.
+  NR: {
+    code: 'NR',
+    name: 'Neighborhood Residential',
     category: 'residential',
-    summary: 'Houses, duplexes, triplexes, and ADUs allowed',
-    maxHeight: '30 ft',
-    maxHeightFt: 30,
+    summary:
+      'Houses, townhomes, and multiplexes up to 6 units (9 with stacked-flat bonuses). ADUs allowed and count toward density.',
+    maxHeight: '32 ft',
+    maxHeightFt: 32,
     aduAllowed: 2,
-    lotCoverage: '35%',
-    far: '0.5',
-    smcSection: '23.45',
-    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    lotCoverage: '50%',
+    far: '0.6–1.6',
+    smcSection: '23.44',
+    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.44NERE`,
   },
-  NR2: {
-    code: 'NR2',
-    name: 'Neighborhood Residential 2',
-    category: 'residential',
-    summary: 'Houses, duplexes, triplexes, and ADUs allowed',
-    maxHeight: '30 ft',
-    maxHeightFt: 30,
-    aduAllowed: 2,
-    lotCoverage: '35%',
-    far: '0.5',
-    smcSection: '23.45',
-    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
-  },
-  NR3: {
-    code: 'NR3',
-    name: 'Neighborhood Residential 3',
-    category: 'residential',
-    summary: 'Houses, duplexes, triplexes, and ADUs allowed',
-    maxHeight: '35 ft',
-    maxHeightFt: 35,
-    aduAllowed: 2,
-    lotCoverage: '35%',
-    far: '0.5',
-    smcSection: '23.45',
-    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
-  },
+  // RSL is a legacy zone — rezoned to LR1 citywide under Ordinance 127376
+  // (except in South Park, where RSL outside the new Neighborhood Center was
+  // rezoned to NR). Kept here as a fallback for historical/PREV lookups and
+  // any URL bookmarks referencing the old code.
   RSL: {
     code: 'RSL',
     name: 'Residential Small Lot',
     category: 'residential',
-    summary: 'Small-lot houses and cottages',
+    summary:
+      'Small-lot houses (legacy zone — rezoned to LR1 citywide Jan 21, 2026, except parts of South Park which became NR).',
     maxHeight: '30 ft',
     maxHeightFt: 30,
     aduAllowed: 1,
     lotCoverage: '50%',
     far: '0.75',
-    smcSection: '23.45',
-    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    smcSection: '23.44',
+    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.44NERE`,
   },
 
   // Lowrise Multifamily

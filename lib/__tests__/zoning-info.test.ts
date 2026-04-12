@@ -2,13 +2,24 @@ import { describe, test, expect } from 'bun:test';
 import { getZoneInfo, getCategoryLabel, getAllZoneCodes } from '../zoning-info';
 
 describe('getZoneInfo', () => {
-  test('returns info for a direct match (NR1)', () => {
-    const info = getZoneInfo('NR1');
+  test('returns info for a direct match (NR)', () => {
+    // NR1/NR2/NR3 were collapsed into a single NR zone by Ordinance 127376
+    // (effective Jan 21, 2026). Height bumped from 30 ft to 32 ft.
+    const info = getZoneInfo('NR');
     expect(info).not.toBeNull();
-    expect(info!.code).toBe('NR1');
-    expect(info!.name).toBe('Neighborhood Residential 1');
+    expect(info!.code).toBe('NR');
+    expect(info!.name).toBe('Neighborhood Residential');
     expect(info!.category).toBe('residential');
-    expect(info!.maxHeightFt).toBe(30);
+    expect(info!.maxHeightFt).toBe(32);
+  });
+
+  test('resolves legacy RSL code to its historical entry', () => {
+    // RSL was rezoned to LR1 in Jan 2026 but getZoneInfo still returns the
+    // legacy entry so historical lookups (ZONING_PREV, old bookmarks) resolve.
+    const info = getZoneInfo('RSL');
+    expect(info).not.toBeNull();
+    expect(info!.code).toBe('RSL');
+    expect(info!.summary).toContain('legacy');
   });
 
   test('returns info for NC3', () => {
@@ -45,15 +56,15 @@ describe('getZoneInfo', () => {
   });
 
   test('is case-insensitive', () => {
-    const info = getZoneInfo('nr1');
+    const info = getZoneInfo('nr');
     expect(info).not.toBeNull();
-    expect(info!.code).toBe('NR1');
+    expect(info!.code).toBe('NR');
   });
 
   test('trims whitespace', () => {
-    const info = getZoneInfo('  NR1  ');
+    const info = getZoneInfo('  NR  ');
     expect(info).not.toBeNull();
-    expect(info!.code).toBe('NR1');
+    expect(info!.code).toBe('NR');
   });
 
   test('returns info for downtown zones', () => {
@@ -90,8 +101,8 @@ describe('getAllZoneCodes', () => {
     expect(codes.length).toBeGreaterThan(0);
   });
 
-  test('includes NR1', () => {
-    expect(getAllZoneCodes()).toContain('NR1');
+  test('includes NR', () => {
+    expect(getAllZoneCodes()).toContain('NR');
   });
 
   test('includes DOC2', () => {
