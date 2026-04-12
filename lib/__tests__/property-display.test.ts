@@ -133,7 +133,7 @@ describe('getDisplayProperties', () => {
       CATEGORY_DESC: 'Neighborhood Residential',
       OBJECTID: 123,
     });
-    expect(props.length).toBe(2); // ZONELUT and CATEGORY_DESC, not OBJECTID
+    expect(props.length).toBe(1); // ZONELUT only — CATEGORY_DESC is hidden, OBJECTID is global hidden
     expect(props[0].label).toBe('Zone Code');
     expect(props[0].value).toBe('NR');
   });

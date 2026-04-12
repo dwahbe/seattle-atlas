@@ -79,6 +79,31 @@ describe('getZoneInfo', () => {
     expect(info).not.toBeNull();
     expect(info!.category).toBe('industrial');
   });
+
+  test('includes allowedUses for NR', () => {
+    const info = getZoneInfo('NR');
+    expect(info).not.toBeNull();
+    expect(info!.allowedUses.length).toBeGreaterThan(0);
+    expect(info!.allowedUses).toContain('Small cafes & shops');
+    expect(info!.allowedUses).toContain('Multiplexes (up to 9 units)');
+  });
+
+  test('includes notAllowedUses for NR', () => {
+    const info = getZoneInfo('NR');
+    expect(info).not.toBeNull();
+    expect(info!.notAllowedUses.length).toBeGreaterThan(0);
+    expect(info!.notAllowedUses).toContain('Industrial');
+  });
+
+  test('all zone codes have allowedUses and notAllowedUses', () => {
+    const codes = getAllZoneCodes();
+    for (const code of codes) {
+      const info = getZoneInfo(code);
+      expect(info).not.toBeNull();
+      expect(info!.allowedUses.length).toBeGreaterThan(0);
+      expect(info!.notAllowedUses.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe('getCategoryLabel', () => {

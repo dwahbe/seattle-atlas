@@ -125,7 +125,7 @@ function HouseGraphic() {
         strokeWidth={STROKE_WIDTH}
       />
 
-      {/* ADU/small building */}
+      {/* Small shop */}
       <rect
         x="68"
         y="52"
@@ -135,20 +135,24 @@ function HouseGraphic() {
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
-      <polyline
-        points="66,52 80,40 94,52"
+      {/* Flat roof */}
+      <line x1="66" y1="52" x2="94" y2="52" stroke={STROKE_COLOR} strokeWidth={STROKE_WIDTH} />
+      {/* Storefront window */}
+      <rect
+        x="71"
+        y="58"
+        width="18"
+        height="12"
         fill="none"
         stroke={STROKE_COLOR}
         strokeWidth={STROKE_WIDTH}
       />
-      <rect
-        x="74"
-        y="60"
-        width="12"
-        height="10"
+      {/* Awning */}
+      <polyline
+        points="70,58 71,54 89,54 90,58"
         fill="none"
         stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
+        strokeWidth={THIN_STROKE_WIDTH}
       />
     </svg>
   );
@@ -1025,11 +1029,11 @@ const LANDMARK_COMPONENTS: Record<LandmarkType, React.FC> = {
 };
 
 const BUILDING_LABELS: Record<BuildingType, string> = {
-  house: 'Houses, Townhomes & Multiplexes',
+  house: 'Houses, Multiplexes & Small Shops',
   townhouse: 'Townhouses & Small Apartments',
-  lowrise: 'Townhouses & Low-Rise Apartments',
-  midrise: 'Mid-Rise Apartments',
-  highrise: 'High-Rise Apartments',
+  lowrise: 'Townhouses & Small Apartments',
+  midrise: 'Mid-Rise Apartments & Mixed-Use',
+  highrise: 'High-Rise Towers',
   skyscraper: 'Downtown Towers',
   shopfront: 'Shops With Apartments Above',
   mixeduse: 'Mixed-Use Buildings',

@@ -8,107 +8,77 @@
     "type": "fill",
     "zOrder": 0,
     "defaultVisible": true,
-    "description": "See what types of buildings are allowed across Seattle — from houses and townhomes to high-rises.",
-    "colorProperty": "CATEGORY_DESC",
+    "description": "See what can be built across Seattle — from homes and small shops to downtown towers.",
+    "colorProperty": "ZONELUT",
     "legend": [
-      {
-        "label": "Houses & Townhomes",
-        "color": "#FCE8C8",
-        "value": "Neighborhood Residential",
-        "percentage": 61.4
-      },
-      {
-        "label": "Small Apartments",
-        "color": "#F4A261",
-        "value": "Lowrise Multi-Family",
-        "percentage": 12.4
-      },
-      {
-        "label": "Taller Apartments",
-        "color": "#E76F51",
-        "value": "High-Density Multi-Family",
-        "percentage": 1.3
-      },
-      {
-        "label": "Mixed: Shops + Housing",
-        "color": "#B388EB",
-        "value": "Neighborhood Commercial",
-        "percentage": 5.1
-      },
-      {
-        "label": "Mixed: Shops + Housing",
-        "color": "#B388EB",
-        "value": "Commercial",
-        "percentage": 2.7
-      },
-      {
-        "label": "Mixed: Shops + Housing",
-        "color": "#B388EB",
-        "value": "Seattle Mixed",
-        "percentage": 1.4
-      },
-      {
-        "label": "Downtown",
-        "color": "#7C5CBF",
-        "value": "Downtown",
-        "percentage": 1.7
-      },
-      {
-        "label": "Industrial",
-        "color": "#6B7280",
-        "value": "Industrial",
-        "percentage": 11.8
-      },
-      {
-        "label": "Institutions",
-        "color": "#7EC8E3",
-        "value": "Major Institutions",
-        "percentage": 2.2
-      }
+      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "NR", "percentage": 61.4 },
+      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "LR1", "percentage": 4.8 },
+      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "LR2", "percentage": 3.2 },
+      { "label": "Midsize Buildings", "color": "#F4A261", "value": "LR3", "percentage": 4.5 },
+      { "label": "Midsize Buildings", "color": "#F4A261", "value": "MR", "percentage": 1.1 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC1", "percentage": 0.5 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC2", "percentage": 1.9 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC3", "percentage": 2.7 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "C1", "percentage": 1.6 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "C2", "percentage": 1.1 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "SM", "percentage": 1.4 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "UX", "percentage": 0.8 },
+      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "MPC", "percentage": 0.1 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "HR", "percentage": 0.2 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DMC", "percentage": 0.5 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DMR", "percentage": 0.3 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DOC1", "percentage": 0.2 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DOC2", "percentage": 0.1 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DRC", "percentage": 0 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DH1", "percentage": 0.2 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DH2", "percentage": 0 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "PSM", "percentage": 0.2 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "IDM", "percentage": 0.1 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "IDR", "percentage": 0 },
+      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "PMM", "percentage": 0 },
+      { "label": "Institutions", "color": "#7EC8E3", "value": "MIO", "percentage": 2.2 },
+      { "label": "Industrial", "color": "#6B7280", "value": "IC", "percentage": 0.3 },
+      { "label": "Industrial", "color": "#6B7280", "value": "IB", "percentage": 0 },
+      { "label": "Industrial", "color": "#6B7280", "value": "MML", "percentage": 9.9 },
+      { "label": "Industrial", "color": "#6B7280", "value": "II", "percentage": 0.8 }
     ],
     "filters": [
       {
-        "id": "housing_type",
+        "id": "zone_category",
         "label": "Filter by Type",
-        "property": "CATEGORY_DESC",
+        "property": "ZONELUT",
         "type": "multiselect",
         "options": [
-          {
-            "label": "Houses & Townhomes",
-            "value": "Neighborhood Residential"
-          },
-          {
-            "label": "Small Apartments",
-            "value": "Lowrise Multi-Family"
-          },
-          {
-            "label": "Taller Apartments",
-            "value": "High-Density Multi-Family"
-          },
-          {
-            "label": "Mixed: Shops + Housing",
-            "value": "Neighborhood Commercial"
-          },
-          {
-            "label": "Mixed: Shops + Housing",
-            "value": "Commercial"
-          },
-          {
-            "label": "Mixed: Shops + Housing",
-            "value": "Seattle Mixed"
-          },
-          {
-            "label": "Downtown",
-            "value": "Downtown"
-          },
-          {
-            "label": "Industrial",
-            "value": "Industrial"
-          },
-          {
-            "label": "Institutions",
-            "value": "Major Institutions"
-          }
+          { "label": "Homes & Small Shops", "value": "NR" },
+          { "label": "Homes & Small Shops", "value": "LR1" },
+          { "label": "Homes & Small Shops", "value": "LR2" },
+          { "label": "Midsize Buildings", "value": "LR3" },
+          { "label": "Midsize Buildings", "value": "MR" },
+          { "label": "Shops & Mixed-Use", "value": "NC1" },
+          { "label": "Shops & Mixed-Use", "value": "NC2" },
+          { "label": "Shops & Mixed-Use", "value": "NC3" },
+          { "label": "Shops & Mixed-Use", "value": "C1" },
+          { "label": "Shops & Mixed-Use", "value": "C2" },
+          { "label": "Shops & Mixed-Use", "value": "SM" },
+          { "label": "Shops & Mixed-Use", "value": "UX" },
+          { "label": "Shops & Mixed-Use", "value": "MPC" },
+          { "label": "Downtown & Towers", "value": "HR" },
+          { "label": "Downtown & Towers", "value": "DMC" },
+          { "label": "Downtown & Towers", "value": "DMR" },
+          { "label": "Downtown & Towers", "value": "DOC1" },
+          { "label": "Downtown & Towers", "value": "DOC2" },
+          { "label": "Downtown & Towers", "value": "DRC" },
+          { "label": "Downtown & Towers", "value": "DH1" },
+          { "label": "Downtown & Towers", "value": "DH2" },
+          { "label": "Downtown & Towers", "value": "PSM" },
+          { "label": "Downtown & Towers", "value": "IDM" },
+          { "label": "Downtown & Towers", "value": "IDR" },
+          { "label": "Downtown & Towers", "value": "PMM" },
+          { "label": "Institutions", "value": "MIO" },
+          { "label": "Industrial", "value": "IC" },
+          { "label": "Industrial", "value": "IB" },
+          { "label": "Industrial", "value": "MML" },
+          { "label": "Industrial", "value": "II" }
         ]
       }
     ],

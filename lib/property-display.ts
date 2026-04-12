@@ -44,13 +44,13 @@ const LAYER_DISPLAY_CONFIGS: Record<string, LayerDisplayConfig> = {
     layerId: 'zoning',
     displayFields: [
       { key: 'ZONELUT', label: 'Zone Code', transform: 'zoneCode', priority: 1 },
-      { key: 'CATEGORY_DESC', label: 'Category', priority: 2 },
-      { key: 'IZ', label: 'Inclusionary Zoning', transform: 'yesNo', priority: 3 },
+      { key: 'IZ', label: 'Inclusionary Zoning', transform: 'yesNo', priority: 2 },
     ],
     hiddenFields: [
       'ZONEID',
       'ZONING',
       'ZONING_DESC',
+      'CATEGORY_DESC',
       'DETAIL_DESC',
       'CLASS_DESC',
       'CONTRACT',

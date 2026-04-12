@@ -1,5 +1,5 @@
 export { InspectHeader } from './InspectHeader';
-export { ZoningSummary } from './ZoningSummary';
+export { ZoningSummary, AllowedUses } from './ZoningSummary';
 export { WalkScoreSection } from './WalkScoreSection';
 export { DevelopmentRules } from './DevelopmentRules';
 export { ParcelInfo } from './ParcelInfo';

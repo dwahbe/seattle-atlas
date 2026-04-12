@@ -6,6 +6,7 @@ import { useInspectData } from '@/hooks/useInspectData';
 import {
   InspectHeader,
   ZoningSummary,
+  AllowedUses,
   WalkScoreSection,
   DevelopmentRules,
   ParcelInfo,
@@ -111,6 +112,9 @@ export function InspectPanel({
         {data.isZoning && (
           <WalkScoreSection walkScore={data.walkScore} isLoading={data.isLoadingWalkScore} />
         )}
+
+        {/* Allowed Uses */}
+        {data.isZoning && data.zoneInfo && <AllowedUses zoneInfo={data.zoneInfo} />}
 
         {/* Parcel Info - Property details from King County */}
         {data.isZoning && (data.isLoadingParcel || data.parcelData) && (

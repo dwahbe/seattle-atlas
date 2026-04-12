@@ -139,10 +139,10 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
 function getShortLabel(label: string): string {
   // Map long labels to shorter versions for the chips
   const shortLabels: Record<string, string> = {
-    'Houses & Townhomes': 'Homes',
-    'Small Apartments': 'Small Apts',
-    'Taller Apartments': 'Tall Apts',
-    'Mixed: Shops + Housing': 'Mixed-Use',
+    'Homes & Small Shops': 'Homes',
+    'Midsize Buildings': 'Midsize',
+    'Shops & Mixed-Use': 'Mixed-Use',
+    'Downtown & Towers': 'Downtown',
   };
   return shortLabels[label] || label;
 }

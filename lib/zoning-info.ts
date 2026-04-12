@@ -17,6 +17,8 @@ export interface ZoneInfo {
   far: string;
   smcSection: string;
   smcLink: string;
+  allowedUses: string[];
+  notAllowedUses: string[];
 }
 
 const SMC_BASE_URL = 'https://library.municode.com/wa/seattle/codes/municipal_code';
@@ -45,6 +47,17 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '0.6–1.6',
     smcSection: '23.44',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.44NERE`,
+    allowedUses: [
+      'Single-family homes',
+      'Duplexes & triplexes',
+      'Multiplexes (up to 9 units)',
+      'ADUs (up to 2)',
+      'Small cafes & shops',
+      'Daycares',
+      'Home businesses',
+      'Religious institutions',
+    ],
+    notAllowedUses: ['Large retail', 'Office buildings', 'Industrial', 'Hotels', 'Drive-throughs'],
   },
   // RSL is a legacy zone — rezoned to LR1 citywide under Ordinance 127376
   // (except in South Park, where RSL outside the new Neighborhood Center was
@@ -63,6 +76,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '0.75',
     smcSection: '23.44',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.44NERE`,
+    allowedUses: ['Small-lot houses', 'Duplexes', 'ADUs'],
+    notAllowedUses: ['Large retail', 'Office buildings', 'Industrial'],
   },
 
   // Lowrise Multifamily
@@ -78,6 +93,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '1.0',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: [
+      'Townhouses',
+      'Small apartments (3 stories)',
+      'Rowhouses',
+      'Live-work units',
+      'Daycares',
+      'Small retail',
+    ],
+    notAllowedUses: ['Large commercial', 'Offices', 'Industrial', 'Hotels'],
   },
   LR2: {
     code: 'LR2',
@@ -91,6 +115,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '1.3',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: [
+      'Townhouses',
+      'Apartments (3 stories)',
+      'Rowhouses',
+      'Live-work units',
+      'Daycares',
+      'Small retail',
+    ],
+    notAllowedUses: ['Large commercial', 'Offices', 'Industrial', 'Hotels'],
   },
   LR3: {
     code: 'LR3',
@@ -104,6 +137,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '1.6',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: [
+      'Apartments (4 stories)',
+      'Townhouses',
+      'Live-work units',
+      'Ground-floor retail',
+      'Restaurants',
+      'Daycares',
+    ],
+    notAllowedUses: ['Large commercial', 'Offices', 'Industrial', 'Hotels'],
   },
 
   // Midrise and Highrise
@@ -119,6 +161,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '3.2',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: [
+      'Apartments (5-7 stories)',
+      'Ground-floor retail',
+      'Restaurants',
+      'Services',
+      'Daycares',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Drive-throughs', 'Auto-oriented uses'],
   },
   HR: {
     code: 'HR',
@@ -132,6 +182,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '6.0+',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: [
+      'High-rise apartments',
+      'Ground-floor retail',
+      'Restaurants',
+      'Offices',
+      'Hotels',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Drive-throughs', 'Auto sales/repair'],
   },
 
   // Neighborhood Commercial
@@ -147,6 +205,19 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
+    allowedUses: [
+      'Ground-floor retail (required)',
+      'Small restaurants & cafes',
+      'Apartments above',
+      'Services (salon, laundry)',
+      'Daycares',
+    ],
+    notAllowedUses: [
+      'Heavy industrial',
+      'Auto-oriented uses',
+      'Drive-throughs',
+      'Large-format retail',
+    ],
   },
   NC2: {
     code: 'NC2',
@@ -160,6 +231,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '3.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
+    allowedUses: [
+      'Ground-floor retail (required)',
+      'Restaurants & bars',
+      'Apartments above',
+      'Small offices',
+      'Services & medical/dental',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
   },
   NC3: {
     code: 'NC3',
@@ -173,6 +252,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '4.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
+    allowedUses: [
+      'Ground-floor retail (required)',
+      'Restaurants & bars',
+      'Apartments above',
+      'Offices',
+      'Services & entertainment',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
   },
 
   // Commercial
@@ -188,6 +275,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.5',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
+    allowedUses: [
+      'Retail & services',
+      'Restaurants',
+      'Auto sales & repair',
+      'Gas stations',
+      'Drive-throughs',
+      'Housing (allowed)',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Bulk warehousing'],
   },
   C2: {
     code: 'C2',
@@ -201,6 +297,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '4.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
+    allowedUses: [
+      'Retail & restaurants',
+      'Offices',
+      'Housing',
+      'Hotels',
+      'Entertainment',
+      'Services',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Bulk warehousing'],
   },
 
   // Seattle Mixed
@@ -216,6 +321,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '4.5',
     smcSection: '23.48',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.48SEMI`,
+    allowedUses: [
+      'Housing',
+      'Retail & restaurants',
+      'Offices',
+      'Light manufacturing',
+      'Hotels',
+      'Entertainment',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Hazardous materials'],
   },
   PSM: {
     code: 'PSM',
@@ -229,6 +343,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '6.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: [
+      'Ground-floor commercial',
+      'Housing above',
+      'Restaurants & bars',
+      'Offices',
+      'Arts & cultural venues',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
   },
 
   // Downtown
@@ -244,6 +366,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '14.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Offices', 'Retail & restaurants', 'Housing', 'Hotels', 'Entertainment'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
   DMR: {
     code: 'DMR',
@@ -257,6 +381,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '12.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: [
+      'High-rise housing',
+      'Ground-floor retail',
+      'Restaurants',
+      'Hotels',
+      'Some office',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
   DOC1: {
     code: 'DOC1',
@@ -270,6 +402,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '20.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Offices', 'Ground-floor retail (required)', 'Restaurants', 'Housing', 'Hotels'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
   DOC2: {
     code: 'DOC2',
@@ -283,6 +417,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '25.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Offices', 'Ground-floor retail (required)', 'Restaurants', 'Housing', 'Hotels'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
   DRC: {
     code: 'DRC',
@@ -296,6 +432,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '8.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Retail (required ground floor)', 'Offices above', 'Housing', 'Entertainment'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
   DH1: {
     code: 'DH1',
@@ -309,6 +447,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '5.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: [
+      'Waterfront commercial',
+      'Restaurants',
+      'Housing',
+      'Public access areas',
+      'Marine-related retail',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Large-format retail'],
   },
   DH2: {
     code: 'DH2',
@@ -322,6 +468,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '6.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Waterfront commercial', 'Restaurants', 'Housing', 'Offices', 'Hotels'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
 
   // Urban Center/Village
@@ -337,6 +485,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '5.0',
     smcSection: '23.48',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.48SEMI`,
+    allowedUses: [
+      'Housing',
+      'Retail & restaurants',
+      'Offices',
+      'Hotels',
+      'Entertainment',
+      'Services',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Hazardous materials'],
   },
 
   // Industrial
@@ -352,6 +509,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.5',
     smcSection: '23.50',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.50INZO`,
+    allowedUses: ['Light manufacturing', 'Warehouses', 'Offices', 'Some retail', 'Tech & research'],
+    notAllowedUses: ['Housing', 'Schools', 'Hospitals'],
   },
   IB: {
     code: 'IB',
@@ -365,6 +524,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '1.5',
     smcSection: '23.50',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.50INZO`,
+    allowedUses: ['Light manufacturing', 'Warehouses', 'Some office', 'Transitional uses'],
+    notAllowedUses: ['Housing', 'Schools', 'Large retail'],
   },
   MML: {
     code: 'MML',
@@ -378,6 +539,13 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.0',
     smcSection: '23.50',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.50INZO`,
+    allowedUses: [
+      'Heavy manufacturing',
+      'Port & maritime operations',
+      'Warehouses & logistics',
+      'Industrial services',
+    ],
+    notAllowedUses: ['Housing', 'Retail', 'Schools', 'Offices (non-accessory)'],
   },
   II: {
     code: 'II',
@@ -391,6 +559,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.5',
     smcSection: '23.50',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.50INZO`,
+    allowedUses: [
+      'Manufacturing',
+      'Tech & innovation',
+      'Research & development',
+      'Warehouses',
+      'Some office & retail',
+    ],
+    notAllowedUses: ['Housing', 'Schools', 'Hospitals'],
   },
   IDM: {
     code: 'IDM',
@@ -404,6 +580,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '3.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: [
+      'Ground-floor commercial',
+      'Housing above',
+      'Restaurants',
+      'Small offices',
+      'Community services',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
   },
   IDR: {
     code: 'IDR',
@@ -417,6 +601,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '2.5',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: ['Housing', 'Ground-floor retail', 'Restaurants', 'Community services'],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Large offices'],
   },
   PMM: {
     code: 'PMM',
@@ -430,6 +616,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: '5.0',
     smcSection: '23.49',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.49DOZO`,
+    allowedUses: [
+      'Market-compatible retail',
+      'Restaurants',
+      'Housing above',
+      'Small offices',
+      'Arts & crafts',
+    ],
+    notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Large-format retail'],
   },
 
   // Major Institutions
@@ -445,6 +639,13 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: 'Varies',
     smcSection: '23.69',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IVADUSRE_CH23.69MAIN`,
+    allowedUses: [
+      'Hospitals & medical',
+      'Universities & research',
+      'Student housing',
+      'Supporting retail & services',
+    ],
+    notAllowedUses: ['General commercial', 'Industrial (outside plan)', 'Uses outside master plan'],
   },
 
   // Master Planned Community
@@ -460,6 +661,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     far: 'Per plan',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
+    allowedUses: ['Housing', 'Retail & services', 'Parks & open space', 'Community facilities'],
+    notAllowedUses: ['Heavy industrial', 'Uses outside master plan'],
   },
 };
 

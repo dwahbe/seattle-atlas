@@ -63,7 +63,7 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
                 const isParks = layer.id === PARKS_LAYER_ID;
 
                 return uniqueItems.map((item) => {
-                  const isFiltered = layerFilters.includes(item.value);
+                  const isFiltered = item.allValues.every((v) => layerFilters.includes(v));
                   const itemKey = `${layer.id}-${item.value}`;
                   const isHovered = hoveredItem === itemKey;
 
@@ -75,7 +75,11 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
                       isFiltered={isFiltered}
                       isHovered={isHovered}
                       isTouch={isTouch}
-                      onClick={() => onFilterToggle?.(layer.id, item.value)}
+                      onClick={() => {
+                        for (const v of item.allValues) {
+                          onFilterToggle?.(layer.id, v);
+                        }
+                      }}
                       onMouseEnter={() => !isTouch && setHoveredItem(itemKey)}
                       onMouseLeave={() => !isTouch && setHoveredItem(null)}
                       isInteractive={!!onFilterToggle && !isParks}
@@ -216,10 +220,15 @@ function LegendSwatch({ type, color, isActive = false }: LegendSwatchProps) {
   }
 }
 
+/** A legend item with all grouped values collected for filtering */
+interface DeduplicatedLegendItem extends LegendItem {
+  allValues: string[];
+}
+
 /**
- * Deduplicate legend items by label and aggregate percentages
+ * Deduplicate legend items by label, aggregate percentages, and collect all values
  */
-function deduplicateLegendItems(items: LegendItem[]): LegendItem[] {
+function deduplicateLegendItems(items: LegendItem[]): DeduplicatedLegendItem[] {
   return items.reduce((acc, item) => {
     const existing = acc.find((i) => i.label === item.label);
     if (existing) {
@@ -227,9 +236,10 @@ function deduplicateLegendItems(items: LegendItem[]): LegendItem[] {
       if (item.percentage !== undefined) {
         existing.percentage = (existing.percentage || 0) + item.percentage;
       }
+      existing.allValues.push(item.value);
     } else {
-      acc.push({ ...item });
+      acc.push({ ...item, allValues: [item.value] });
     }
     return acc;
-  }, [] as LegendItem[]);
+  }, [] as DeduplicatedLegendItem[]);
 }

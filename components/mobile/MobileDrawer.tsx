@@ -9,6 +9,7 @@ import { useInspectData } from '@/hooks/useInspectData';
 import {
   InspectHeader,
   ZoningSummary,
+  AllowedUses,
   WalkScoreSection,
   DevelopmentRules,
   ParcelInfo,
@@ -171,6 +172,9 @@ export function MobileDrawer({
                     compact
                   />
                 )}
+
+                {/* Allowed Uses - compact */}
+                {data.isZoning && data.zoneInfo && <AllowedUses zoneInfo={data.zoneInfo} compact />}
 
                 {/* Parcel Info - compact */}
                 {data.isZoning && (
