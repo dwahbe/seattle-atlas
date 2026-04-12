@@ -89,40 +89,21 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
                 const isSelected = group.values.every((v) => selectedValues.includes(v));
 
                 return (
-                  <button
+                  <Chip
                     key={group.label}
+                    label={getShortLabel(group.label)}
+                    isSelected={isSelected}
                     onClick={() => {
                       let newValues: string[];
                       if (isSelected) {
-                        // Remove all values in this group
                         newValues = selectedValues.filter((v) => !group.values.includes(v));
                       } else {
-                        // Add all values in this group
                         const toAdd = group.values.filter((v) => !selectedValues.includes(v));
                         newValues = [...selectedValues, ...toAdd];
                       }
                       onChange(filter.id, newValues);
                     }}
-                    className={`
-                      touch-target-inline
-                      inline-flex items-center gap-1.5
-                      min-h-9 min-w-9 md:min-h-0 md:min-w-0
-                      px-2 py-1 md:px-1.5 md:py-0.5
-                      text-sm md:text-xs font-medium
-                      rounded-full
-                      whitespace-nowrap
-                      transition-colors duration-150
-                      shrink-0
-                      border
-                      ${
-                        isSelected
-                          ? 'bg-accent text-white border-accent'
-                          : 'bg-secondary-bg text-text-secondary hover:bg-secondary-hover hover:text-text-primary border-border'
-                      }
-                    `}
-                  >
-                    <span>{getShortLabel(group.label)}</span>
-                  </button>
+                  />
                 );
               })}
             </div>
@@ -133,16 +114,51 @@ export function FilterChips({ filters, values, onChange }: FilterChipsProps) {
   );
 }
 
+function Chip({
+  label,
+  isSelected,
+  onClick,
+}: {
+  label: string;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`
+        touch-target-inline
+        inline-flex items-center gap-1.5
+        min-h-9 min-w-9 md:min-h-0 md:min-w-0
+        px-2 py-1 md:px-1.5 md:py-0.5
+        text-sm md:text-xs font-medium
+        rounded-full
+        whitespace-nowrap
+        transition-colors duration-150
+        shrink-0
+        border
+        ${
+          isSelected
+            ? 'bg-accent text-white border-accent'
+            : 'bg-secondary-bg text-text-secondary hover:bg-secondary-hover hover:text-text-primary border-border'
+        }
+      `}
+    >
+      <span>{label}</span>
+    </button>
+  );
+}
+
 /**
  * Shorten long labels for chips
  */
 function getShortLabel(label: string): string {
   // Map long labels to shorter versions for the chips
   const shortLabels: Record<string, string> = {
-    'Homes & Small Shops': 'Homes',
+    'Homes & Small Shops': 'Homes & Shops',
     'Midsize Buildings': 'Midsize',
-    'Shops & Mixed-Use': 'Mixed-Use',
-    'Downtown & Towers': 'Downtown',
+    'Shops & Mixed-Use': 'Shops & Mixed',
+    'Downtown & Towers': 'Downtown & Towers',
   };
   return shortLabels[label] || label;
 }
