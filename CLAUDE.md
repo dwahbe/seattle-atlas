@@ -50,6 +50,8 @@ Default center: Seattle (47.6062, -122.3321, zoom 12). Default layers: `zoning` 
 - Feature-state expressions handle inspect highlighting (`HIGHLIGHT_COLOR = '#3B82F6'`).
 - Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit` (routes + stops + light rail, bundled together via `TRANSIT_LAYER_IDS` in `lib/constants.ts`), `bike`.
 - `zoning` and `zoning_detailed` are mutually exclusive (see `BASE_LAYER_IDS` in `lib/constants.ts`) — switch between them via `handleBaseLayerChange`, never by toggling individual layers.
+- Both `zoning` (simplified) and `zoning_detailed` (technical) layers read `ZONELUT` from the same tileset. The simplified layer maps zone codes to 6 categories client-side via the legend config in `layers.json`; the technical layer maps each code to its own color. Adding or renaming simplified categories is a code-only change (no tileset re-upload).
+- `lib/zoning-info.ts` contains per-zone-code data including `allowedUses` / `notAllowedUses` arrays, rendered by the `AllowedUses` component in the inspect panel.
 
 ### API Routes
 
