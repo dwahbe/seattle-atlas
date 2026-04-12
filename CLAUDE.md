@@ -48,7 +48,7 @@ Default center: Seattle (47.6062, -122.3321, zoom 12). Default layers: `zoning` 
 - Layer configuration lives in `/data/layers.json` — defines tileset sources, rendering type, paint/layout properties, filters, legends, and z-order.
 - `MapContainer.tsx` is the main orchestrator (client component). It composes `MapGL`, `MapLayers`, panels, and controls.
 - Feature-state expressions handle inspect highlighting (`HIGHLIGHT_COLOR = '#3B82F6'`).
-- Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit` (routes + stops + light rail, bundled together via `TRANSIT_LAYER_IDS` in `lib/constants.ts`), `planning`, `bike`.
+- Layer groups (set per layer in `data/layers.json`): `base` (zoning + parks), `transit` (routes + stops + light rail, bundled together via `TRANSIT_LAYER_IDS` in `lib/constants.ts`), `bike`.
 - `zoning` and `zoning_detailed` are mutually exclusive (see `BASE_LAYER_IDS` in `lib/constants.ts`) — switch between them via `handleBaseLayerChange`, never by toggling individual layers.
 
 ### API Routes
