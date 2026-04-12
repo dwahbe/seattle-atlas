@@ -58,15 +58,25 @@ export default function AboutPage() {
                       etc.)
                     </li>
                     <li>Detailed technical zoning codes (NR1, LR2, NC3, etc.)</li>
-                    <li>Urban Villages—areas designated for growth</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1">Parks &amp; Open Space</h3>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                    <li>
+                      Public parks, greenbelts, and open space—488 parks covering 12.1% of
+                      Seattle&apos;s land area
+                    </li>
                   </ul>
                 </div>
 
                 <div>
                   <h3 className="font-medium text-text-primary mb-1">Transit</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
-                    <li>Bus and ferry routes (King County Metro, Sound Transit)</li>
-                    <li>Transit stops across Seattle</li>
+                    <li>Bus and ferry routes (King County Metro)</li>
+                    <li>Link Light Rail and Sounder commuter rail (Sound Transit)</li>
+                    <li>Bus stops and transit stations</li>
                     <li>
                       Bike infrastructure: protected lanes, greenways, trails, shared lanes,
                       sharrows
@@ -106,7 +116,7 @@ export default function AboutPage() {
                       >
                         City of Seattle Open Data Portal
                       </a>{' '}
-                      &mdash; zoning boundaries, urban village boundaries
+                      &mdash; zoning boundaries and classifications
                     </li>
                     <li>
                       <a
@@ -235,6 +245,23 @@ export default function AboutPage() {
                         Seattle Department of Transportation (SDOT)
                       </a>{' '}
                       &mdash; protected lanes, greenways, multi-use trails, sharrows
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1.5">Parks &amp; Open Space</h3>
+                  <ul className="list-disc list-inside space-y-1.5 ml-2 text-sm">
+                    <li>
+                      <a
+                        href="https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::park-boundary-details"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-accent hover:underline"
+                      >
+                        Seattle Parks &amp; Recreation
+                      </a>{' '}
+                      &mdash; park boundaries, names, types, and acquisition history
                     </li>
                   </ul>
                 </div>

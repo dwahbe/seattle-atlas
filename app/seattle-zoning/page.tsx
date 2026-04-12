@@ -42,7 +42,7 @@ const faqs = [
   {
     question: 'What zoning changes has Seattle made?',
     answer:
-      'Seattle adopted its Comprehensive Plan 2044 in 2025, which includes major zoning reforms: former single-family zones were renamed Neighborhood Residential and now allow duplexes, triplexes, and ADUs. The city is also increasing density near transit stations and expanding urban villages. Implementation is ongoing. [8][10]',
+      'Seattle adopted its Comprehensive Plan 2044 in December 2025, which includes major zoning reforms: former single-family zones were renamed Neighborhood Residential and now allow duplexes, triplexes, and ADUs. The city is also creating new growth centers (renamed from urban villages) and increasing density near transit stations. Phase 1 took effect January 2026; later phases are rolling out. [8][10]',
   },
 ];
 
@@ -283,7 +283,7 @@ export default function SeattleZoningPage() {
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-text-primary">What&apos;s changing</h2>
               <p>
-                In 2025, Seattle adopted its{' '}
+                In December 2025, Seattle adopted its{' '}
                 <a
                   href="https://www.seattle.gov/opcd/one-seattle-plan"
                   target="_blank"
@@ -313,14 +313,16 @@ export default function SeattleZoningPage() {
                   apartments
                 </li>
                 <li>
-                  <strong>Urban village expansion:</strong> Extended areas designated for growth
+                  <strong>New growth centers:</strong> 30 new Neighborhood Centers in previously
+                  low-density areas, plus expanded and renamed Urban Centers (formerly urban
+                  villages)
                 </li>
               </ul>
               <p>
-                Implementation of these changes is ongoing. Some reforms are already in effect,
-                while others are moving through phased rollouts. The debate continues to reflect a
-                fundamental tension in urban policy: the interests of current residents versus the
-                needs of future residents and the broader region.
+                Phase 1 of the plan took effect in January 2026, with additional phases rolling out
+                through 2026. Implementation reflects a fundamental tension in urban policy: the
+                interests of current residents versus the needs of future residents and the broader
+                region.
               </p>
               <p>
                 Similar reforms are playing out nationally as cities reconsider zoning to increase
@@ -345,9 +347,13 @@ export default function SeattleZoningPage() {
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li>View current zoning designations for any parcel</li>
                 <li>See simplified &quot;what can be built&quot; categories</li>
-                <li>Explore transit routes and bike infrastructure</li>
-                <li>Toggle proposed zoning changes to see what&apos;s being considered</li>
-                <li>Click any parcel for detailed information</li>
+                <li>Browse public parks and open space</li>
+                <li>Explore bus routes, light rail, and bike infrastructure</li>
+                <li>
+                  Click any parcel for zoning details, nearby permits, Walk Score, and related
+                  development proposals
+                </li>
+                <li>Search by address or neighborhood</li>
               </ul>
               <div className="pt-4">
                 <Link
