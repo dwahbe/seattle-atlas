@@ -328,11 +328,6 @@ body.scroll-lock {
     min-width: unset !important;
   }
 
-  /* Disable hover states that cause sticky behavior on touch */
-  .hover\:bg-secondary-bg:hover {
-    background-color: inherit;
-  }
-
   /* Smoother scrolling in drawers */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
