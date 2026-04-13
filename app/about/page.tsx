@@ -86,7 +86,6 @@ export default function AboutPage() {
                     </li>
                   </ul>
                 </div>
-
               </div>
             </section>
 
@@ -96,10 +95,10 @@ export default function AboutPage() {
               </h2>
               <p className="text-sm mb-4">
                 Seattle&apos;s zoning code defines 30 distinct zone designations under Ordinance
-                127376 (Jan 21, 2026). The Simplified view groups these into six everyday
-                categories so you can see at a glance what&apos;s allowed in each neighborhood. The
-                Technical view keeps each official code separate. Both draw from the same
-                underlying data — only the coloring differs.
+                127376 (Jan 21, 2026). The Simplified view groups these into six everyday categories
+                so you can see at a glance what&apos;s allowed in each neighborhood. The Technical
+                view keeps each official code separate. Both draw from the same underlying data —
+                only the coloring differs.
               </p>
 
               <ul className="space-y-3">
@@ -116,9 +115,8 @@ export default function AboutPage() {
                     </div>
                     <div className="text-text-secondary">
                       Low-density residential: houses, townhomes, small multiplexes, ADUs, and
-                      corner cafes. Includes{' '}
-                      <span className="font-mono text-xs">NR</span> (Neighborhood Residential),{' '}
-                      <span className="font-mono text-xs">LR1</span> and{' '}
+                      corner cafes. Includes <span className="font-mono text-xs">NR</span>{' '}
+                      (Neighborhood Residential), <span className="font-mono text-xs">LR1</span> and{' '}
                       <span className="font-mono text-xs">LR2</span> (Lowrise 1 &amp; 2).
                     </div>
                   </div>
@@ -156,8 +154,7 @@ export default function AboutPage() {
                     </div>
                     <div className="text-text-secondary">
                       Commercial corridors and urban villages where apartments sit above
-                      storefronts. Includes{' '}
-                      <span className="font-mono text-xs">NC1</span>,{' '}
+                      storefronts. Includes <span className="font-mono text-xs">NC1</span>,{' '}
                       <span className="font-mono text-xs">NC2</span>,{' '}
                       <span className="font-mono text-xs">NC3</span> (Neighborhood Commercial),{' '}
                       <span className="font-mono text-xs">C1</span>,{' '}
@@ -181,9 +178,9 @@ export default function AboutPage() {
                       <span className="font-normal text-text-tertiary">— 1.8% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
-                      High-rise zones concentrated downtown, in the International District, and
-                      Pike Market. Includes <span className="font-mono text-xs">HR</span>{' '}
-                      (Highrise), <span className="font-mono text-xs">DMC</span>,{' '}
+                      High-rise zones concentrated downtown, in the International District, and Pike
+                      Market. Includes <span className="font-mono text-xs">HR</span> (Highrise),{' '}
+                      <span className="font-mono text-xs">DMC</span>,{' '}
                       <span className="font-mono text-xs">DMR</span>,{' '}
                       <span className="font-mono text-xs">DOC1</span>,{' '}
                       <span className="font-mono text-xs">DOC2</span>,{' '}
@@ -234,8 +231,8 @@ export default function AboutPage() {
                       <span className="font-mono text-xs">IC</span> (Industrial Commercial),{' '}
                       <span className="font-mono text-xs">IB</span> (Industrial Buffer),{' '}
                       <span className="font-mono text-xs">MML</span> (Maritime
-                      Manufacturing/Logistics), and{' '}
-                      <span className="font-mono text-xs">II</span> (Industry &amp; Innovation).
+                      Manufacturing/Logistics), and <span className="font-mono text-xs">II</span>{' '}
+                      (Industry &amp; Innovation).
                     </div>
                   </div>
                 </li>
