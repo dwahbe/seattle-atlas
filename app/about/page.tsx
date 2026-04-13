@@ -35,11 +35,11 @@ export default function AboutPage() {
 
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
-        <article className="prose prose-slate dark:prose-invert max-w-none">
+        <article>
           <h1 className="text-3xl font-bold text-text-primary mb-6">About Seattle Atlas</h1>
 
           <div className="space-y-6 text-text-secondary">
-            <p>
+            <p className="text-sm">
               Seattle Atlas is an interactive map for exploring land use, transit, and urban
               planning in Seattle. View zoning rules, transit routes, bike infrastructure, and
               proposed development policies—all in one place.
@@ -87,16 +87,164 @@ export default function AboutPage() {
                   </ul>
                 </div>
 
-                <div>
-                  <h3 className="font-medium text-text-primary mb-1">Development Proposals</h3>
-                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
-                    <li>Station area rezoning around light rail</li>
-                    <li>ADU policy updates</li>
-                    <li>Comprehensive Plan 2044</li>
-                    <li>Industrial &amp; maritime strategy</li>
-                  </ul>
-                </div>
               </div>
+            </section>
+
+            <section>
+              <h2 className="text-lg font-semibold text-text-primary mb-3">
+                How the Simplified View Works
+              </h2>
+              <p className="text-sm mb-4">
+                Seattle&apos;s zoning code defines 30 distinct zone designations under Ordinance
+                127376 (Jan 21, 2026). The Simplified view groups these into six everyday
+                categories so you can see at a glance what&apos;s allowed in each neighborhood. The
+                Technical view keeps each official code separate. Both draw from the same
+                underlying data — only the coloring differs.
+              </p>
+
+              <ul className="space-y-3">
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#FCE8C8' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Homes &amp; Small Shops{' '}
+                      <span className="font-normal text-text-tertiary">— 69.4% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      Low-density residential: houses, townhomes, small multiplexes, ADUs, and
+                      corner cafes. Includes{' '}
+                      <span className="font-mono text-xs">NR</span> (Neighborhood Residential),{' '}
+                      <span className="font-mono text-xs">LR1</span> and{' '}
+                      <span className="font-mono text-xs">LR2</span> (Lowrise 1 &amp; 2).
+                    </div>
+                  </div>
+                </li>
+
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#F4A261' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Midsize Buildings{' '}
+                      <span className="font-normal text-text-tertiary">— 5.6% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      Apartment buildings roughly 3–7 stories. Includes{' '}
+                      <span className="font-mono text-xs">LR3</span> (Lowrise 3) and{' '}
+                      <span className="font-mono text-xs">MR</span> (Midrise).
+                    </div>
+                  </div>
+                </li>
+
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#B388EB' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Shops &amp; Mixed-Use{' '}
+                      <span className="font-normal text-text-tertiary">— 10.1% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      Commercial corridors and urban villages where apartments sit above
+                      storefronts. Includes{' '}
+                      <span className="font-mono text-xs">NC1</span>,{' '}
+                      <span className="font-mono text-xs">NC2</span>,{' '}
+                      <span className="font-mono text-xs">NC3</span> (Neighborhood Commercial),{' '}
+                      <span className="font-mono text-xs">C1</span>,{' '}
+                      <span className="font-mono text-xs">C2</span> (Commercial),{' '}
+                      <span className="font-mono text-xs">SM</span> (Seattle Mixed),{' '}
+                      <span className="font-mono text-xs">UX</span> (Urban Center/Village), and{' '}
+                      <span className="font-mono text-xs">MPC</span> (Master Planned Community).
+                    </div>
+                  </div>
+                </li>
+
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#7C5CBF' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Downtown &amp; Towers{' '}
+                      <span className="font-normal text-text-tertiary">— 1.8% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      High-rise zones concentrated downtown, in the International District, and
+                      Pike Market. Includes <span className="font-mono text-xs">HR</span>{' '}
+                      (Highrise), <span className="font-mono text-xs">DMC</span>,{' '}
+                      <span className="font-mono text-xs">DMR</span>,{' '}
+                      <span className="font-mono text-xs">DOC1</span>,{' '}
+                      <span className="font-mono text-xs">DOC2</span>,{' '}
+                      <span className="font-mono text-xs">DRC</span>,{' '}
+                      <span className="font-mono text-xs">DH1</span>,{' '}
+                      <span className="font-mono text-xs">DH2</span> (Downtown zones),{' '}
+                      <span className="font-mono text-xs">PSM</span> (Pioneer Square Mixed),{' '}
+                      <span className="font-mono text-xs">IDM</span>,{' '}
+                      <span className="font-mono text-xs">IDR</span> (International District), and{' '}
+                      <span className="font-mono text-xs">PMM</span> (Pike Market Mixed).
+                    </div>
+                  </div>
+                </li>
+
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#7EC8E3' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Institutions{' '}
+                      <span className="font-normal text-text-tertiary">— 2.2% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      Hospitals and university campuses with their own development standards.
+                      Includes <span className="font-mono text-xs">MIO</span> (Major Institution
+                      Overlay).
+                    </div>
+                  </div>
+                </li>
+
+                <li className="flex gap-3">
+                  <span
+                    className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
+                    style={{ backgroundColor: '#6B7280' }}
+                    aria-hidden="true"
+                  />
+                  <div className="text-sm">
+                    <div className="font-medium text-text-primary">
+                      Industrial{' '}
+                      <span className="font-normal text-text-tertiary">— 11.0% of Seattle</span>
+                    </div>
+                    <div className="text-text-secondary">
+                      Manufacturing, maritime, and industrial land — mostly in SoDo, Ballard,
+                      Interbay, and Georgetown. Includes{' '}
+                      <span className="font-mono text-xs">IC</span> (Industrial Commercial),{' '}
+                      <span className="font-mono text-xs">IB</span> (Industrial Buffer),{' '}
+                      <span className="font-mono text-xs">MML</span> (Maritime
+                      Manufacturing/Logistics), and{' '}
+                      <span className="font-mono text-xs">II</span> (Industry &amp; Innovation).
+                    </div>
+                  </div>
+                </li>
+              </ul>
+
+              <p className="text-xs text-text-tertiary mt-4">
+                Percentages reflect each category&apos;s share of Seattle&apos;s zoned land area.
+                Parks and open space (an additional 12.1%) render as a separate layer.
+              </p>
             </section>
 
             <section>
@@ -333,16 +481,8 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">Methodology</h2>
-              <p>
-                Source data is processed into vector tiles using Tippecanoe and hosted on Mapbox.
-                The app is built with Next.js, React, and TypeScript.
-              </p>
-            </section>
-
-            <section>
               <h2 className="text-lg font-semibold text-text-primary mb-3">Open Source</h2>
-              <p>
+              <p className="text-sm mb-3">
                 Seattle Atlas is open source. View the code on{' '}
                 <a
                   href="https://github.com/dwahbe/seattle-atlas"
@@ -351,6 +491,103 @@ export default function AboutPage() {
                   className="text-accent hover:underline"
                 >
                   GitHub
+                </a>
+                .
+              </p>
+              <p className="text-sm mb-3">
+                The app is built with{' '}
+                <a
+                  href="https://nextjs.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Next.js
+                </a>{' '}
+                (App Router),{' '}
+                <a
+                  href="https://react.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  React
+                </a>
+                , and{' '}
+                <a
+                  href="https://www.typescriptlang.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  TypeScript
+                </a>
+                , styled with{' '}
+                <a
+                  href="https://tailwindcss.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Tailwind CSS
+                </a>
+                . Maps are rendered client-side with{' '}
+                <a
+                  href="https://docs.mapbox.com/mapbox-gl-js/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Mapbox GL JS
+                </a>
+                , with shareable map state (position, active layers, filters) synced to URL query
+                params via{' '}
+                <a
+                  href="https://nuqs.47ng.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  nuqs
+                </a>
+                . API routes validate input with{' '}
+                <a
+                  href="https://zod.dev/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Zod
+                </a>
+                .
+              </p>
+              <p className="text-sm">
+                Source data is processed into vector tiles using{' '}
+                <a
+                  href="https://github.com/felt/tippecanoe"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Tippecanoe
+                </a>{' '}
+                and hosted on Mapbox. The project uses{' '}
+                <a
+                  href="https://bun.sh/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Bun
+                </a>{' '}
+                as its package manager and test runner, and is deployed on{' '}
+                <a
+                  href="https://vercel.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Vercel
                 </a>
                 .
               </p>
