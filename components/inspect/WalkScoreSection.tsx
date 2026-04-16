@@ -24,13 +24,16 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
       </h3>
 
       {isLoading ? (
-        <div className="flex justify-around">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="flex flex-col items-center gap-2">
-              <Skeleton className={`rounded-full ${compact ? 'w-14 h-14' : 'w-16 h-16'}`} />
-              <Skeleton className="h-3 w-10" />
-            </div>
-          ))}
+        <div>
+          <div className="flex justify-around">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <Skeleton className={`rounded-full ${compact ? 'w-14 h-14' : 'w-16 h-16'}`} />
+                <Skeleton className="h-4 w-10" />
+              </div>
+            ))}
+          </div>
+          <Skeleton className="mt-3 h-4 w-32" />
         </div>
       ) : walkScore && !walkScore.error ? (
         <div>
@@ -70,7 +73,7 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
             href={walkScore.more_info_link || 'https://www.walkscore.com'}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block mt-3 text-xs text-text-tertiary hover:text-text-secondary"
+            className="block w-fit mt-3 h-4 text-xs leading-4 text-text-tertiary hover:text-text-secondary"
           >
             Scores by Walk Score®
           </a>
