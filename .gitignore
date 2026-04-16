@@ -48,3 +48,7 @@ next-env.d.ts
 
 # generated tileset source — regenerate with: bun run scripts/prepare-parks-data.ts
 data/seattle-parks-clean.geojson
+
+# claude code — local/runtime state
+.claude/settings.local.json
+.claude/scheduled_tasks.lock
