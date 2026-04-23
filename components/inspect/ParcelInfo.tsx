@@ -24,10 +24,10 @@ export function ParcelInfo({
   const content = isLoading ? (
     <div className="space-y-2">
       <div className="grid grid-cols-2 gap-2">
-        <Skeleton className="h-16 rounded-lg" />
-        <Skeleton className="h-16 rounded-lg" />
+        <Skeleton className="h-[72px] rounded-lg" />
+        <Skeleton className="h-[72px] rounded-lg" />
       </div>
-      <Skeleton className="h-14 rounded-lg" />
+      <Skeleton className="h-[60px] rounded-lg" />
     </div>
   ) : parcelData ? (
     <div className="space-y-2">
