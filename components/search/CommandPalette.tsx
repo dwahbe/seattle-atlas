@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { geocodeAddress, type GeocodingResult } from '@/lib/mapbox';
 import { NEIGHBORHOODS } from '@/data/neighborhoods';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
+import { useIsMounted } from '@/hooks';
 import type { SearchResult } from '@/types';
 
 interface PanelSearchProps {
@@ -23,7 +24,6 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
   const [results, setResults] = useState<GeocodingResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [mounted, setMounted] = useState(false);
   const [collapsedHeight, setCollapsedHeight] = useState<number | null>(null);
   const [position, setPosition] = useState<{ top: number; left: number; width: number } | null>(
     null
@@ -40,11 +40,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
 
   const isMobile = variant === 'mobile';
   const isVisible = isOpen || isClosing;
-
-  // For portal rendering
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useIsMounted();
 
   // Filter neighborhoods based on query
   const filteredNeighborhoods = query.trim()
@@ -65,7 +61,9 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
     [filteredNeighborhoods, results]
   );
 
-  // Open handler - captures position for portal
+  // Open handler - captures position for portal. Does not reset query/results so
+  // typing into the (still-focused) inline trigger after a close naturally
+  // reopens the portal and preserves the keystrokes.
   const open = useCallback(() => {
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
@@ -77,23 +75,18 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       setCollapsedHeight(rect.height);
     }
     setIsOpen(true);
-    setQuery('');
-    setResults([]);
-    setSelectedIndex(0);
     setTimeout(() => inputRef.current?.focus(), 0);
   }, []);
 
   const close = useCallback(() => {
     setIsClosing(true);
     setIsOpen(false);
-    // Wait for animation to complete before fully closing
+    setQuery('');
+    setResults([]);
+    setSelectedIndex(0);
+    // Wait for animation to complete before fully tearing down
     setTimeout(() => {
       setIsClosing(false);
-      setQuery('');
-      setResults([]);
-      setSelectedIndex(0);
-      setPosition(null);
-      setCollapsedHeight(null);
     }, 150);
   }, []);
 
@@ -235,9 +228,14 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           inputMode="search"
           enterKeyHint="search"
           value={query}
-          onChange={(e) => handleSearch(e.target.value)}
+          onChange={(e) => {
+            // If focus lingered on the (hidden) inline input after close, typing
+            // should re-open the portal instead of silently updating state.
+            if (!isOpen) open();
+            handleSearch(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
-          onFocus={() => !isOpen && open()}
+          onFocus={() => !isVisible && open()}
           placeholder={isOpen ? 'Search address or neighborhood...' : 'Search address...'}
           className="
             flex-1 bg-transparent
@@ -452,6 +450,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
               style={{
                 animation: isClosing ? 'fadeOut 150ms ease-out forwards' : 'fadeIn 150ms ease-out',
                 willChange: 'opacity',
+                pointerEvents: 'auto',
               }}
             />
             {/* Floating search panel - above the backdrop, expands wider on desktop */}
@@ -471,6 +470,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
                     : 'searchExpand 150ms ease-out forwards',
                   transformOrigin: 'top left',
                   willChange: 'transform, opacity, width',
+                  pointerEvents: 'auto',
                 } as React.CSSProperties
               }
             >

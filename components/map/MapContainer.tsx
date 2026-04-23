@@ -301,7 +301,7 @@ export function MapContainer() {
         <>
           {/* Floating search bar and nav at top */}
           <div className="absolute top-4 left-4 right-4 z-20 flex gap-2">
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <PanelSearch onSelect={handleSearchSelect} variant="mobile" />
             </div>
             <NavMenu />
