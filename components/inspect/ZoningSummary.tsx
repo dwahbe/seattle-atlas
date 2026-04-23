@@ -13,7 +13,7 @@ interface ZoningSummaryProps {
 
 export function ZoningSummary({ zoneInfo, compact = false, landmark = null }: ZoningSummaryProps) {
   return (
-    <div className={`border-b border-border ${compact ? 'px-4 pt-3 pb-2' : 'p-4'}`}>
+    <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
       {/* Building type graphic */}
       <BuildingGraphic
         category={zoneInfo.category}
@@ -53,7 +53,7 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
   if (zoneInfo.allowedUses.length === 0 && zoneInfo.notAllowedUses.length === 0) return null;
 
   return (
-    <div className={`border-b border-border ${compact ? 'px-4 pt-2 pb-3' : 'p-4'}`}>
+    <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
       {/* Allowed Uses */}
       {zoneInfo.allowedUses.length > 0 && (
         <div>
