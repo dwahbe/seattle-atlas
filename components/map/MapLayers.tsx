@@ -18,7 +18,7 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
   // Add/remove layers based on active layers
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map) return;
 
     const handleStyleLoad = () => {
       // Style changes reset the map sources/layers, so prune stale caches
@@ -151,12 +151,15 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
       }
     };
 
-    // Check if style is already loaded
-    if (map.isStyleLoaded()) {
-      handleStyleLoad();
-    }
+    // Run the sync immediately. `addLayer`/`removeLayer`/`addSource` are safe
+    // to call after the map's `load` event (which is what gates the `map` prop
+    // being set). Gating on `isStyleLoaded()` would skip the sync when any
+    // source is mid-fetch — causing rapid-toggle races where a quick OFF click
+    // after an ON click never gets processed (and `style.load` only fires on
+    // setStyle, not on source loads).
+    handleStyleLoad();
 
-    // Also listen for style.load event (for when style changes)
+    // Also listen for style.load event (for when style changes via setStyle)
     map.on('style.load', handleStyleLoad);
 
     return () => {
@@ -166,7 +169,7 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
   // Apply filters to layers
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map) return;
 
     for (const layerId of activeLayers) {
       if (!map.getLayer(layerId)) continue;
