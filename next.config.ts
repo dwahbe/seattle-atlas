@@ -45,9 +45,12 @@ const nextConfig: NextConfig = {
             key: 'X-DNS-Prefetch-Control',
             value: 'on',
           },
+          // Public civic data: allow third-party embeds (urbanist blogs,
+          // news sites, City of Seattle pages) so the map can spread.
+          // No auth, forms, or PII on the page → clickjacking risk is nil.
           {
-            key: 'X-Frame-Options',
-            value: 'SAMEORIGIN',
+            key: 'Content-Security-Policy',
+            value: 'frame-ancestors *;',
           },
           {
             key: 'X-Content-Type-Options',
