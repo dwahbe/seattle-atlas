@@ -17,6 +17,24 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // The map lives at `/`. Permanently redirect any links to the old `/map`
+  // route (and anything nested beneath it) so inbound backlinks and shared
+  // URLs keep working.
+  async redirects() {
+    return [
+      {
+        source: '/map',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/map/:path*',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
+  },
+
   // Headers for security and performance
   async headers() {
     return [

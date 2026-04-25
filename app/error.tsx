@@ -37,7 +37,7 @@ export default function Error({
           <Button onClick={reset} variant="primary" size="lg">
             Try again
           </Button>
-          <Button onClick={() => (window.location.href = '/map')} variant="outline" size="lg">
+          <Button onClick={() => (window.location.href = '/')} variant="outline" size="lg">
             Go to Map
           </Button>
         </div>

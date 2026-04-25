@@ -4,17 +4,38 @@ import { ThemeToggle, Footer } from '@/components/ui';
 
 const siteUrl = 'https://seattleatlas.org';
 
+const zoningTitle = 'Seattle Zoning Explained';
+const zoningDescription =
+  'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods. Explore what can be built where and why it matters.';
+const zoningOgDescription =
+  'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.';
+
 export const metadata = {
-  title: 'Seattle Zoning Explained',
-  description:
-    'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods. Explore what can be built where and why it matters.',
+  title: zoningTitle,
+  description: zoningDescription,
   alternates: {
     canonical: '/seattle-zoning',
   },
   openGraph: {
-    title: 'Seattle Zoning Explained | Seattle Atlas',
-    description:
-      'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
+    title: `${zoningTitle} | Seattle Atlas`,
+    description: zoningOgDescription,
+    url: `${siteUrl}/seattle-zoning`,
+    siteName: 'Seattle Atlas',
+    type: 'article',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Seattle Atlas — Seattle zoning, transit, and land use in one map',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${zoningTitle} | Seattle Atlas`,
+    description: zoningOgDescription,
   },
 };
 
@@ -89,6 +110,31 @@ export default function SeattleZoningPage() {
         url: `${siteUrl}/seattle-zoning`,
         description:
           'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
+        datePublished: '2026-01-15',
+        dateModified: '2026-04-12',
+      },
+      {
+        '@type': 'Article',
+        headline: 'Seattle Zoning Explained',
+        url: `${siteUrl}/seattle-zoning`,
+        description:
+          'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
+        datePublished: '2026-01-15',
+        dateModified: '2026-04-12',
+        author: { '@type': 'Organization', name: 'Seattle Atlas', url: siteUrl },
+        publisher: { '@type': 'Organization', name: 'Seattle Atlas', url: siteUrl },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+          {
+            '@type': 'ListItem',
+            position: 2,
+            name: 'Seattle Zoning Explained',
+            item: `${siteUrl}/seattle-zoning`,
+          },
+        ],
       },
       {
         '@type': 'FAQPage',
@@ -114,14 +160,14 @@ export default function SeattleZoningPage() {
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
-          <Link href="/map" className="group flex items-center">
+          <Link href="/" className="group flex items-center">
             <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
               Seattle Atlas
             </span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
-              href="/map"
+              href="/"
               className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
               View Map
@@ -277,7 +323,7 @@ export default function SeattleZoningPage() {
               </p>
               <p>
                 The{' '}
-                <Link href="/map" className="text-accent hover:underline">
+                <Link href="/?layers=zoning_detailed" className="text-accent hover:underline">
                   Seattle Atlas map
                 </Link>{' '}
                 lets you explore this relationship: toggle between zoning and transit layers to see
@@ -366,7 +412,7 @@ export default function SeattleZoningPage() {
               </ul>
               <div className="pt-4">
                 <Link
-                  href="/map"
+                  href="/"
                   className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-base font-semibold text-white hover:opacity-90 transition-opacity"
                 >
                   Open the map

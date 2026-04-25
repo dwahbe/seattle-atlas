@@ -21,7 +21,7 @@ export default function NotFound() {
         <p className="text-text-secondary mb-8">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
-        <Link href="/map">
+        <Link href="/">
           <Button variant="primary" size="lg">
             Go to Map
           </Button>

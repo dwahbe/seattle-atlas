@@ -1,29 +1,79 @@
 import Link from 'next/link';
 import { ThemeToggle, Footer } from '@/components/ui';
 
+const siteUrl = 'https://seattleatlas.org';
+
+const aboutTitle = 'About Seattle Atlas — Zoning Data Sources & Methodology';
+const aboutDescription =
+  'How Seattle Atlas works: data sources, methodology, and the simplified zoning categories behind our interactive map of Seattle land use and transit.';
+
 export const metadata = {
-  title: 'About',
-  description:
-    'About Seattle Atlas – an open civic data platform for understanding land use and transit.',
+  title: { absolute: aboutTitle },
+  description: aboutDescription,
   alternates: {
     canonical: '/about',
   },
+  openGraph: {
+    title: aboutTitle,
+    description: aboutDescription,
+    url: `${siteUrl}/about`,
+    siteName: 'Seattle Atlas',
+    type: 'website',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Seattle Atlas — Seattle zoning, transit, and land use in one map',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: aboutTitle,
+    description: aboutDescription,
+  },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      name: 'About Seattle Atlas',
+      url: `${siteUrl}/about`,
+      description:
+        'About Seattle Atlas – an open civic data platform for understanding land use and transit.',
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/` },
+        { '@type': 'ListItem', position: 2, name: 'About', item: `${siteUrl}/about` },
+      ],
+    },
+  ],
 };
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-panel-bg">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Header */}
       <header className="border-b border-border">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
-          <Link href="/map" className="group flex items-center">
+          <Link href="/" className="group flex items-center">
             <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
               Seattle Atlas
             </span>
           </Link>
           <div className="flex items-center gap-4">
             <Link
-              href="/map"
+              href="/"
               className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
               View Map

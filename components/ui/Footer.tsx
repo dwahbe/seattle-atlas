@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 const NAV_LINKS = [
-  { href: '/map', label: 'Map' },
+  { href: '/', label: 'Map' },
   { href: '/about', label: 'About' },
   { href: '/seattle-zoning', label: 'Zoning Guide' },
 ];

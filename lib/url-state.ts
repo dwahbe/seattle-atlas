@@ -105,5 +105,5 @@ export function buildShareableUrl(params: {
   }
 
   const queryString = searchParams.toString();
-  return queryString ? `/map?${queryString}` : '/map';
+  return queryString ? `/?${queryString}` : '/';
 }
