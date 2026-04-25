@@ -239,7 +239,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           placeholder={isOpen ? 'Search address or neighborhood...' : 'Search address...'}
           className="
             flex-1 bg-transparent
-            text-sm text-text-primary
+            text-base sm:text-sm text-text-primary
             placeholder:text-text-secondary
             [border:none] [outline:none] [box-shadow:none]
             focus:[border:none] focus:[outline:none] focus:[box-shadow:none]
