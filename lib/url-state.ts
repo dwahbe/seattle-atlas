@@ -5,9 +5,11 @@ export const SEATTLE_CENTER = {
   zoom: 12,
 };
 
-// Default visible layers. Parks rides along with the zoning toggle (see
-// MapContainer.handleBaseLayerChange), so the two appear together on first load.
-const DEFAULT_LAYERS = ['zoning', 'parks_open_space'];
+// Default visible layers. Parks and the institutions overlay both ride along
+// with the zoning toggle (see MapContainer.handleBaseLayerChange), so they
+// appear together on first load. Institutions has fill-opacity 0 — it's a
+// silent enrichment source for the inspect panel, not a visible layer.
+const DEFAULT_LAYERS = ['zoning', 'parks_open_space', 'institutions'];
 
 // Parse layers string to array
 // Empty string = no layers (user unchecked all)

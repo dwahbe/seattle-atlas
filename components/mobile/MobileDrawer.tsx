@@ -71,6 +71,8 @@ export function MobileDrawer({
   const headerHeight = 80;
   const snapFraction = typeof snap === 'number' ? snap : SNAP_POINT_HALF;
   const scrollableMaxHeight = `calc(${snapFraction * 100}vh - ${headerHeight}px)`;
+  // At full height, let a downward pull from the top of the scroll area collapse the drawer.
+  const isFullyExpanded = snap === SNAP_POINT_FULL;
 
   // Use shared data fetching hook
   const data = useInspectData(inspectedFeature, layerConfigs, proposals, clickPoint);
@@ -109,6 +111,7 @@ export function MobileDrawer({
       activeSnapPoint={snap}
       setActiveSnapPoint={setSnap}
       dismissible={false}
+      scrollLockTimeout={0}
     >
       <Drawer.Portal>
         <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-panel-bg border-t border-border shadow-2xl h-full">
@@ -130,11 +133,10 @@ export function MobileDrawer({
           </div>
 
           {/* Scrollable content area - height calculated based on current snap point */}
-          {/* data-vaul-no-drag prevents scroll gestures from resizing the drawer */}
           <div
             className="overflow-y-auto overscroll-contain"
             style={{ maxHeight: scrollableMaxHeight }}
-            data-vaul-no-drag
+            data-vaul-no-drag={isFullyExpanded ? undefined : ''}
             aria-live="polite"
           >
             {isInspecting && inspectedFeature ? (
@@ -158,7 +160,12 @@ export function MobileDrawer({
 
                 {/* Zoning Summary - compact */}
                 {data.isZoning && data.zoneInfo && (
-                  <ZoningSummary zoneInfo={data.zoneInfo} compact landmark={data.landmark} />
+                  <ZoningSummary
+                    zoneInfo={data.zoneInfo}
+                    compact
+                    landmark={data.landmark}
+                    institution={inspectedFeature?.institution ?? null}
+                  />
                 )}
 
                 {/* Park Info - compact */}

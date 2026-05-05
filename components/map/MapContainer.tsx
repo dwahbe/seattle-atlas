@@ -8,7 +8,14 @@ import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
 import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
-import { BASE_LAYER_IDS, TRANSIT_LAYER_IDS, BIKE_LAYER_ID, PARKS_LAYER_ID } from '@/lib/constants';
+import {
+  BASE_LAYER_IDS,
+  TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  PARKS_LAYER_ID,
+  INSTITUTIONS_LAYER_ID,
+} from '@/lib/constants';
+import { getInstitutionInfo } from '@/lib/institutions';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
 import dynamic from 'next/dynamic';
@@ -161,11 +168,25 @@ export function MapContainer() {
           const feature = zoningFeature || features[0];
           const layerId = feature.layer?.id ?? 'unknown';
 
+          // Separate query for the institutions overlay — it has fill-opacity 0
+          // and a different layerId, so it's not the primary feature but we
+          // attach its data when the click point falls inside one.
+          const institutionFeature = mapInstance.getLayer(INSTITUTIONS_LAYER_ID)
+            ? mapInstance.queryRenderedFeatures(point, { layers: [INSTITUTIONS_LAYER_ID] })[0]
+            : undefined;
+          const institution = institutionFeature
+            ? (getInstitutionInfo(
+                institutionFeature.properties?.OVERLAY,
+                institutionFeature.properties?.DESCRIPTION
+              ) ?? undefined)
+            : undefined;
+
           setInspectedFeature({
             id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
             layerId,
             properties: feature.properties as Record<string, unknown>,
             geometry: feature.geometry,
+            ...(institution && { institution }),
           });
         }
       };
@@ -218,16 +239,18 @@ export function MapContainer() {
     }
   }, [highlightedBounds]);
 
-  // Base layer change handler (mutually exclusive). Parks rides along with
-  // zoning — it turns on when zoning turns on and off when zoning turns off.
+  // Base layer change handler (mutually exclusive). Parks and the institutions
+  // overlay both ride along with zoning — they turn on when zoning turns on
+  // and off when zoning turns off.
   const handleBaseLayerChange = useCallback(
     (layerId: string | null) => {
-      // Strip existing base layers and parks so we can rewrite them cleanly.
+      // Strip existing base layers, parks, and institutions so we can rewrite cleanly.
       const withoutBase = activeLayers.filter(
-        (id) => !BASE_LAYER_IDS.includes(id) && id !== PARKS_LAYER_ID
+        (id) =>
+          !BASE_LAYER_IDS.includes(id) && id !== PARKS_LAYER_ID && id !== INSTITUTIONS_LAYER_ID
       );
       if (layerId) {
-        setUrlActiveLayers([layerId, PARKS_LAYER_ID, ...withoutBase]);
+        setUrlActiveLayers([layerId, PARKS_LAYER_ID, INSTITUTIONS_LAYER_ID, ...withoutBase]);
       } else {
         setUrlActiveLayers(withoutBase);
       }

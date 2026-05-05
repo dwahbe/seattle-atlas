@@ -102,7 +102,11 @@ export function InspectPanel({
       <div className="flex-1 overflow-y-scroll" aria-live="polite">
         {/* Zoning Summary */}
         {data.isZoning && data.zoneInfo && (
-          <ZoningSummary zoneInfo={data.zoneInfo} landmark={data.landmark} />
+          <ZoningSummary
+            zoneInfo={data.zoneInfo}
+            landmark={data.landmark}
+            institution={feature?.institution ?? null}
+          />
         )}
 
         {/* Park Info */}

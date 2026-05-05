@@ -1,4 +1,5 @@
 export { BuildingGraphic } from './BuildingGraphic';
+export { InstitutionGraphic } from './InstitutionGraphic';
 export { Button } from './Button';
 export { Donut } from './Donut';
 export { Footer } from './Footer';

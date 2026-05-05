@@ -5,6 +5,8 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { initializeMapbox, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
 import { HoverTooltip } from './HoverTooltip';
+import { INSTITUTIONS_LAYER_ID } from '@/lib/constants';
+import { getInstitutionInfo } from '@/lib/institutions';
 import type { MapViewState, InspectedFeature, LayerConfig } from '@/types';
 
 interface HoverState {
@@ -152,9 +154,26 @@ export function MapGL({
       if (!map.current) return;
 
       const clickPoint: [number, number] = [e.lngLat.lng, e.lngLat.lat];
+      // Exclude the institutions overlay from the primary query — it's a
+      // silent enrichment layer (fill-opacity 0) that would otherwise win
+      // first-feature selection above the zoning fill.
+      const primaryLayers = activeLayers.filter(
+        (id) => id !== INSTITUTIONS_LAYER_ID && map.current?.getLayer(id)
+      );
       const features = map.current.queryRenderedFeatures(e.point, {
-        layers: activeLayers.filter((id) => map.current?.getLayer(id)),
+        layers: primaryLayers,
       });
+
+      // Separate lookup for the institution at the click point.
+      const institutionFeature = map.current.getLayer(INSTITUTIONS_LAYER_ID)
+        ? map.current.queryRenderedFeatures(e.point, { layers: [INSTITUTIONS_LAYER_ID] })[0]
+        : undefined;
+      const institution = institutionFeature
+        ? (getInstitutionInfo(
+            institutionFeature.properties?.OVERLAY,
+            institutionFeature.properties?.DESCRIPTION
+          ) ?? undefined)
+        : undefined;
 
       if (features.length > 0) {
         const feature = features[0];
@@ -165,6 +184,7 @@ export function MapGL({
             layerId,
             properties: feature.properties as Record<string, unknown>,
             geometry: feature.geometry,
+            ...(institution && { institution }),
           },
           clickPoint
         );
@@ -181,7 +201,9 @@ export function MapGL({
       if (!map.current) return;
 
       const features = map.current.queryRenderedFeatures(e.point, {
-        layers: activeLayers.filter((id) => map.current?.getLayer(id)),
+        layers: activeLayers.filter(
+          (id) => id !== INSTITUTIONS_LAYER_ID && map.current?.getLayer(id)
+        ),
       });
 
       map.current.getCanvas().style.cursor = features.length > 0 ? 'pointer' : '';

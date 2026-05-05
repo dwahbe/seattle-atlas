@@ -102,6 +102,13 @@ export interface InspectedFeature {
   layerId: string;
   properties: Record<string, unknown>;
   geometry: GeoJSON.Geometry;
+  /** Set when the click point lies inside a Major Institution Overlay polygon. */
+  institution?: {
+    code: string;
+    name: string;
+    category: 'university' | 'college' | 'hospital';
+    masterPlanUrl: string | null;
+  };
 }
 
 // ============================================================================

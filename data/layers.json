@@ -501,6 +501,24 @@
     "updated": "2025"
   },
   {
+    "id": "institutions",
+    "name": "Major Institutions",
+    "group": "base",
+    "tileset": "mapbox://dwahbe.8j490fg6c6pm",
+    "sourceLayer": "61eb2c0191823fcc4dd4",
+    "type": "fill",
+    "zOrder": 3,
+    "defaultVisible": true,
+    "description": "Boundaries of Seattle's Major Institution Overlay (MIO) — universities, colleges, and hospitals. Used silently to label clicked parcels with the owning institution.",
+    "legend": [],
+    "paint": {
+      "fill-opacity": 0,
+      "fill-outline-color": "rgba(0,0,0,0)"
+    },
+    "source": "City of Seattle GIS",
+    "updated": "2026"
+  },
+  {
     "id": "bike_facilities",
     "name": "Bike Infrastructure",
     "group": "bike",

@@ -2,31 +2,56 @@
 
 import type { ZoneInfo } from '@/lib/zoning-info';
 import { getCategoryLabel } from '@/lib/zoning-info';
-import { BuildingGraphic, StatCard } from '@/components/ui';
+import { BuildingGraphic, InstitutionGraphic, StatCard } from '@/components/ui';
+import type { InstitutionInfo } from '@/lib/institutions';
 
 interface ZoningSummaryProps {
   zoneInfo: ZoneInfo;
   /** Compact mode for mobile */
   compact?: boolean;
   landmark?: 'space-needle' | null;
+  /** When the parcel falls inside a Major Institution Overlay polygon. */
+  institution?: InstitutionInfo | null;
 }
 
-export function ZoningSummary({ zoneInfo, compact = false, landmark = null }: ZoningSummaryProps) {
+const INSTITUTION_CATEGORY_LABELS: Record<InstitutionInfo['category'], string> = {
+  university: 'University',
+  college: 'College',
+  hospital: 'Hospital',
+};
+
+export function ZoningSummary({
+  zoneInfo,
+  compact = false,
+  landmark = null,
+  institution = null,
+}: ZoningSummaryProps) {
   return (
     <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
-      {/* Building type graphic */}
-      <BuildingGraphic
-        category={zoneInfo.category}
-        maxHeightFt={zoneInfo.maxHeightFt}
-        code={zoneInfo.code}
-        landmark={landmark}
-        className={compact ? 'mb-3' : 'mb-4'}
-      />
+      {/* Building type graphic — replaced by institution badge when the
+          parcel is part of a Major Institution Overlay campus. */}
+      {institution ? (
+        <InstitutionGraphic institution={institution} className={compact ? 'mb-3' : 'mb-4'} />
+      ) : (
+        <BuildingGraphic
+          category={zoneInfo.category}
+          maxHeightFt={zoneInfo.maxHeightFt}
+          code={zoneInfo.code}
+          landmark={landmark}
+          className={compact ? 'mb-3' : 'mb-4'}
+        />
+      )}
 
       {/* Quick stats grid */}
       <div className={`grid grid-cols-2 ${compact ? 'gap-2' : 'gap-3'}`}>
         <StatCard label="Max Height" value={zoneInfo.maxHeight} compact={compact} />
-        {zoneInfo.aduAllowed > 0 ? (
+        {institution ? (
+          <StatCard
+            label="Category"
+            value={INSTITUTION_CATEGORY_LABELS[institution.category]}
+            compact={compact}
+          />
+        ) : zoneInfo.aduAllowed > 0 ? (
           <StatCard
             label={compact ? 'ADUs' : 'ADUs Allowed'}
             value={compact ? `${zoneInfo.aduAllowed} allowed` : String(zoneInfo.aduAllowed)}
