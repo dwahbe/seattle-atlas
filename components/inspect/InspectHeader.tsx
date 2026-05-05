@@ -36,7 +36,9 @@ export function InspectHeader({
   const title =
     isPark && parkData ? parkData.type : isZoning && zoneInfo ? zoneInfo.name : layerName;
 
-  // Prioritize searched address (exact), fall back to reverse-geocoded location (approximate)
+  // Prioritize searched address (exact), fall back to reverse-geocoded location.
+  // Drop the "Near" qualifier when Mapbox returns a precise street address —
+  // only neighborhood-level fallbacks need the hedge.
   const subtitle =
     isPark && parkData
       ? parkData.name
@@ -44,7 +46,9 @@ export function InspectHeader({
         ? searchedAddress
           ? searchedAddress
           : location
-            ? `Near ${location.address}`
+            ? location.isPrecise
+              ? location.address
+              : `Near ${location.address}`
             : 'Loading...'
         : 'Feature Details';
 

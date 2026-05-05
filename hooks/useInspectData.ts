@@ -37,6 +37,7 @@ export interface ParkData {
 export interface LocationData {
   address: string;
   neighborhood?: string;
+  isPrecise: boolean;
 }
 
 export interface InspectData {

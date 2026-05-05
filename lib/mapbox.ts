@@ -252,11 +252,15 @@ function mapFeatureType(type: string): 'address' | 'neighborhood' | 'place' {
 
 /**
  * Reverse geocode a point to get an address or place name.
+ *
+ * `isPrecise` is true when Mapbox returns a specific street address; false when
+ * we fall back to a neighborhood/area match. Callers use it to decide whether
+ * to qualify the result (e.g. with a "Near" prefix).
  */
 export async function reverseGeocode(
   lng: number,
   lat: number
-): Promise<{ address: string; neighborhood?: string } | null> {
+): Promise<{ address: string; neighborhood?: string; isPrecise: boolean } | null> {
   if (!MAPBOX_TOKEN) {
     return null;
   }
@@ -296,6 +300,7 @@ export async function reverseGeocode(
     return {
       address: shortAddress,
       neighborhood,
+      isPrecise: feature.place_type?.[0] === 'address',
     };
   } catch {
     return null;
