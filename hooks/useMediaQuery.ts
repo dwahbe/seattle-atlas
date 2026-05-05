@@ -26,7 +26,9 @@ export function useMediaQuery(query: string): boolean {
 
 const getServerSnapshot = () => false;
 
-// Convenience hook for mobile detection
+const DESKTOP_LAYOUT_MEDIA_QUERY = '(min-width: 1024px)';
+
+// Convenience hook for the compact map layout used on mobile and tablet widths.
 export function useIsMobile(): boolean {
-  return !useMediaQuery('(min-width: 768px)');
+  return !useMediaQuery(DESKTOP_LAYOUT_MEDIA_QUERY);
 }
