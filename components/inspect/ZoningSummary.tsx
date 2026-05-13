@@ -51,7 +51,7 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
           <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
             What Can Be Built
           </h3>
-          <ul className={`space-y-1 ${compact ? 'text-xs' : 'text-sm'}`}>
+          <ul className="space-y-1 text-sm">
             {zoneInfo.allowedUses.map((use) => (
               <li key={use} className="flex gap-1.5 text-text-primary">
                 <span className="flex h-[1lh] items-center text-green-600 dark:text-green-400 shrink-0">
@@ -70,7 +70,7 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
           <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
             Not Allowed
           </h3>
-          <ul className={`space-y-1 ${compact ? 'text-xs' : 'text-sm'}`}>
+          <ul className="space-y-1 text-sm">
             {zoneInfo.notAllowedUses.map((use) => (
               <li key={use} className="flex gap-1.5 text-text-secondary">
                 <span className="flex h-[1lh] items-center text-red-500 dark:text-red-400 shrink-0">
