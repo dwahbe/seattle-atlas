@@ -1,9 +1,33 @@
 'use client';
 
+import { IconDeviceDesktop, IconMoon, IconSun } from '@tabler/icons-react';
 import { useTheme } from '@/hooks/useTheme';
 
-export function ThemeToggle() {
+type ThemeToggleProps = {
+  inline?: boolean;
+};
+
+export function ThemeToggle({ inline = false }: ThemeToggleProps) {
   const { theme, toggleTheme, mounted } = useTheme();
+
+  if (inline) {
+    return (
+      <span className="flex h-[1lh] items-center text-base">
+        <button
+          onClick={mounted ? toggleTheme : undefined}
+          className="size-[1em] flex-none text-text-secondary hover:text-text-primary transition-colors"
+          aria-label={mounted ? `Current theme: ${theme}. Click to toggle.` : 'Toggle Theme'}
+          title={mounted ? `Theme: ${theme}` : undefined}
+        >
+          {mounted && theme === 'light' && <IconSun size="100%" stroke={2} aria-hidden="true" />}
+          {mounted && theme === 'dark' && <IconMoon size="100%" stroke={2} aria-hidden="true" />}
+          {mounted && theme === 'system' && (
+            <IconDeviceDesktop size="100%" stroke={2} aria-hidden="true" />
+          )}
+        </button>
+      </span>
+    );
+  }
 
   if (!mounted) {
     return (
@@ -17,50 +41,9 @@ export function ThemeToggle() {
   }
 
   const icons = {
-    light: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-4 h-4"
-      >
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-      </svg>
-    ),
-    dark: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-4 h-4"
-      >
-        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-      </svg>
-    ),
-    system: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="w-4 h-4"
-      >
-        <rect x="2" y="3" width="20" height="14" rx="2" />
-        <path d="M8 21h8M12 17v4" />
-      </svg>
-    ),
+    light: <IconSun size={16} stroke={2} aria-hidden="true" />,
+    dark: <IconMoon size={16} stroke={2} aria-hidden="true" />,
+    system: <IconDeviceDesktop size={16} stroke={2} aria-hidden="true" />,
   };
 
   return (

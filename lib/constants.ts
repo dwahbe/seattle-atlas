@@ -15,6 +15,3 @@ export const ZONING_FILTER_IDS: Record<string, string> = {
 
 /** Blue highlight color for inspected/selected features */
 export const HIGHLIGHT_COLOR = '#3B82F6';
-
-/** When the underlying map data was last refreshed */
-export const DATA_FRESHNESS = 'Jan 2026';

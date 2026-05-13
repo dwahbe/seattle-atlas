@@ -2,6 +2,7 @@
 
 import type { PermitsData } from '@/types';
 import { Skeleton } from '@/components/ui';
+import { IconFileText } from '@tabler/icons-react';
 
 interface PermitsSectionProps {
   permits: PermitsData | null;
@@ -77,16 +78,11 @@ export function PermitsSection({ permits, isLoading, compact = false }: PermitsS
 
   return (
     <div className="text-center py-4">
-      <svg
+      <IconFileText
         className="w-8 h-8 mx-auto mb-2 text-text-tertiary"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
+        stroke={1.5}
         aria-hidden="true"
-      >
-        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
+      />
       <p className="text-sm font-medium text-text-secondary">No recent permits nearby</p>
       <p className="text-xs text-text-tertiary mt-1">
         No building permits filed within 300m in the last 2 years

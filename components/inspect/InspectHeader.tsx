@@ -2,10 +2,9 @@
 
 import type { ZoneInfo } from '@/lib/zoning-info';
 import type { LocationData, ParkData } from '@/hooks/useInspectData';
-import { TreeIcon } from '@/components/ui';
 import type { InstitutionInfo } from '@/lib/institutions';
 import { SharePopover } from './SharePopover';
-import { IconChevronLeft, IconMapPin, IconX } from '@tabler/icons-react';
+import { IconChevronLeft, IconMapPin, IconTree, IconX } from '@tabler/icons-react';
 
 interface InspectHeaderProps {
   zoneInfo: ZoneInfo | null;
@@ -98,7 +97,10 @@ export function InspectHeader({
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-semibold text-text-primary flex items-center gap-1.5 min-w-0">
               {isPark && (
-                <TreeIcon className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400" />
+                <IconTree
+                  className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400"
+                  stroke={2}
+                />
               )}
               {hasLocation && <LocationIcon />}
               <span className="truncate">{subtitle}</span>
@@ -118,7 +120,9 @@ export function InspectHeader({
           {title}
         </div>
         <h2 className="text-lg font-semibold text-text-primary mt-1 truncate flex items-center gap-1.5">
-          {isPark && <TreeIcon className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400" />}
+          {isPark && (
+            <IconTree className="w-4 h-4 shrink-0 text-green-600 dark:text-green-400" stroke={2} />
+          )}
           {hasLocation && <LocationIcon />}
           <span className="truncate">{subtitle}</span>
         </h2>

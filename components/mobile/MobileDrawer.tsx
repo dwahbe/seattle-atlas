@@ -23,7 +23,6 @@ import {
   BASE_LAYER_IDS,
   TRANSIT_LAYER_IDS,
   BIKE_LAYER_ID,
-  DATA_FRESHNESS,
   ZONING_FILTER_IDS,
 } from '@/lib/constants';
 import Link from 'next/link';
@@ -380,46 +379,45 @@ export function MobileDrawer({
 
                 {/* Footer with toggle */}
                 <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-secondary-bg border-t border-border">
-                  <div className="flex flex-col gap-3">
-                    {/* Zoning Mode Toggle - only show when zoning is enabled */}
+                  <div className="flex flex-col items-start gap-1.5">
                     {activeBaseLayer && (
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-text-secondary">Zoning View</span>
-                        <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
-                          <button
-                            onClick={() => onBaseLayerChange('zoning')}
-                            className={`
-                              touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                              ${
-                                activeBaseLayer === 'zoning'
-                                  ? 'bg-panel-bg text-text-primary shadow-sm'
-                                  : 'text-text-secondary hover:text-text-primary'
-                              }
-                            `}
-                          >
-                            Simplified
-                          </button>
-                          <button
-                            onClick={() => onBaseLayerChange('zoning_detailed')}
-                            className={`
-                              touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                              ${
-                                activeBaseLayer === 'zoning_detailed'
-                                  ? 'bg-panel-bg text-text-primary shadow-sm'
-                                  : 'text-text-secondary hover:text-text-primary'
-                              }
-                            `}
-                          >
-                            Technical
-                          </button>
-                        </div>
+                      <div className="flex w-full items-center justify-between gap-2 text-xs">
+                        <span className="font-medium text-text-secondary">Zoning View</span>
+                        <ThemeToggle inline />
                       </div>
                     )}
-
-                    <div className="flex items-center justify-between">
-                      <ThemeToggle />
-                      <span className="text-xs text-text-tertiary">Data: {DATA_FRESHNESS}</span>
-                    </div>
+                    {activeBaseLayer ? (
+                      <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
+                        <button
+                          onClick={() => onBaseLayerChange('zoning')}
+                          className={`
+                            touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                            ${
+                              activeBaseLayer === 'zoning'
+                                ? 'bg-panel-bg text-text-primary shadow-sm'
+                                : 'text-text-secondary hover:text-text-primary'
+                            }
+                          `}
+                        >
+                          Simplified
+                        </button>
+                        <button
+                          onClick={() => onBaseLayerChange('zoning_detailed')}
+                          className={`
+                            touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                            ${
+                              activeBaseLayer === 'zoning_detailed'
+                                ? 'bg-panel-bg text-text-primary shadow-sm'
+                                : 'text-text-secondary hover:text-text-primary'
+                            }
+                          `}
+                        >
+                          Technical
+                        </button>
+                      </div>
+                    ) : (
+                      <ThemeToggle inline />
+                    )}
                   </div>
                 </div>
               </div>

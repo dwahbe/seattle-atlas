@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { IconMenu2, IconX } from '@tabler/icons-react';
 
 const NAV_LINKS = [
   { href: '/about', label: 'About' },
@@ -55,33 +56,9 @@ export function NavMenu() {
         aria-expanded={isOpen}
       >
         {isOpen ? (
-          <svg
-            className="w-4 h-4 text-text-primary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
+          <IconX className="w-4 h-4 text-text-primary" stroke={2} />
         ) : (
-          <svg
-            className="w-4 h-4 text-text-primary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+          <IconMenu2 className="w-4 h-4 text-text-primary" stroke={2} />
         )}
       </button>
 

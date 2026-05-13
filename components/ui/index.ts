@@ -8,4 +8,3 @@ export { Skeleton } from './Skeleton';
 export { StatCard } from './StatCard';
 export { Switch } from './Switch';
 export { ThemeToggle } from './ThemeToggle';
-export { TreeIcon } from './TreeIcon';

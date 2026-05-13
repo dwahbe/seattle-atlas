@@ -66,7 +66,7 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
 
       {/* Not Allowed */}
       {zoneInfo.notAllowedUses.length > 0 && (
-        <div className={compact ? 'mt-2' : 'mt-3'}>
+        <div className={compact ? 'mt-4' : 'mt-6'}>
           <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
             Not Allowed
           </h3>

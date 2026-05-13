@@ -1,5 +1,7 @@
 'use client';
 
+import { IconChevronDown } from '@tabler/icons-react';
+
 interface CollapsibleSectionProps {
   title: string;
   isExpanded: boolean;
@@ -22,15 +24,10 @@ export function CollapsibleSection({
         <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
           {title}
         </h3>
-        <svg
+        <IconChevronDown
           className={`w-4 h-4 text-text-secondary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
+          stroke={2}
+        />
       </button>
       {isExpanded && <div className="px-4 pb-4">{children}</div>}
     </div>
