@@ -1,5 +1,17 @@
 'use client';
 
+import {
+  IconBuilding,
+  IconBuildingCommunity,
+  IconBuildingEstate,
+  IconBuildingSkyscraper,
+  IconBuildingStore,
+  IconBuildingWarehouse,
+  IconBuildings,
+  IconHome,
+  type Icon,
+} from '@tabler/icons-react';
+
 import type { ZoneInfo } from '@/lib/zoning-info';
 
 interface BuildingGraphicProps {
@@ -8,6 +20,11 @@ interface BuildingGraphicProps {
   code: string;
   landmark?: LandmarkType | null;
   className?: string;
+  /**
+   * 'block' (default) — full graphic with descriptive label below.
+   * 'inline' — icon only, sized to sit beside a heading.
+   */
+  variant?: 'block' | 'inline';
 }
 
 type BuildingType =
@@ -28,35 +45,29 @@ function getBuildingType(
   maxHeightFt: number,
   code: string
 ): BuildingType {
-  // Residential zones
   if (category === 'residential') {
     return 'house';
   }
 
-  // Multifamily - based on height
   if (category === 'multifamily') {
     if (code.startsWith('LR')) return 'lowrise';
     if (code === 'MR' || maxHeightFt <= 85) return 'midrise';
     return 'highrise';
   }
 
-  // Commercial zones
   if (category === 'commercial') {
     if (maxHeightFt <= 40) return 'shopfront';
     return 'mixeduse';
   }
 
-  // Downtown zones - tall towers
   if (category === 'downtown') {
     return 'skyscraper';
   }
 
-  // Mixed use
   if (category === 'mixed') {
     return 'mixeduse';
   }
 
-  // Industrial
   if (category === 'industrial') {
     return 'warehouse';
   }
@@ -64,925 +75,36 @@ function getBuildingType(
   return 'house';
 }
 
-const STROKE_COLOR = 'rgb(var(--text-primary))';
-const STROKE_WIDTH = 1.25;
-const THIN_STROKE_WIDTH = 1;
+const ICON_SIZE = 56;
+const ICON_STROKE = 1.5;
 
-// Small house with pitched roof
-function HouseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
+const BUILDING_ICONS: Record<BuildingType, Icon> = {
+  house: IconHome,
+  townhouse: IconBuildingCommunity,
+  lowrise: IconBuildingEstate,
+  midrise: IconBuilding,
+  highrise: IconBuildingSkyscraper,
+  skyscraper: IconBuildingSkyscraper,
+  shopfront: IconBuildingStore,
+  mixeduse: IconBuildings,
+  warehouse: IconBuildingWarehouse,
+};
 
-      {/* House body */}
-      <rect
-        x="25"
-        y="40"
-        width="35"
-        height="35"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
+const BUILDING_LABELS: Record<BuildingType, string> = {
+  house: 'Houses, Multiplexes & Small Shops',
+  townhouse: 'Townhouses & Small Apartments',
+  lowrise: 'Townhouses & Small Apartments',
+  midrise: 'Mid-Rise Apartments & Mixed-Use',
+  highrise: 'High-Rise Towers',
+  skyscraper: 'Downtown Towers',
+  shopfront: 'Shops With Apartments Above',
+  mixeduse: 'Mixed-Use Buildings',
+  warehouse: 'Industrial & Warehouse',
+};
 
-      {/* Pitched roof */}
-      <polyline
-        points="20,40 42.5,20 65,40"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Door */}
-      <rect
-        x="37"
-        y="55"
-        width="10"
-        height="20"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Window */}
-      <rect
-        x="30"
-        y="47"
-        width="8"
-        height="8"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="47"
-        y="47"
-        width="8"
-        height="8"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Small shop */}
-      <rect
-        x="68"
-        y="52"
-        width="24"
-        height="23"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {/* Flat roof */}
-      <line x1="66" y1="52" x2="94" y2="52" stroke={STROKE_COLOR} strokeWidth={STROKE_WIDTH} />
-      {/* Storefront window */}
-      <rect
-        x="71"
-        y="58"
-        width="18"
-        height="12"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {/* Awning */}
-      <polyline
-        points="70,58 71,54 89,54 90,58"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-    </svg>
-  );
-}
-
-// Townhouses / small apartments - varied rooflines and stoops
-function TownhouseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Row of attached units */}
-      {[10, 38, 66, 94].map((x, index) => (
-        <g key={x}>
-          <rect
-            x={x}
-            y={28}
-            width={24}
-            height={47}
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={STROKE_WIDTH}
-          />
-          {/* Alternating roofline */}
-          {index % 2 === 0 ? (
-            <polyline
-              points={`${x - 2},28 ${x + 12},18 ${x + 26},28`}
-              fill="none"
-              stroke={STROKE_COLOR}
-              strokeWidth={STROKE_WIDTH}
-            />
-          ) : (
-            <line
-              x1={x - 1}
-              y1={28}
-              x2={x + 25}
-              y2={28}
-              stroke={STROKE_COLOR}
-              strokeWidth={STROKE_WIDTH}
-            />
-          )}
-          {/* Door + window */}
-          <rect
-            x={x + 7}
-            y={60}
-            width={10}
-            height={15}
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={STROKE_WIDTH}
-          />
-          <rect
-            x={x + 6}
-            y={40}
-            width={12}
-            height={10}
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-// Row of townhouses / lowrise apartments
-function LowriseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Building 1 - 3 story */}
-      <rect
-        x="10"
-        y="30"
-        width="30"
-        height="45"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {/* Windows */}
-      {[33, 45, 57].map((y) => (
-        <g key={y}>
-          <rect
-            x="14"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="28"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-      {/* Door */}
-      <rect
-        x="21"
-        y="65"
-        width="7"
-        height="10"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Building 2 - 4 story */}
-      <rect
-        x="45"
-        y="20"
-        width="30"
-        height="55"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {/* Windows */}
-      {[25, 38, 51, 64].map((y) => (
-        <g key={y}>
-          <rect
-            x="49"
-            y={y}
-            width="8"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="63"
-            y={y}
-            width="8"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Building 3 - 3 story */}
-      <rect
-        x="80"
-        y="30"
-        width="30"
-        height="45"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {/* Windows */}
-      {[33, 45, 57].map((y) => (
-        <g key={y}>
-          <rect
-            x="84"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="98"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-// Mid-rise apartment building (5-7 stories) with fire escape
-function MidriseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Main building */}
-      <rect
-        x="25"
-        y="10"
-        width="50"
-        height="65"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Windows grid - 5 floors */}
-      {[16, 28, 40, 52].map((y) => (
-        <g key={y}>
-          <rect
-            x="30"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="46"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="62"
-            y={y}
-            width="8"
-            height="6"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Entrance */}
-      <rect
-        x="43"
-        y="63"
-        width="14"
-        height="12"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-    </svg>
-  );
-}
-
-// High-rise apartment tower
-function HighriseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Main tower */}
-      <rect
-        x="35"
-        y="5"
-        width="40"
-        height="70"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Rooftop structure */}
-      <rect
-        x="50"
-        y="0"
-        width="10"
-        height="5"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-
-      {/* Windows grid - many floors */}
-      {[12, 22, 32, 42, 52, 62].map((y) => (
-        <g key={y}>
-          <rect
-            x="39"
-            y={y}
-            width="6"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="52"
-            y={y}
-            width="6"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="65"
-            y={y}
-            width="6"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Entrance canopy */}
-      <line x1="40" y1="70" x2="70" y2="70" stroke={STROKE_COLOR} strokeWidth={STROKE_WIDTH} />
-      <rect x="48" y="70" width="14" height="5" fill="none" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Small adjacent building */}
-      <rect
-        x="80"
-        y="50"
-        width="20"
-        height="25"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="84"
-        y="55"
-        width="5"
-        height="4"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-      <rect
-        x="91"
-        y="55"
-        width="5"
-        height="4"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-      <rect
-        x="84"
-        y="63"
-        width="5"
-        height="4"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-      <rect
-        x="91"
-        y="63"
-        width="5"
-        height="4"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-    </svg>
-  );
-}
-
-// Downtown skyscraper
-function SkyscraperGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Main skyscraper */}
-      <rect
-        x="45"
-        y="2"
-        width="35"
-        height="73"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Window grid - many floors */}
-      {[8, 18, 28, 38, 48, 58, 68].map((y) => (
-        <g key={y}>
-          <rect
-            x="48"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="55"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="62"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="69"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Shorter building behind/beside */}
-      <rect
-        x="10"
-        y="35"
-        width="25"
-        height="40"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {[40, 50, 60].map((y) => (
-        <g key={y}>
-          <rect
-            x="14"
-            y={y}
-            width="6"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="25"
-            y={y}
-            width="6"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Another building */}
-      <rect
-        x="90"
-        y="45"
-        width="20"
-        height="30"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {[50, 60].map((y) => (
-        <g key={y}>
-          <rect
-            x="94"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="101"
-            y={y}
-            width="5"
-            height="5"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-// Shopfront with apartments above
-function ShopfrontGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Building */}
-      <rect
-        x="20"
-        y="30"
-        width="80"
-        height="45"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Storefront windows - large */}
-      <rect
-        x="25"
-        y="55"
-        width="30"
-        height="20"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <line x1="40" y1="55" x2="40" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Door */}
-      <rect
-        x="60"
-        y="58"
-        width="12"
-        height="17"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Awning */}
-      <polyline
-        points="25,55 27,50 53,50 55,55"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={1}
-      />
-
-      {/* Upper floor windows */}
-      {[35].map((y) => (
-        <g key={y}>
-          <rect
-            x="28"
-            y={y}
-            width="10"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={1}
-          />
-          <rect
-            x="45"
-            y={y}
-            width="10"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={1}
-          />
-          <rect
-            x="62"
-            y={y}
-            width="10"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={1}
-          />
-          <rect
-            x="80"
-            y={y}
-            width="10"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={1}
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-// Mixed-use mid-rise
-function MixeduseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Main building */}
-      <rect
-        x="15"
-        y="15"
-        width="50"
-        height="60"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Ground floor retail */}
-      <rect
-        x="20"
-        y="58"
-        width="18"
-        height="17"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="42"
-        y="58"
-        width="18"
-        height="17"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Upper windows - residential */}
-      {[22, 36, 50].map((y) => (
-        <g key={y}>
-          <rect
-            x="20"
-            y={y}
-            width="8"
-            height="8"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="36"
-            y={y}
-            width="8"
-            height="8"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="52"
-            y={y}
-            width="8"
-            height="8"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-
-      {/* Secondary building */}
-      <rect
-        x="70"
-        y="30"
-        width="35"
-        height="45"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="76"
-        y="62"
-        width="10"
-        height="13"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="92"
-        y="62"
-        width="8"
-        height="13"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      {[35, 47].map((y) => (
-        <g key={y}>
-          <rect
-            x="75"
-            y={y}
-            width="8"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-          <rect
-            x="92"
-            y={y}
-            width="8"
-            height="7"
-            fill="none"
-            stroke={STROKE_COLOR}
-            strokeWidth={THIN_STROKE_WIDTH}
-          />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-// Warehouse/industrial building
-function WarehouseGraphic() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-full h-full" aria-hidden="true">
-      {/* Ground line */}
-      <line x1="0" y1="75" x2="120" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Main warehouse - wide and low */}
-      <rect
-        x="10"
-        y="35"
-        width="70"
-        height="40"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Sawtooth roof */}
-      <polyline
-        points="10,35 25,25 25,35 45,25 45,35 65,25 65,35 80,35"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-
-      {/* Large loading doors */}
-      <rect
-        x="20"
-        y="50"
-        width="18"
-        height="25"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <line x1="29" y1="50" x2="29" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      <rect
-        x="50"
-        y="50"
-        width="18"
-        height="25"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <line x1="59" y1="50" x2="59" y2="75" stroke={STROKE_COLOR} strokeWidth={1} />
-
-      {/* Small windows */}
-      <rect
-        x="24"
-        y="40"
-        width="10"
-        height="6"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-      <rect
-        x="54"
-        y="40"
-        width="10"
-        height="6"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-
-      {/* Smaller office/industrial building */}
-      <rect
-        x="85"
-        y="45"
-        width="25"
-        height="30"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="90"
-        y="60"
-        width="15"
-        height="15"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={STROKE_WIDTH}
-      />
-      <rect
-        x="90"
-        y="50"
-        width="6"
-        height="6"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-      <rect
-        x="99"
-        y="50"
-        width="6"
-        height="6"
-        fill="none"
-        stroke={STROKE_COLOR}
-        strokeWidth={THIN_STROKE_WIDTH}
-      />
-    </svg>
-  );
-}
-
-// Space Needle landmark (provided SVG with site colors)
+// Space Needle landmark — custom SVG; Tabler has no equivalent.
 function SpaceNeedleGraphic() {
+  const STROKE_COLOR = 'rgb(var(--text-primary))';
   return (
     <svg viewBox="0 0 1900 2386.4976" className="w-full h-full" aria-hidden="true">
       <g transform="translate(-23.87359,349.04765)">
@@ -1012,32 +134,8 @@ function SpaceNeedleGraphic() {
   );
 }
 
-const BUILDING_COMPONENTS: Record<BuildingType, React.FC> = {
-  house: HouseGraphic,
-  townhouse: TownhouseGraphic,
-  lowrise: LowriseGraphic,
-  midrise: MidriseGraphic,
-  highrise: HighriseGraphic,
-  skyscraper: SkyscraperGraphic,
-  shopfront: ShopfrontGraphic,
-  mixeduse: MixeduseGraphic,
-  warehouse: WarehouseGraphic,
-};
-
 const LANDMARK_COMPONENTS: Record<LandmarkType, React.FC> = {
   'space-needle': SpaceNeedleGraphic,
-};
-
-const BUILDING_LABELS: Record<BuildingType, string> = {
-  house: 'Houses, Multiplexes & Small Shops',
-  townhouse: 'Townhouses & Small Apartments',
-  lowrise: 'Townhouses & Small Apartments',
-  midrise: 'Mid-Rise Apartments & Mixed-Use',
-  highrise: 'High-Rise Towers',
-  skyscraper: 'Downtown Towers',
-  shopfront: 'Shops With Apartments Above',
-  mixeduse: 'Mixed-Use Buildings',
-  warehouse: 'Industrial & Warehouse',
 };
 
 const LANDMARK_LABELS: Record<LandmarkType, string> = {
@@ -1050,22 +148,56 @@ export function BuildingGraphic({
   code,
   landmark,
   className,
+  variant = 'block',
 }: BuildingGraphicProps) {
-  const buildingType = getBuildingType(category, maxHeightFt, code);
   const hasLandmark = Boolean(landmark && LANDMARK_COMPONENTS[landmark]);
-  const BuildingComponent = hasLandmark
-    ? LANDMARK_COMPONENTS[landmark as LandmarkType]
-    : BUILDING_COMPONENTS[buildingType];
-  const label = hasLandmark
-    ? LANDMARK_LABELS[landmark as LandmarkType]
-    : BUILDING_LABELS[buildingType];
+
+  if (variant === 'inline') {
+    if (hasLandmark) {
+      const LandmarkComponent = LANDMARK_COMPONENTS[landmark as LandmarkType];
+      return (
+        <div className={`w-8 h-8 shrink-0 ${className || ''}`} aria-hidden="true">
+          <LandmarkComponent />
+        </div>
+      );
+    }
+    const buildingType = getBuildingType(category, maxHeightFt, code);
+    const IconComponent = BUILDING_ICONS[buildingType];
+    return (
+      <IconComponent
+        size={32}
+        stroke={ICON_STROKE}
+        className={`shrink-0 text-text-primary ${className || ''}`}
+        aria-hidden="true"
+      />
+    );
+  }
+
+  if (hasLandmark) {
+    const LandmarkComponent = LANDMARK_COMPONENTS[landmark as LandmarkType];
+    return (
+      <div className={className || ''}>
+        <div className="h-16 flex items-center justify-center">
+          <LandmarkComponent />
+        </div>
+        <p className="text-xs text-text-secondary text-center mt-1">
+          {LANDMARK_LABELS[landmark as LandmarkType]}
+        </p>
+      </div>
+    );
+  }
+
+  const buildingType = getBuildingType(category, maxHeightFt, code);
+  const IconComponent = BUILDING_ICONS[buildingType];
 
   return (
-    <div className={`${className || ''}`}>
-      <div className="h-16">
-        <BuildingComponent />
+    <div className={className || ''}>
+      <div className="h-16 flex items-center justify-center text-text-primary">
+        <IconComponent size={ICON_SIZE} stroke={ICON_STROKE} aria-hidden="true" />
       </div>
-      <p className="text-xs text-text-secondary text-center mt-1">{label}</p>
+      <p className="text-xs text-text-secondary text-center mt-1">
+        {BUILDING_LABELS[buildingType]}
+      </p>
     </div>
   );
 }

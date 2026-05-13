@@ -7,6 +7,11 @@ import type { InstitutionInfo } from '@/lib/institutions';
 interface InstitutionGraphicProps {
   institution: InstitutionInfo;
   className?: string;
+  /**
+   * 'block' (default) — full graphic with institution name below.
+   * 'inline' — logo only, sized to sit beside a heading.
+   */
+  variant?: 'block' | 'inline';
 }
 
 // Maps an institution OVERLAY code to a bundled logo file in /public/institutions/.
@@ -119,7 +124,11 @@ const ICONS = {
   hospital: HospitalIcon,
 };
 
-export function InstitutionGraphic({ institution, className }: InstitutionGraphicProps) {
+export function InstitutionGraphic({
+  institution,
+  className,
+  variant = 'block',
+}: InstitutionGraphicProps) {
   const logoSrc = LOGOS[institution.code];
   // If a bundled file fails to resolve at runtime (404 or decode error), fall
   // back to the category icon. This shouldn't happen with our bundled files
@@ -127,6 +136,26 @@ export function InstitutionGraphic({ institution, className }: InstitutionGraphi
   const [logoFailed, setLogoFailed] = useState(false);
   const showLogo = logoSrc && !logoFailed;
   const Icon = ICONS[institution.category];
+
+  if (variant === 'inline') {
+    return (
+      <div className={`h-10 w-16 shrink-0 flex items-center justify-end ${className || ''}`}>
+        {showLogo ? (
+          <Image
+            src={logoSrc}
+            alt={institution.name}
+            width={120}
+            height={64}
+            className="h-full w-auto max-w-full object-contain"
+            unoptimized
+            onError={() => setLogoFailed(true)}
+          />
+        ) : (
+          <Icon />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={className || ''}>
