@@ -2,13 +2,11 @@
 
 import { Drawer } from 'vaul';
 import { useState } from 'react';
-import { FilterChips } from '@/components/controls/FilterChips';
 import { Legend } from '@/components/controls/Legend';
-import { Switch, ThemeToggle } from '@/components/ui';
+import { BuildingGraphic, InstitutionGraphic, Switch, ThemeToggle } from '@/components/ui';
 import { useInspectData } from '@/hooks/useInspectData';
 import {
   InspectHeader,
-  ZoningSummary,
   AllowedUses,
   WalkScoreSection,
   DevelopmentRules,
@@ -18,9 +16,16 @@ import {
   ProposalsSection,
   TransitInfo,
   RawProperties,
+  CollapsibleSection,
 } from '@/components/inspect';
 import type { LayerConfig, InspectedFeature, Proposal, FilterState } from '@/types';
-import { BASE_LAYER_IDS, TRANSIT_LAYER_IDS, BIKE_LAYER_ID, DATA_FRESHNESS } from '@/lib/constants';
+import {
+  BASE_LAYER_IDS,
+  TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  DATA_FRESHNESS,
+  ZONING_FILTER_IDS,
+} from '@/lib/constants';
 import Link from 'next/link';
 
 // Snap points for the drawer (peek, half, full)
@@ -65,6 +70,19 @@ export function MobileDrawer({
   clickPoint,
 }: MobileDrawerProps) {
   const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+
+  const toggleSection = (section: string) => {
+    setExpandedSections((prev) => {
+      const next = new Set(prev);
+      if (next.has(section)) {
+        next.delete(section);
+      } else {
+        next.add(section);
+      }
+      return next;
+    });
+  };
 
   // Calculate the max height for scrollable content based on current snap point
   // Header + drag handle is ~80px, subtract from visible drawer height
@@ -86,9 +104,36 @@ export function MobileDrawer({
   // Check if bike layer is enabled
   const isBikeActive = activeLayers.includes(BIKE_LAYER_ID);
 
-  // Get base layers for filter display
-  const baseLayers = layers.filter((l) => BASE_LAYER_IDS.includes(l.id));
-  const activeBaseLayerConfig = baseLayers.find((l) => l.id === activeBaseLayer);
+  // Flatten FilterState into the per-layer value-list shape the Legend expects.
+  const legendActiveFilters: Record<string, string[]> = {};
+  for (const [layerId, layerFilters] of Object.entries(filters)) {
+    if (!layerFilters) continue;
+    const values: string[] = [];
+    for (const v of Object.values(layerFilters)) {
+      if (Array.isArray(v)) values.push(...(v as string[]));
+    }
+    legendActiveFilters[layerId] = values;
+  }
+
+  const handleLegendToggle = (layerId: string, values: string[]) => {
+    const filterId = ZONING_FILTER_IDS[layerId];
+    if (!filterId) return;
+    const current = (filters[layerId]?.[filterId] as string[] | undefined) || [];
+    const allSelected = values.every((v) => current.includes(v));
+    const next = allSelected
+      ? current.filter((v) => !values.includes(v))
+      : [...current, ...values.filter((v) => !current.includes(v))];
+    onFilterChange(layerId, filterId, next);
+  };
+
+  const handleClearLegendFilters = () => {
+    if (!activeBaseLayer) return;
+    const filterId = ZONING_FILTER_IDS[activeBaseLayer];
+    if (!filterId) return;
+    onFilterChange(activeBaseLayer, filterId, []);
+  };
+
+  const isZoningActive = activeBaseLayer !== null && activeBaseLayer in ZONING_FILTER_IDS;
 
   // Auto-expand when inspecting a feature.
   // Uses the "setState during render" pattern from React docs:
@@ -156,17 +201,24 @@ export function MobileDrawer({
                   variant="mobile"
                   onBack={onCloseInspect}
                   searchedAddress={searchedAddress}
+                  institution={inspectedFeature?.institution ?? null}
+                  endAdornment={
+                    inspectedFeature?.institution ? (
+                      <InstitutionGraphic
+                        variant="inline"
+                        institution={inspectedFeature.institution}
+                      />
+                    ) : data.isZoning && data.zoneInfo ? (
+                      <BuildingGraphic
+                        variant="inline"
+                        category={data.zoneInfo.category}
+                        maxHeightFt={data.zoneInfo.maxHeightFt}
+                        code={data.zoneInfo.code}
+                        landmark={data.landmark}
+                      />
+                    ) : null
+                  }
                 />
-
-                {/* Zoning Summary - compact */}
-                {data.isZoning && data.zoneInfo && (
-                  <ZoningSummary
-                    zoneInfo={data.zoneInfo}
-                    compact
-                    landmark={data.landmark}
-                    institution={inspectedFeature?.institution ?? null}
-                  />
-                )}
 
                 {/* Park Info - compact */}
                 {data.isPark && data.parkData && <ParkInfo parkData={data.parkData} compact />}
@@ -183,13 +235,20 @@ export function MobileDrawer({
                 {/* Allowed Uses - compact */}
                 {data.isZoning && data.zoneInfo && <AllowedUses zoneInfo={data.zoneInfo} compact />}
 
-                {/* Parcel Info - compact */}
-                {data.isZoning && (
-                  <ParcelInfo
-                    parcelData={data.parcelData}
-                    isLoading={data.isLoadingParcel}
-                    compact
-                  />
+                {/* Parcel Info - collapsible */}
+                {data.isZoning && (data.isLoadingParcel || data.parcelData) && (
+                  <CollapsibleSection
+                    title="Property Details"
+                    isExpanded={expandedSections.has('parcel')}
+                    onToggle={() => toggleSection('parcel')}
+                  >
+                    <ParcelInfo
+                      parcelData={data.parcelData}
+                      isLoading={data.isLoadingParcel}
+                      compact
+                      headless
+                    />
+                  </CollapsibleSection>
                 )}
 
                 {/* Transit Info */}
@@ -199,9 +258,15 @@ export function MobileDrawer({
                   </div>
                 )}
 
-                {/* Development Rules - compact (not collapsible on mobile) */}
+                {/* Development Rules - collapsible */}
                 {data.isZoning && data.zoneInfo && (
-                  <DevelopmentRules zoneInfo={data.zoneInfo} compact />
+                  <CollapsibleSection
+                    title="Development Rules"
+                    isExpanded={expandedSections.has('rules')}
+                    onToggle={() => toggleSection('rules')}
+                  >
+                    <DevelopmentRules zoneInfo={data.zoneInfo} compact headless />
+                  </CollapsibleSection>
                 )}
 
                 {/* Raw Properties - for non-zoning, non-park */}
@@ -214,28 +279,30 @@ export function MobileDrawer({
                   </div>
                 )}
 
-                {/* Nearby Permits - compact */}
+                {/* Nearby Permits - collapsible */}
                 {data.isZoning && (
-                  <div className="px-4 py-3 border-b border-border">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
-                      Nearby Activity
-                    </h3>
+                  <CollapsibleSection
+                    title="Nearby Activity"
+                    isExpanded={expandedSections.has('permits')}
+                    onToggle={() => toggleSection('permits')}
+                  >
                     <PermitsSection
                       permits={data.permits}
                       isLoading={data.isLoadingPermits}
                       compact
                     />
-                  </div>
+                  </CollapsibleSection>
                 )}
 
-                {/* Related Proposals - compact */}
+                {/* Related Proposals - collapsible */}
                 {data.relatedProposals.length > 0 && (
-                  <div className="p-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
-                      Related Proposals
-                    </h3>
+                  <CollapsibleSection
+                    title="Related Proposals"
+                    isExpanded={expandedSections.has('proposals')}
+                    onToggle={() => toggleSection('proposals')}
+                  >
                     <ProposalsSection proposals={data.relatedProposals} compact />
-                  </div>
+                  </CollapsibleSection>
                 )}
               </div>
             ) : (
@@ -245,15 +312,13 @@ export function MobileDrawer({
               <div className="flex flex-col min-h-full">
                 <div className="flex-1">
                   {/* Layers */}
-                  <div className="border-b border-border">
-                    <div className="px-4 py-3">
-                      <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-                        Layers
-                      </h2>
-                    </div>
-                    <div className="px-3 pb-3 space-y-1">
+                  <div className="p-4 border-b border-border">
+                    <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
+                      Layers
+                    </h2>
+                    <div className="space-y-1">
                       {/* Zoning Toggle */}
-                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                      <div className="flex items-center gap-3 py-1 rounded-lg">
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm text-text-primary">Zoning</div>
                           <div className="text-xs text-text-secondary truncate">
@@ -266,7 +331,7 @@ export function MobileDrawer({
                         />
                       </div>
                       {/* Transit Toggle */}
-                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                      <div className="flex items-center gap-3 py-1 rounded-lg">
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm text-text-primary">Transit</div>
                           <div className="text-xs text-text-secondary truncate">
@@ -279,7 +344,7 @@ export function MobileDrawer({
                         />
                       </div>
                       {/* Bike Infrastructure Toggle */}
-                      <div className="flex items-center gap-3 p-2 rounded-lg">
+                      <div className="flex items-center gap-3 py-1 rounded-lg">
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm text-text-primary">
                             Bike Infrastructure
@@ -296,25 +361,19 @@ export function MobileDrawer({
                     </div>
                   </div>
 
-                  {/* Filters for active base layer */}
-                  {activeBaseLayerConfig?.filters && activeBaseLayerConfig.filters.length > 0 && (
-                    <div className="p-4 border-b border-border">
-                      <FilterChips
-                        filters={activeBaseLayerConfig.filters}
-                        values={
-                          (filters[activeBaseLayerConfig.id] as Record<string, string[]>) || {}
-                        }
-                        onChange={(filterId, values) =>
-                          onFilterChange(activeBaseLayerConfig.id, filterId, values)
-                        }
-                      />
-                    </div>
-                  )}
-
-                  {/* Legend */}
+                  {/* Legend — interactive for whichever zoning layer is active. */}
                   <div className="border-b border-border">
                     <div className="p-4">
-                      <Legend layers={layers} activeLayers={activeLayers} />
+                      <Legend
+                        layers={layers}
+                        activeLayers={activeLayers}
+                        activeFilters={legendActiveFilters}
+                        interactiveLayerIds={
+                          isZoningActive && activeBaseLayer ? [activeBaseLayer] : []
+                        }
+                        onFilterToggle={isZoningActive ? handleLegendToggle : undefined}
+                        onClearFilters={isZoningActive ? handleClearLegendFilters : undefined}
+                      />
                     </div>
                   </div>
                 </div>

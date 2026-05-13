@@ -10,10 +10,14 @@ import parksStats from '@/data/parks-stats.json';
 interface LegendProps {
   layers: LayerConfig[];
   activeLayers: string[];
-  /** Callback when legend item is clicked to filter */
-  onFilterToggle?: (layerId: string, value: string) => void;
-  /** Currently active filter values by layer */
+  /** Callback when a legend item is clicked. Receives all underlying values for the deduplicated row. */
+  onFilterToggle?: (layerId: string, values: string[]) => void;
+  /** Called when the Clear button is pressed. Parent decides which filters to clear. */
+  onClearFilters?: () => void;
+  /** Currently active filter values, flattened per layer. */
   activeFilters?: Record<string, string[]>;
+  /** Layer IDs whose rows render as clickable filters. Rows for other layers are display-only. */
+  interactiveLayerIds?: string[];
 }
 
 // Parks overlay the underlying zoning (a park is still designated NR, MIO,
@@ -21,7 +25,14 @@ interface LegendProps {
 // surface the figure via a tooltip instead of showing it inline as a percentage.
 const PARKS_TOOLTIP = `Parks overlay zoning — ${parksStats.percentageOfSeattle}% of Seattle (${parksStats.totalParks} parks).`;
 
-export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {} }: LegendProps) {
+export function Legend({
+  layers,
+  activeLayers,
+  onFilterToggle,
+  onClearFilters,
+  activeFilters = {},
+  interactiveLayerIds = [],
+}: LegendProps) {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   // Reactively detect touch devices (remains in sync if the user plugs/unplugs a pointer).
   const isTouch = useMediaQuery('(hover: none)');
@@ -37,6 +48,9 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
     return null;
   }
 
+  const hasAnyActiveFilters = Object.values(activeFilters).some((arr) => arr && arr.length > 0);
+  const showClear = hasAnyActiveFilters && !!onClearFilters;
+
   // Group layers by their group property for seamless legends
   const groupedLayers = activeLayersWithLegends.reduce(
     (acc, layer) => {
@@ -50,9 +64,26 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
 
   return (
     <div>
-      <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-3">
-        Legend
-      </h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+          Legend
+        </h2>
+        <button
+          onClick={() => onClearFilters?.()}
+          className={`
+            touch-target-inline text-xs transition-colors
+            ${
+              showClear
+                ? 'text-accent hover:text-accent-hover'
+                : 'text-transparent pointer-events-none'
+            }
+          `}
+          aria-hidden={!showClear}
+          tabIndex={showClear ? 0 : -1}
+        >
+          Clear
+        </button>
+      </div>
       <div className="space-y-4">
         {Object.entries(groupedLayers).map(([group, groupLayers]) => (
           <div key={group}>
@@ -60,12 +91,16 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
               {groupLayers.flatMap((layer) => {
                 const uniqueItems = deduplicateLegendItems(layer.legend);
                 const layerFilters = activeFilters[layer.id] || [];
+                const someFilterActiveOnLayer = layerFilters.length > 0;
                 const isParks = layer.id === PARKS_LAYER_ID;
+                const isInteractive =
+                  !!onFilterToggle && !isParks && interactiveLayerIds.includes(layer.id);
 
                 return uniqueItems.map((item) => {
                   const isFiltered = item.allValues.every((v) => layerFilters.includes(v));
                   const itemKey = `${layer.id}-${item.value}`;
                   const isHovered = hoveredItem === itemKey;
+                  const isDimmed = isInteractive && someFilterActiveOnLayer && !isFiltered;
 
                   return (
                     <LegendRow
@@ -74,15 +109,12 @@ export function Legend({ layers, activeLayers, onFilterToggle, activeFilters = {
                       layerType={layer.type}
                       isFiltered={isFiltered}
                       isHovered={isHovered}
+                      isDimmed={isDimmed}
                       isTouch={isTouch}
-                      onClick={() => {
-                        for (const v of item.allValues) {
-                          onFilterToggle?.(layer.id, v);
-                        }
-                      }}
+                      onClick={() => onFilterToggle?.(layer.id, item.allValues)}
                       onMouseEnter={() => !isTouch && setHoveredItem(itemKey)}
                       onMouseLeave={() => !isTouch && setHoveredItem(null)}
-                      isInteractive={!!onFilterToggle && !isParks}
+                      isInteractive={isInteractive}
                       tooltip={isParks ? PARKS_TOOLTIP : undefined}
                     />
                   );
@@ -101,6 +133,7 @@ interface LegendRowProps {
   layerType: LayerConfig['type'];
   isFiltered: boolean;
   isHovered: boolean;
+  isDimmed: boolean;
   isTouch: boolean;
   onClick: () => void;
   onMouseEnter: () => void;
@@ -115,6 +148,7 @@ function LegendRow({
   layerType,
   isFiltered,
   isHovered,
+  isDimmed,
   isTouch,
   onClick,
   onMouseEnter,
@@ -123,28 +157,23 @@ function LegendRow({
   tooltip,
 }: LegendRowProps) {
   const baseClasses = `
-    flex items-center gap-2 py-1 pr-1.5 rounded transition-colors
+    touch-target-inline flex items-center gap-2 py-1.5 pr-1.5 rounded transition-all
     ${isInteractive ? 'cursor-pointer' : ''}
-    ${isFiltered ? 'bg-accent/10 ring-1 ring-accent/30' : ''}
     ${isHovered && !isFiltered ? 'bg-secondary-bg' : ''}
+    ${isDimmed ? 'opacity-40 hover:opacity-100' : ''}
   `;
-
-  // Touch devices need larger targets
-  const touchClasses = isTouch ? 'min-h-[44px]' : '';
 
   const content = (
     <>
-      <LegendSwatch type={layerType} color={item.color} isActive={isFiltered || isHovered} />
+      <LegendSwatch type={layerType} color={item.color} />
       <span
-        className={`text-xs flex-1 flex items-center gap-1 min-w-0 ${isFiltered ? 'text-accent font-medium' : 'text-text-primary'}`}
+        className={`text-xs flex-1 flex items-center gap-1 min-w-0 text-text-primary ${isFiltered ? 'font-medium' : ''}`}
       >
         <span className="truncate">{item.label}</span>
         {tooltip && <InfoTooltip text={tooltip} />}
       </span>
       {!tooltip && item.percentage !== undefined && (
-        <span
-          className={`text-xs font-medium ${isFiltered ? 'text-accent' : 'text-text-tertiary'}`}
-        >
+        <span className="text-xs font-medium text-text-tertiary">
           {item.percentage.toFixed(1)}%
         </span>
       )}
@@ -154,7 +183,7 @@ function LegendRow({
   if (isInteractive) {
     return (
       <button
-        className={`${baseClasses} ${touchClasses} w-full text-left`}
+        className={`${baseClasses} w-full text-left`}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -174,31 +203,23 @@ function LegendRow({
 interface LegendSwatchProps {
   type: LayerConfig['type'];
   color: string;
-  isActive?: boolean;
 }
 
-function LegendSwatch({ type, color, isActive = false }: LegendSwatchProps) {
-  const ringClass = isActive ? 'ring-2 ring-accent/50' : '';
-
+function LegendSwatch({ type, color }: LegendSwatchProps) {
   switch (type) {
     case 'fill':
       return (
         <div
-          className={`w-4 h-4 rounded-sm border border-black/20 transition-shadow ${ringClass}`}
+          className="w-4 h-4 rounded-sm border border-black/20"
           style={{ backgroundColor: color }}
         />
       );
     case 'line':
-      return (
-        <div
-          className={`w-4 h-0.5 rounded-full transition-shadow ${ringClass}`}
-          style={{ backgroundColor: color }}
-        />
-      );
+      return <div className="w-4 h-0.5 rounded-full" style={{ backgroundColor: color }} />;
     case 'circle':
       return (
         <div
-          className={`w-3 h-3 rounded-full border-2 border-white shadow-sm transition-shadow ${ringClass}`}
+          className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
           style={{ backgroundColor: color }}
         />
       );
@@ -213,7 +234,7 @@ function LegendSwatch({ type, color, isActive = false }: LegendSwatchProps) {
     default:
       return (
         <div
-          className={`w-4 h-4 rounded-sm border border-black/20 transition-shadow ${ringClass}`}
+          className="w-4 h-4 rounded-sm border border-black/20"
           style={{ backgroundColor: color }}
         />
       );
