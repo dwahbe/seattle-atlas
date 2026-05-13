@@ -111,23 +111,23 @@ export default function AboutPage() {
           <h1 className="text-3xl font-bold text-text-primary mb-6">About Seattle Atlas</h1>
 
           <div className="space-y-6 text-text-secondary">
-            <p className="text-sm">
+            <p>
               Seattle Atlas is an interactive map for exploring land use, transit, and urban
               planning in Seattle. View zoning rules, transit routes, bike infrastructure, and
               proposed development policies—all in one place.
             </p>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">
+              <h2 className="text-xl font-semibold text-text-primary mb-3">
                 What&apos;s on the Map
               </h2>
-              <p className="text-sm mb-3">
+              <p className="mb-3">
                 Three toggles control what you see: Zoning, Transit, and Bike Infrastructure.
               </p>
               <div className="space-y-3">
                 <div>
                   <h3 className="font-medium text-text-primary mb-1">Zoning</h3>
-                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                  <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>
                       Simplified view showing what can be built (houses &amp; townhomes, apartments,
                       mixed-use, etc.)
@@ -149,7 +149,7 @@ export default function AboutPage() {
 
                 <div>
                   <h3 className="font-medium text-text-primary mb-1">Transit</h3>
-                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                  <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>Bus and ferry routes (King County Metro)</li>
                     <li>Link Light Rail and Sounder commuter rail (Sound Transit)</li>
                     <li>Bus stops and transit stations</li>
@@ -158,7 +158,7 @@ export default function AboutPage() {
 
                 <div>
                   <h3 className="font-medium text-text-primary mb-1">Bike Infrastructure</h3>
-                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
+                  <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>
                       Protected lanes, neighborhood greenways, multi-use trails, shared lanes, and
                       sharrows
@@ -169,10 +169,10 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">
+              <h2 className="text-xl font-semibold text-text-primary mb-3">
                 How the Simplified View Works
               </h2>
-              <p className="text-sm mb-4">
+              <p className="mb-4">
                 Seattle&apos;s zoning code defines 30 distinct zone designations under Ordinance
                 127376 (Jan 21, 2026). The Simplified view groups these into six everyday categories
                 so you can see at a glance what&apos;s allowed in each neighborhood. The Technical
@@ -324,8 +324,8 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">Data Sources</h2>
-              <p className="text-sm mb-4">
+              <h2 className="text-xl font-semibold text-text-primary mb-3">Data Sources</h2>
+              <p className="mb-4">
                 All data is sourced from official government agencies and public datasets. Each
                 zone&apos;s detail view links directly to its governing code section.
               </p>
@@ -557,8 +557,8 @@ export default function AboutPage() {
             </section>
 
             <section>
-              <h2 className="text-lg font-semibold text-text-primary mb-3">Open Source</h2>
-              <p className="text-sm mb-3">
+              <h2 className="text-xl font-semibold text-text-primary mb-3">Open Source</h2>
+              <p className="mb-3">
                 Seattle Atlas is open source. View the code on{' '}
                 <a
                   href="https://github.com/dwahbe/seattle-atlas"
@@ -570,7 +570,7 @@ export default function AboutPage() {
                 </a>
                 .
               </p>
-              <p className="text-sm mb-3">
+              <p className="mb-3">
                 The app is built with{' '}
                 <a
                   href="https://nextjs.org/"
@@ -646,7 +646,7 @@ export default function AboutPage() {
                 </a>
                 .
               </p>
-              <p className="text-sm">
+              <p>
                 Source data is processed into vector tiles using{' '}
                 <a
                   href="https://github.com/felt/tippecanoe"
