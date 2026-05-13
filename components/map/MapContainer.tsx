@@ -6,7 +6,6 @@ import { MapGL } from './MapGL';
 import { MapLayers } from './MapLayers';
 import { ControlPanel } from '@/components/panels/ControlPanel';
 import { InspectPanel } from '@/components/panels/InspectPanel';
-import { ShareBar } from '@/components/panels/ShareBar';
 import { MobileDrawer } from '@/components/mobile/MobileDrawer';
 import {
   BASE_LAYER_IDS,
@@ -284,12 +283,6 @@ export function MapContainer() {
     [activeLayers, setUrlActiveLayers]
   );
 
-  // Copy URL handler
-  const handleCopyUrl = useCallback(() => {
-    const fullUrl = window.location.origin + shareableUrl;
-    navigator.clipboard.writeText(fullUrl);
-  }, [shareableUrl]);
-
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Map */}
@@ -361,15 +354,6 @@ export function MapContainer() {
             onSearchSelect={handleSearchSelect}
           />
 
-          {/* Nav Menu (top-right, shifts left when InspectPanel is open) */}
-          <div
-            className={`absolute top-4 z-20 transition-all duration-300 ${
-              inspectedFeature ? 'right-100' : 'right-4'
-            }`}
-          >
-            <NavMenu />
-          </div>
-
           {/* Inspect Panel (right) */}
           <InspectPanel
             feature={inspectedFeature}
@@ -379,10 +363,8 @@ export function MapContainer() {
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
             clickPoint={markerPosition}
+            shareUrl={shareableUrl}
           />
-
-          {/* Share Bar (bottom) */}
-          <ShareBar onCopy={handleCopyUrl} />
         </>
       )}
 

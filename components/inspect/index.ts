@@ -1,4 +1,5 @@
 export { InspectHeader } from './InspectHeader';
+export { SharePopover } from './SharePopover';
 export { ZoningSummary, AllowedUses } from './ZoningSummary';
 export { WalkScoreSection } from './WalkScoreSection';
 export { DevelopmentRules } from './DevelopmentRules';

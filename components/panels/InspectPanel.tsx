@@ -28,6 +28,8 @@ interface InspectPanelProps {
   searchedAddress?: string | null;
   /** Click point for more accurate reverse geocoding */
   clickPoint?: [number, number] | null;
+  /** Shareable URL — renders a share menu in the header when provided. */
+  shareUrl?: string;
 }
 
 export function InspectPanel({
@@ -38,10 +40,9 @@ export function InspectPanel({
   layerConfigs,
   searchedAddress,
   clickPoint,
+  shareUrl,
 }: InspectPanelProps) {
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['parcel', 'rules', 'permits', 'proposals'])
-  );
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const panelRef = useRef<HTMLDivElement>(null);
 
   // Use shared data fetching hook
@@ -73,7 +74,7 @@ export function InspectPanel({
     <div
       ref={panelRef}
       tabIndex={-1}
-      aria-label="Feature details"
+      aria-label="Feature Details"
       className={`
         absolute right-0 top-0 bottom-0 w-96 z-10
         bg-panel-bg
@@ -96,10 +97,12 @@ export function InspectPanel({
         onClose={onClose}
         variant="desktop"
         searchedAddress={searchedAddress}
+        institution={feature?.institution ?? null}
+        shareUrl={shareUrl}
       />
 
       {/* Content */}
-      <div className="flex-1 overflow-y-scroll" aria-live="polite">
+      <div className="flex-1 overflow-y-auto [scrollbar-gutter:stable]" aria-live="polite">
         {/* Zoning Summary */}
         {data.isZoning && data.zoneInfo && (
           <ZoningSummary
