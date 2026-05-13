@@ -15,7 +15,7 @@ export function ThemeToggle({ inline = false }: ThemeToggleProps) {
       <span className="flex h-[1lh] items-center text-base">
         <button
           onClick={mounted ? toggleTheme : undefined}
-          className="size-[1em] flex-none text-text-secondary hover:text-text-primary transition-colors"
+          className="touch-target-inline size-[1em] flex-none text-text-secondary hover:text-text-primary transition-colors"
           aria-label={mounted ? `Current theme: ${theme}. Click to toggle.` : 'Toggle Theme'}
           title={mounted ? `Theme: ${theme}` : undefined}
         >
