@@ -10,6 +10,22 @@ interface PermitsSectionProps {
   compact?: boolean;
 }
 
+// Permit descriptions often arrive as ALL-CAPS jargon strings. Normalize
+// them to sentence case while leaving mixed-case prose untouched.
+function prettifyDescription(raw: string): string {
+  const cleaned = raw.replace(/\s+/g, ' ').trim();
+  if (!cleaned) return cleaned;
+
+  const letters = cleaned.match(/[A-Za-z]/g) ?? [];
+  const upper = cleaned.match(/[A-Z]/g) ?? [];
+  const isShouty = letters.length > 0 && upper.length / letters.length > 0.7;
+  if (!isShouty) return cleaned;
+
+  const lowered = cleaned.toLowerCase();
+  // Capitalize the first letter of each sentence.
+  return lowered.replace(/(^|[.!?]\s+)([a-z])/g, (_, prefix, char) => prefix + char.toUpperCase());
+}
+
 export function PermitsSection({ permits, isLoading, compact = false }: PermitsSectionProps) {
   if (isLoading) {
     return (
@@ -50,7 +66,7 @@ export function PermitsSection({ permits, isLoading, compact = false }: PermitsS
             </div>
             {!compact && (
               <p className="text-xs text-text-secondary mt-1 line-clamp-2">
-                {permit.description || permit.address}
+                {permit.description ? prettifyDescription(permit.description) : permit.address}
               </p>
             )}
           </div>

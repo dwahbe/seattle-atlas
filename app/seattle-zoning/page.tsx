@@ -167,6 +167,28 @@ export default function SeattleZoningPage() {
           </Link>
           <div className="flex items-center gap-4">
             <Link
+              href="/about"
+              className="h-9 hidden sm:flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
+            >
+              <span className="grid">
+                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
+                  About
+                </span>
+                <span className="col-start-1 row-start-1">About</span>
+              </span>
+            </Link>
+            <span
+              aria-current="page"
+              className="h-9 hidden sm:flex items-center text-sm text-text-primary whitespace-nowrap"
+            >
+              <span className="grid">
+                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
+                  Zoning Guide
+                </span>
+                <span className="col-start-1 row-start-1 font-medium">Zoning Guide</span>
+              </span>
+            </span>
+            <Link
               href="/"
               className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
             >
@@ -181,7 +203,6 @@ export default function SeattleZoningPage() {
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article>
           <header className="mb-8">
-            <p className="text-sm uppercase tracking-wide text-accent mb-2">Land use guide</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
               Seattle Zoning Explained
             </h1>

@@ -5,7 +5,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { initializeMapbox, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
 import { HoverTooltip } from './HoverTooltip';
-import { INSTITUTIONS_LAYER_ID } from '@/lib/constants';
+import { BIKE_LAYER_ID, INSTITUTIONS_LAYER_ID, TRANSIT_LAYER_IDS } from '@/lib/constants';
 import { getInstitutionInfo } from '@/lib/institutions';
 import type { MapViewState, InspectedFeature, LayerConfig } from '@/types';
 
@@ -35,6 +35,15 @@ import { HIGHLIGHT_COLOR } from '@/lib/constants';
 const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
 const HIGHLIGHT_LAYER_ID = 'neighborhood-highlight-layer';
 const HIGHLIGHT_OUTLINE_LAYER_ID = 'neighborhood-highlight-outline';
+
+// Transit and bike infrastructure are render-only — clicking them
+// produces an uninsightful details panel (e.g. "Route 100002, Type: bus"),
+// so they're excluded from click + hover queries.
+const NON_INSPECTABLE_LAYER_IDS = new Set<string>([
+  ...TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  INSTITUTIONS_LAYER_ID,
+]);
 
 export function MapGL({
   viewState,
@@ -154,11 +163,10 @@ export function MapGL({
       if (!map.current) return;
 
       const clickPoint: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-      // Exclude the institutions overlay from the primary query — it's a
-      // silent enrichment layer (fill-opacity 0) that would otherwise win
-      // first-feature selection above the zoning fill.
+      // Exclude transit/bike (render-only) and the institutions overlay
+      // (silent fill-opacity 0 enrichment layer) from the primary query.
       const primaryLayers = activeLayers.filter(
-        (id) => id !== INSTITUTIONS_LAYER_ID && map.current?.getLayer(id)
+        (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.current?.getLayer(id)
       );
       const features = map.current.queryRenderedFeatures(e.point, {
         layers: primaryLayers,
@@ -202,7 +210,7 @@ export function MapGL({
 
       const features = map.current.queryRenderedFeatures(e.point, {
         layers: activeLayers.filter(
-          (id) => id !== INSTITUTIONS_LAYER_ID && map.current?.getLayer(id)
+          (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.current?.getLayer(id)
         ),
       });
 

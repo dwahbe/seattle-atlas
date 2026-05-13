@@ -72,6 +72,28 @@ export default function AboutPage() {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <span
+              aria-current="page"
+              className="h-9 hidden sm:flex items-center text-sm text-text-primary whitespace-nowrap"
+            >
+              <span className="grid">
+                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
+                  About
+                </span>
+                <span className="col-start-1 row-start-1 font-medium">About</span>
+              </span>
+            </span>
+            <Link
+              href="/seattle-zoning"
+              className="h-9 hidden sm:flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
+            >
+              <span className="grid">
+                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
+                  Zoning Guide
+                </span>
+                <span className="col-start-1 row-start-1">Zoning Guide</span>
+              </span>
+            </Link>
             <Link
               href="/"
               className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
@@ -99,9 +121,12 @@ export default function AboutPage() {
               <h2 className="text-lg font-semibold text-text-primary mb-3">
                 What&apos;s on the Map
               </h2>
+              <p className="text-sm mb-3">
+                Three toggles control what you see: Zoning, Transit, and Bike Infrastructure.
+              </p>
               <div className="space-y-3">
                 <div>
-                  <h3 className="font-medium text-text-primary mb-1">Zoning &amp; Land Use</h3>
+                  <h3 className="font-medium text-text-primary mb-1">Zoning</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>
                       Simplified view showing what can be built (houses &amp; townhomes, apartments,
@@ -111,15 +136,13 @@ export default function AboutPage() {
                       Detailed technical zoning codes (NR, LR2, NC3, etc.), reflecting the Jan 21,
                       2026 adoption of One Seattle Plan Ordinance 127376
                     </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-medium text-text-primary mb-1">Parks &amp; Open Space</h3>
-                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>
                       Public parks, greenbelts, and open space—488 parks covering 12.1% of
                       Seattle&apos;s land area
+                    </li>
+                    <li>
+                      Major institution campuses (universities, hospitals) labeled on inspected
+                      parcels
                     </li>
                   </ul>
                 </div>
@@ -130,8 +153,14 @@ export default function AboutPage() {
                     <li>Bus and ferry routes (King County Metro)</li>
                     <li>Link Light Rail and Sounder commuter rail (Sound Transit)</li>
                     <li>Bus stops and transit stations</li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-medium text-text-primary mb-1">Bike Infrastructure</h3>
+                  <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                     <li>
-                      Bike infrastructure: protected lanes, greenways, trails, shared lanes,
+                      Protected lanes, neighborhood greenways, multi-use trails, shared lanes, and
                       sharrows
                     </li>
                   </ul>
@@ -577,6 +606,15 @@ export default function AboutPage() {
                   className="text-accent hover:underline"
                 >
                   Tailwind CSS
+                </a>
+                , with icons from{' '}
+                <a
+                  href="https://tabler.io/icons"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  Tabler Icons
                 </a>
                 . Maps are rendered client-side with{' '}
                 <a

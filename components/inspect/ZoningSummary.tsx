@@ -1,8 +1,7 @@
 'use client';
 
 import type { ZoneInfo } from '@/lib/zoning-info';
-import { getCategoryLabel } from '@/lib/zoning-info';
-import { BuildingGraphic, InstitutionGraphic, StatCard } from '@/components/ui';
+import { BuildingGraphic, InstitutionGraphic } from '@/components/ui';
 import type { InstitutionInfo } from '@/lib/institutions';
 
 interface ZoningSummaryProps {
@@ -14,12 +13,6 @@ interface ZoningSummaryProps {
   institution?: InstitutionInfo | null;
 }
 
-const INSTITUTION_CATEGORY_LABELS: Record<InstitutionInfo['category'], string> = {
-  university: 'University',
-  college: 'College',
-  hospital: 'Hospital',
-};
-
 export function ZoningSummary({
   zoneInfo,
   compact = false,
@@ -28,43 +21,16 @@ export function ZoningSummary({
 }: ZoningSummaryProps) {
   return (
     <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
-      {/* Building type graphic — replaced by institution badge when the
-          parcel is part of a Major Institution Overlay campus. */}
       {institution ? (
-        <InstitutionGraphic institution={institution} className={compact ? 'mb-3' : 'mb-4'} />
+        <InstitutionGraphic institution={institution} />
       ) : (
         <BuildingGraphic
           category={zoneInfo.category}
           maxHeightFt={zoneInfo.maxHeightFt}
           code={zoneInfo.code}
           landmark={landmark}
-          className={compact ? 'mb-3' : 'mb-4'}
         />
       )}
-
-      {/* Quick stats grid */}
-      <div className={`grid grid-cols-2 ${compact ? 'gap-2' : 'gap-3'}`}>
-        <StatCard label="Max Height" value={zoneInfo.maxHeight} compact={compact} />
-        {institution ? (
-          <StatCard
-            label="Category"
-            value={INSTITUTION_CATEGORY_LABELS[institution.category]}
-            compact={compact}
-          />
-        ) : zoneInfo.aduAllowed > 0 ? (
-          <StatCard
-            label={compact ? 'ADUs' : 'ADUs Allowed'}
-            value={compact ? `${zoneInfo.aduAllowed} allowed` : String(zoneInfo.aduAllowed)}
-            compact={compact}
-          />
-        ) : (
-          <StatCard
-            label="Category"
-            value={getCategoryLabel(zoneInfo.category)}
-            compact={compact}
-          />
-        )}
-      </div>
     </div>
   );
 }
@@ -87,8 +53,10 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
           </h3>
           <ul className={`space-y-1 ${compact ? 'text-xs' : 'text-sm'}`}>
             {zoneInfo.allowedUses.map((use) => (
-              <li key={use} className="flex items-start gap-1.5 text-text-primary">
-                <span className="text-green-600 dark:text-green-400 shrink-0 mt-0.5">&#10003;</span>
+              <li key={use} className="flex gap-1.5 text-text-primary">
+                <span className="flex h-[1lh] items-center text-green-600 dark:text-green-400 shrink-0">
+                  &#10003;
+                </span>
                 {use}
               </li>
             ))}
@@ -104,8 +72,10 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
           </h3>
           <ul className={`space-y-1 ${compact ? 'text-xs' : 'text-sm'}`}>
             {zoneInfo.notAllowedUses.map((use) => (
-              <li key={use} className="flex items-start gap-1.5 text-text-secondary">
-                <span className="text-red-500 dark:text-red-400 shrink-0 mt-0.5">&#10005;</span>
+              <li key={use} className="flex gap-1.5 text-text-secondary">
+                <span className="flex h-[1lh] items-center text-red-500 dark:text-red-400 shrink-0">
+                  &#10005;
+                </span>
                 {use}
               </li>
             ))}

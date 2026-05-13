@@ -7,51 +7,67 @@ interface DevelopmentRulesProps {
   zoneInfo: ZoneInfo;
   /** Compact mode for mobile - grid layout */
   compact?: boolean;
+  /** Headless mode - no wrapper/title, for use inside CollapsibleSection */
+  headless?: boolean;
 }
 
-export function DevelopmentRules({ zoneInfo, compact = false }: DevelopmentRulesProps) {
+export function DevelopmentRules({
+  zoneInfo,
+  compact = false,
+  headless = false,
+}: DevelopmentRulesProps) {
   if (compact) {
+    const grid = (
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+        <div>
+          <dt className="text-text-secondary flex items-center gap-1">
+            Zone Code
+            <InfoTooltip text="Official zoning designation from Seattle Municipal Code." />
+          </dt>
+          <dd className="font-medium text-text-primary">{zoneInfo.code}</dd>
+        </div>
+        <div>
+          <dt className="text-text-secondary">Max Height</dt>
+          <dd className="font-medium text-text-primary">{zoneInfo.maxHeight}</dd>
+        </div>
+        <div>
+          <dt className="text-text-secondary flex items-center gap-1">
+            Lot Coverage
+            <InfoTooltip text="Max % of lot that can be covered by buildings." />
+          </dt>
+          <dd className="font-medium text-text-primary">{zoneInfo.lotCoverage}</dd>
+        </div>
+        <div>
+          <dt className="text-text-secondary flex items-center gap-1">
+            FAR
+            <InfoTooltip text="Floor Area Ratio: total floor area ÷ lot size. FAR 1.0 = floor area equal to lot." />
+          </dt>
+          <dd className="font-medium text-text-primary">{zoneInfo.far}</dd>
+        </div>
+        <div>
+          <dt className="text-text-secondary">Code</dt>
+          <dd>
+            <a
+              href={zoneInfo.smcLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent font-medium"
+            >
+              SMC {zoneInfo.smcSection} →
+            </a>
+          </dd>
+        </div>
+      </dl>
+    );
+
+    if (headless) return grid;
+
     return (
       <div className="px-4 py-3 border-b border-border">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
           Development Rules
         </h3>
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-          <div>
-            <dt className="text-text-secondary flex items-center gap-1">
-              Zone Code
-              <InfoTooltip text="Official zoning designation from Seattle Municipal Code." />
-            </dt>
-            <dd className="font-medium text-text-primary">{zoneInfo.code}</dd>
-          </div>
-          <div>
-            <dt className="text-text-secondary flex items-center gap-1">
-              Lot Coverage
-              <InfoTooltip text="Max % of lot that can be covered by buildings." />
-            </dt>
-            <dd className="font-medium text-text-primary">{zoneInfo.lotCoverage}</dd>
-          </div>
-          <div>
-            <dt className="text-text-secondary flex items-center gap-1">
-              FAR
-              <InfoTooltip text="Floor Area Ratio: total floor area ÷ lot size. FAR 1.0 = floor area equal to lot." />
-            </dt>
-            <dd className="font-medium text-text-primary">{zoneInfo.far}</dd>
-          </div>
-          <div>
-            <dt className="text-text-secondary">Code</dt>
-            <dd>
-              <a
-                href={zoneInfo.smcLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-accent font-medium"
-              >
-                SMC {zoneInfo.smcSection} →
-              </a>
-            </dd>
-          </div>
-        </dl>
+        {grid}
       </div>
     );
   }
@@ -64,6 +80,7 @@ export function DevelopmentRules({ zoneInfo, compact = false }: DevelopmentRules
         value={zoneInfo.code}
         tooltip="The official zoning designation from Seattle Municipal Code. This code determines what can be built."
       />
+      <RuleRow label="Max Height" value={zoneInfo.maxHeight} />
       <RuleRow
         label="Lot Coverage"
         value={zoneInfo.lotCoverage}
