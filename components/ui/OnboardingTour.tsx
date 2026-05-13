@@ -164,7 +164,7 @@ export function OnboardingTour() {
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const overlay = (
-    <div className="fixed inset-0 z-100" role="dialog" aria-modal="true" aria-label="Welcome tour">
+    <div className="fixed inset-0 z-100" role="dialog" aria-modal="true" aria-label="Welcome Tour">
       {/* Overlay with spotlight cutout using CSS clip-path */}
       <div
         className="absolute inset-0 bg-black/50"

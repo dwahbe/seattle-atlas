@@ -29,6 +29,12 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 - **ESLint** — `react-hooks/set-state-in-effect` is intentionally downgraded to `warn`; setState in effects is used deliberately for data fetching and state resets. Prefer React's "setState during render" pattern (see `useInspectData.ts`, `MobileDrawer.tsx`) over `useEffect` for prop-derived state resets.
 - **Bun** is the package manager; tests use Bun's built-in `bun:test` runner.
 
+## UI Copy
+
+**Title Case for all labels.** Buttons, headings, panel/section titles, layer names, legend categories, menu items, toggle labels and descriptions, placeholders, tooltips, and `aria-label` attributes all use Title Case (e.g. `"What Can Be Built"`, `"Bus & Light Rail Routes"`, `"Close Panel"`, `"More Information"`). Lowercase short articles, prepositions, and conjunctions (`a`, `an`, `the`, `and`, `or`, `but`, `of`, `in`, `on`, `at`, `to`, `for`) unless they're the first word — e.g. `"Back to Layers"`.
+
+**Sentence case only for full sentences.** Toast notifications, multi-sentence aria descriptions (`"Current theme: dark. Click to toggle."`), and status text (`"Loading..."`) are sentences, not labels — keep these in sentence case.
+
 ## Architecture
 
 ### URL-Driven State

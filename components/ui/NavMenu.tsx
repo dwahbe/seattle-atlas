@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const NAV_LINKS = [
-  { href: '/seattle-zoning', label: 'Seattle Zoning Guide' },
   { href: '/about', label: 'About' },
+  { href: '/seattle-zoning', label: 'Seattle Zoning Guide' },
 ];
 
 export function NavMenu() {
@@ -47,11 +47,11 @@ export function NavMenu() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="
-          touch-target-inline h-[42px] px-3 flex items-center justify-center rounded-lg
+          touch-target-inline h-[46px] px-3 flex items-center justify-center rounded-lg
           bg-panel-bg border border-border
           hover:bg-secondary-bg transition-colors
         "
-        aria-label="Navigation menu"
+        aria-label="Navigation Menu"
         aria-expanded={isOpen}
       >
         {isOpen ? (

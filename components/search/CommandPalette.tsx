@@ -236,14 +236,14 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           }}
           onKeyDown={handleKeyDown}
           onFocus={() => !isVisible && open()}
-          placeholder={isOpen ? 'Search address or neighborhood...' : 'Search address...'}
-          className="
+          placeholder={isOpen ? 'Search Address or Neighborhood...' : 'Search Address...'}
+          className={`
             flex-1 bg-transparent
-            text-base sm:text-sm text-text-primary
+            ${isMobile ? 'text-base' : 'text-sm'} text-text-primary
             placeholder:text-text-secondary
             [border:none] [outline:none] [box-shadow:none]
             focus:[border:none] focus:[outline:none] focus:[box-shadow:none]
-          "
+          `}
           style={{ outline: 'none', border: 'none', boxShadow: 'none' }}
           autoComplete="off"
           autoCorrect="off"

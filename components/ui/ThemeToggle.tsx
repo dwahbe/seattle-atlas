@@ -9,7 +9,7 @@ export function ThemeToggle() {
     return (
       <button
         className="w-9 h-9 flex items-center justify-center rounded-md bg-secondary-bg text-text-secondary border border-border/40"
-        aria-label="Toggle theme"
+        aria-label="Toggle Theme"
       >
         <span className="w-4 h-4 block" />
       </button>

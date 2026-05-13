@@ -21,7 +21,7 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         onFocus={() => setIsVisible(true)}
         onBlur={() => setIsVisible(false)}
         onClick={() => setIsVisible(!isVisible)}
-        aria-label="More information"
+        aria-label="More Information"
         aria-describedby={isVisible ? tooltipId : undefined}
       >
         {/* Expanded touch area (invisible) */}
