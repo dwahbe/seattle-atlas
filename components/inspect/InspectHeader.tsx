@@ -82,10 +82,10 @@ export function InspectHeader({
           <button
             onClick={onBack || onClose}
             className="flex items-center gap-1 text-sm text-accent hover:text-accent-hover transition-colors -ml-1 py-1"
-            aria-label="Back to Layers"
+            aria-label="Back"
           >
             <IconChevronLeft size={16} stroke={2} aria-hidden="true" />
-            Layers
+            Back
           </button>
         </div>
 
