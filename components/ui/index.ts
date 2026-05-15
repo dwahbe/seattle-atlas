@@ -3,6 +3,7 @@ export { InstitutionGraphic } from './InstitutionGraphic';
 export { Button } from './Button';
 export { Donut } from './Donut';
 export { Footer } from './Footer';
+export { IntroHero } from './IntroHero';
 export { NavMenu } from './NavMenu';
 export { Skeleton } from './Skeleton';
 export { StatCard } from './StatCard';

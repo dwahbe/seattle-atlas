@@ -5,6 +5,23 @@ export const SEATTLE_CENTER = {
   zoom: 12,
 };
 
+// The query params that encode map view/state. Single source of truth:
+// `useUrlState`'s parsers are key-checked against this list, and the intro
+// splash skips itself when any are present (treating the URL as a deep link).
+// The pre-hydration script in app/layout.tsx mirrors this as a literal array
+// because inline scripts can't import — keep that copy in sync.
+export const MAP_STATE_PARAMS = [
+  'lat',
+  'lng',
+  'z',
+  'layers',
+  'filters',
+  'inspect',
+  'compare',
+] as const;
+
+export type MapStateParam = (typeof MAP_STATE_PARAMS)[number];
+
 // Default visible layers. Parks and the institutions overlay both ride along
 // with the zoning toggle (see MapContainer.handleBaseLayerChange), so they
 // appear together on first load. Institutions has fill-opacity 0 — it's a

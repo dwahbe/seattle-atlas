@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
 import { MapContainer } from '@/components/map/MapContainer';
+import { IntroHero } from '@/components/ui/IntroHero';
 
 const siteUrl = 'https://seattleatlas.org';
 
@@ -90,9 +91,10 @@ export default function Home() {
           <MapContainer />
         </Suspense>
       </main>
+      <IntroHero />
       {/* Crawlable text for SEO — visually hidden, accessible to search engines and screen readers. */}
       <section className="sr-only">
-        <h1>Seattle Atlas: zoning, transit, and land use in one map</h1>
+        <h1>Seattle&rsquo;s zoning and transit simplified</h1>
         <p>
           Search Seattle zoning by neighborhood, explore what can be built where, and see transit
           and proposed changes side by side. Seattle Atlas brings zoning, land use, transit, and

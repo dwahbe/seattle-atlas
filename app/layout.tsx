@@ -100,6 +100,14 @@ export default function RootLayout({
                   if (theme === 'dark' || (theme === 'system' && systemDark) || (!theme && systemDark)) {
                     document.documentElement.classList.add('dark');
                   }
+                  // Mirror of MAP_STATE_PARAMS in lib/url-state.ts — an inline
+                  // pre-hydration script can't import. Keep this list in sync.
+                  var p = new URLSearchParams(window.location.search);
+                  var mapKeys = ['lat','lng','z','layers','filters','inspect','compare'];
+                  var hasMapState = mapKeys.some(function(k){ return p.has(k); });
+                  if (hasMapState || localStorage.getItem('atlas-intro-seen') === '1') {
+                    document.documentElement.classList.add('intro-seen');
+                  }
                 } catch (e) {}
               })();
             `,

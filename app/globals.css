@@ -89,6 +89,131 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Pre-hydration intro skip: keep the splash from flashing for deep links
+   and returning visitors. Set by the inline script in app/layout.tsx. */
+html.intro-seen #intro-hero {
+  display: none;
+}
+
+/* Aurora backdrop for the intro splash: soft zoning-color fields drift along
+   long, desynchronized orbital paths while the whole layer slowly hue-shifts
+   and a fine grain texture overlays the result. Durations are intentionally
+   coprime so the composite never visibly repeats. */
+@keyframes intro-orbit-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  22% {
+    transform: translate3d(-9%, 8%, 0) scale(1.14) rotate(3deg);
+  }
+  46% {
+    transform: translate3d(7%, 14%, 0) scale(1.05) rotate(-2deg);
+  }
+  71% {
+    transform: translate3d(13%, -5%, 0) scale(1.18) rotate(4deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes intro-orbit-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.08) rotate(0deg);
+  }
+  26% {
+    transform: translate3d(13%, -9%, 0) scale(1) rotate(-3deg);
+  }
+  52% {
+    transform: translate3d(-7%, -14%, 0) scale(1.2) rotate(2deg);
+  }
+  78% {
+    transform: translate3d(-12%, 6%, 0) scale(1.04) rotate(-4deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.08) rotate(0deg);
+  }
+}
+
+@keyframes intro-orbit-c {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.12) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(11%, 10%, 0) scale(1) rotate(3deg);
+  }
+  66% {
+    transform: translate3d(-9%, 12%, 0) scale(1.16) rotate(-3deg);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1.12) rotate(0deg);
+  }
+}
+
+@keyframes intro-breathe {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes intro-hue {
+  0%,
+  100% {
+    filter: hue-rotate(-16deg) saturate(1.05);
+  }
+  50% {
+    filter: hue-rotate(16deg) saturate(1.25);
+  }
+}
+
+.intro-aurora {
+  will-change: filter;
+}
+
+.intro-blob {
+  will-change: transform, opacity;
+}
+
+/* Animations are gated behind .intro-animate (added one frame after mount)
+   so this compositing doesn't contend with Mapbox WebGL init on first paint. */
+.intro-animate .intro-aurora {
+  animation: intro-hue 48s ease-in-out infinite;
+}
+
+.intro-animate .intro-blob {
+  animation:
+    var(--orbit, intro-orbit-a) var(--dur, 56s) cubic-bezier(0.45, 0, 0.55, 1) var(--delay, 0s)
+      infinite,
+    intro-breathe var(--bdur, 24s) ease-in-out var(--bdelay, 0s) infinite;
+}
+
+/* Fine film grain so the gradient reads as textured, not flat
+   (technique: css-tricks.com/grainy-gradients). Plain opacity, no
+   mix-blend-mode: a full-screen blend over an animated, filtered, blurred
+   subtree is uncacheable and re-composites every frame. */
+.intro-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro-animate .intro-aurora,
+  .intro-animate .intro-blob {
+    animation: none;
+  }
+  .intro-aurora,
+  .intro-blob {
+    will-change: auto;
+  }
+  .intro-grain {
+    display: none;
+  }
+}
+
 body {
   font-family: var(--font-sans);
   background-color: rgb(var(--panel-bg));
@@ -395,3 +520,4 @@ body.scroll-lock {
     display: none !important;
   }
 }
+

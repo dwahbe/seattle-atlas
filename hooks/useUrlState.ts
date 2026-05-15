@@ -10,8 +10,11 @@ import {
   serializeFiltersParam,
   buildShareableUrl,
 } from '@/lib/url-state';
+import type { MapStateParam } from '@/lib/url-state';
 import type { MapViewState, FilterState } from '@/types';
 
+// `satisfies Record<MapStateParam, unknown>` makes the build fail if these
+// keys ever drift from MAP_STATE_PARAMS (the list the intro-skip logic uses).
 const urlParsers = {
   lat: parseAsFloat.withDefault(SEATTLE_CENTER.lat),
   lng: parseAsFloat.withDefault(SEATTLE_CENTER.lng),
@@ -20,7 +23,7 @@ const urlParsers = {
   filters: parseAsString.withDefault(''),
   inspect: parseAsString.withDefault(''),
   compare: parseAsBoolean.withDefault(false),
-};
+} satisfies Record<MapStateParam, unknown>;
 
 export function useUrlState() {
   const [params, setParams] = useQueryStates(urlParsers, {

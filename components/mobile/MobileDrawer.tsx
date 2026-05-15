@@ -1,7 +1,7 @@
 'use client';
 
 import { Drawer } from 'vaul';
-import { useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Legend } from '@/components/controls/Legend';
 import { BuildingGraphic, InstitutionGraphic, Switch, ThemeToggle } from '@/components/ui';
 import { useInspectData } from '@/hooks/useInspectData';
@@ -27,11 +27,13 @@ import {
 } from '@/lib/constants';
 import Link from 'next/link';
 
-// Snap points for the drawer (peek, half, full)
-const SNAP_POINT_PEEK = 0.15;
-const SNAP_POINT_HALF = 0.5;
-const SNAP_POINT_FULL = 0.92;
-const SNAP_POINTS: (number | string)[] = [SNAP_POINT_PEEK, SNAP_POINT_HALF, SNAP_POINT_FULL];
+// Detents as viewport fractions: [peek, half, full]. The last must be 1 — vaul
+// only enables internal scrolling at the last snap point, and its positioning
+// requires a viewport-tall (h-full) sheet. The user's detent is tracked by
+// INDEX into SNAP_POINTS so it survives content/mode changes.
+const SNAP_POINTS = [0.15, 0.5, 1];
+const DETENT_HALF = 1;
+const DETENT_FULL = 2;
 
 interface MobileDrawerProps {
   // Layer controls
@@ -68,7 +70,7 @@ export function MobileDrawer({
   searchedAddress,
   clickPoint,
 }: MobileDrawerProps) {
-  const [snap, setSnap] = useState<number | string | null>(SNAP_POINT_HALF);
+  const [snapIndex, setSnapIndex] = useState(DETENT_HALF);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
 
   const toggleSection = (section: string) => {
@@ -82,14 +84,6 @@ export function MobileDrawer({
       return next;
     });
   };
-
-  // Calculate the max height for scrollable content based on current snap point
-  // Header + drag handle is ~80px, subtract from visible drawer height
-  const headerHeight = 80;
-  const snapFraction = typeof snap === 'number' ? snap : SNAP_POINT_HALF;
-  const scrollableMaxHeight = `calc(${snapFraction * 100}dvh - ${headerHeight}px - env(safe-area-inset-bottom))`;
-  // At full height, let a downward pull from the top of the scroll area collapse the drawer.
-  const isFullyExpanded = snap === SNAP_POINT_FULL;
 
   // Use shared data fetching hook
   const data = useInspectData(inspectedFeature, layerConfigs, proposals, clickPoint);
@@ -158,22 +152,43 @@ export function MobileDrawer({
     setPrevIsInspecting(isInspecting);
     if (isInspecting) {
       // Transitioning to inspect mode — expand drawer to show content
-      setSnap(SNAP_POINT_HALF);
+      setSnapIndex(DETENT_HALF);
     }
   }
+
+  // Controls and inspect modes share one scroll container, so its scrollTop
+  // carries across the mode swap. Reset it on every transition so the inspector
+  // (and the controls list on close) always opens at the top.
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+  }, [isInspecting]);
+
+  // vaul's snap positioning reveals the bottom N of a viewport-tall,
+  // bottom-anchored sheet, so Drawer.Content must be h-full — a content-hugged
+  // box gets mis-translated off-screen. The short-content "empty space" is
+  // handled in the layout instead: the footer is pinned flush to the sheet
+  // bottom (min-h-full), so it reads as a bottom toolbar rather than a gray
+  // bar floating above whitespace.
+  const activeSnapPoint = SNAP_POINTS[snapIndex] ?? SNAP_POINTS[DETENT_HALF];
+  const handleSnapChange = useCallback((value: number | string | null) => {
+    const i = SNAP_POINTS.indexOf(value as number);
+    if (i >= 0) setSnapIndex(i);
+  }, []);
+  const isFullDetent = snapIndex === DETENT_FULL;
 
   return (
     <Drawer.Root
       open
       modal={false}
       snapPoints={SNAP_POINTS}
-      activeSnapPoint={snap}
-      setActiveSnapPoint={setSnap}
+      activeSnapPoint={activeSnapPoint}
+      setActiveSnapPoint={handleSnapChange}
       dismissible={false}
-      scrollLockTimeout={0}
+      snapToSequentialPoint
     >
       <Drawer.Portal>
-        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-panel-bg border-t border-border shadow-2xl h-full">
+        <Drawer.Content className="fixed bottom-0 left-0 right-0 z-30 flex flex-col rounded-t-2xl bg-panel-bg border-t border-border shadow-2xl h-full max-h-[92dvh]">
           <Drawer.Title className="sr-only">Seattle Atlas Controls</Drawer.Title>
           {/* Drag handle */}
           <div className="flex-none pt-3 pb-2 px-4">
@@ -191,11 +206,16 @@ export function MobileDrawer({
             </div>
           </div>
 
-          {/* Scrollable content area - height calculated based on current snap point */}
+          {/* Scrollable content area. vaul only allows internal scrolling at the
+              topmost snap point; at lower snaps the content must be
+              overflow-hidden so a drag moves the drawer between detents instead
+              of scrolling. Toggling overflow does not change layout, so the
+              content never reflows when the snap point changes. */}
           <div
-            className="overflow-y-auto overscroll-contain"
-            style={{ maxHeight: scrollableMaxHeight }}
-            data-vaul-no-drag={isFullyExpanded ? undefined : ''}
+            ref={scrollRef}
+            className={`flex-1 min-h-0 overscroll-contain ${
+              isFullDetent ? 'overflow-y-auto' : 'overflow-hidden'
+            }`}
             aria-live="polite"
           >
             {isInspecting && inspectedFeature ? (
@@ -323,7 +343,7 @@ export function MobileDrawer({
               /* ============================================================
                  CONTROLS MODE - Layer toggles and legend
                  ============================================================ */
-              <div className="flex flex-col min-h-full">
+              <div className="flex min-h-full flex-col">
                 <div className="flex-1">
                   {/* Layers */}
                   <div className="p-4 border-b border-border">

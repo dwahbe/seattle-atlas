@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
+import { getStoredItem, setStoredItem } from '@/lib/storage';
 
 const STORAGE_KEY = 'atlas-onboarding-seen';
 
@@ -104,12 +105,7 @@ export function OnboardingTour() {
   const [currentStep, setCurrentStep] = useState<number | null>(null);
 
   useEffect(() => {
-    // Check if user has seen the tour
-    try {
-      if (localStorage.getItem(STORAGE_KEY)) return;
-    } catch {
-      return;
-    }
+    if (getStoredItem(STORAGE_KEY)) return;
     // Small delay so the map has time to render
     const timer = setTimeout(() => setCurrentStep(0), 1500);
     return () => clearTimeout(timer);
@@ -117,11 +113,7 @@ export function OnboardingTour() {
 
   const dismiss = useCallback(() => {
     setCurrentStep(null);
-    try {
-      localStorage.setItem(STORAGE_KEY, 'true');
-    } catch {
-      // localStorage not available
-    }
+    setStoredItem(STORAGE_KEY, 'true');
   }, []);
 
   const next = useCallback(() => {
