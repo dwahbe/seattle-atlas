@@ -87,7 +87,7 @@ export function MobileDrawer({
   // Header + drag handle is ~80px, subtract from visible drawer height
   const headerHeight = 80;
   const snapFraction = typeof snap === 'number' ? snap : SNAP_POINT_HALF;
-  const scrollableMaxHeight = `calc(${snapFraction * 100}vh - ${headerHeight}px)`;
+  const scrollableMaxHeight = `calc(${snapFraction * 100}dvh - ${headerHeight}px - env(safe-area-inset-bottom))`;
   // At full height, let a downward pull from the top of the scroll area collapse the drawer.
   const isFullyExpanded = snap === SNAP_POINT_FULL;
 
