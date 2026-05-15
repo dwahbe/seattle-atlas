@@ -316,7 +316,10 @@ export function MapContainer() {
         /* Mobile Layout */
         <>
           {/* Floating search bar and nav at top */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex gap-2">
+          {/* pointer-events-auto: the always-open vaul drawer puts the body in
+              pointer-events:none (Radix DismissableLayer), so this floating bar
+              must opt back in or taps never reach the search/nav. */}
+          <div className="pointer-events-auto absolute top-4 left-4 right-4 z-20 flex items-start gap-2">
             <div className="flex-1 min-w-0">
               <PanelSearch onSelect={handleSearchSelect} variant="mobile" />
             </div>

@@ -82,8 +82,13 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
       setCollapsedHeight(rect.height);
     }
     setIsOpen(true);
-    setTimeout(() => inputRef.current?.focus(), 0);
-  }, []);
+    // On mobile the user's tap already focused the (persistent) inline input.
+    // Re-focusing async would move focus off the tapped element and iOS Safari
+    // would refuse to open the keyboard. Only steal focus on desktop.
+    if (!isMobile) {
+      setTimeout(() => inputRef.current?.focus(), 0);
+    }
+  }, [isMobile]);
 
   const close = useCallback(() => {
     setIsClosing(true);
@@ -386,8 +391,11 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
 
   return (
     <>
-      {/* Backdrop + floating search - rendered via portal when open/closing */}
-      {mounted &&
+      {/* Desktop: backdrop + floating search rendered via portal when open/closing.
+          Mobile intentionally skips the portal so the tapped <input> is never
+          remounted — see open() for the iOS focus rationale. */}
+      {!isMobile &&
+        mounted &&
         isVisible &&
         position &&
         createPortal(
@@ -465,15 +473,34 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
           document.body
         )}
 
-      {/* Inline trigger - invisible when portal is open (no transition to avoid double-vision) */}
+      {/* Mobile backdrop - sits below the search container (z-20) but above the
+          map so tapping outside dismisses, without ever covering the input. */}
+      {isMobile && isVisible && (
+        <div
+          className="pointer-events-auto fixed inset-0 bg-black/30 backdrop-blur-[2px] z-10 transition-opacity duration-150"
+          style={{ opacity: isClosing ? 0 : 1 }}
+          onClick={close}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Inline trigger.
+          Desktop: invisible when the portal is open (no transition to avoid double-vision).
+          Mobile: always the single live search UI — the same <input> the user
+          tapped stays mounted, so iOS keeps focus and opens the keyboard. */}
       <div
         ref={triggerRef}
-        style={{
-          opacity: isVisible ? 0 : 1,
-          pointerEvents: isVisible ? 'none' : 'auto',
-          height: isVisible && collapsedHeight ? collapsedHeight : undefined,
-          overflow: isVisible ? 'hidden' : undefined,
-        }}
+        className={isMobile && isVisible ? 'relative z-20' : undefined}
+        style={
+          isMobile
+            ? undefined
+            : {
+                opacity: isVisible ? 0 : 1,
+                pointerEvents: isVisible ? 'none' : 'auto',
+                height: isVisible && collapsedHeight ? collapsedHeight : undefined,
+                overflow: isVisible ? 'hidden' : undefined,
+              }
+        }
       >
         {searchUI}
       </div>
