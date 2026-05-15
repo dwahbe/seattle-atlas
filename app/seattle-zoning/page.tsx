@@ -428,7 +428,7 @@ export default function SeattleZoningPage() {
                 <li>Browse public parks and open space</li>
                 <li>Explore bus routes, light rail, and bike infrastructure</li>
                 <li>
-                  Click any parcel for zoning details, nearby permits, Walk Score, and related
+                  Click any parcel for zoning details, nearby permits, Car-Free Score, and related
                   development proposals
                 </li>
                 <li>Search by address or neighborhood</li>

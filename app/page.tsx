@@ -103,7 +103,7 @@ export default function Home() {
         <p>
           Seattle Atlas combines zoning data from the City of Seattle, transit routes from King
           County Metro and Sound Transit, and bike infrastructure from SDOT. Click any parcel to see
-          allowed uses, nearby permits, Walk Score, and proposed zoning changes from the
+          allowed uses, nearby permits, Car-Free Score, and proposed zoning changes from the
           Comprehensive Plan 2044 (One Seattle Plan) and Ordinance 127376 — including the new
           Neighborhood Residential zone, station area rezoning, ADU and DADU expansion, missing
           middle housing, and Centers and Corridors legislation.
