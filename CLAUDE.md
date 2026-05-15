@@ -37,6 +37,22 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 
 **Sentence case only for full sentences.** Toast notifications, multi-sentence aria descriptions (`"Current theme: dark. Click to toggle."`), and status text (`"Loading..."`) are sentences, not labels — keep these in sentence case.
 
+## Typography Scale
+
+The standalone content/utility pages (`/about`, `/seattle-zoning`, `error.tsx`, `not-found.tsx`, `loading.tsx`) share one type scale. Match it when adding pages or sections — don't introduce one-off sizes.
+
+| Role | Class | Notes |
+| --- | --- | --- |
+| Article page title (`h1`) | `text-3xl sm:text-4xl font-bold` | `/about`, `/seattle-zoning` — inside `<header className="mb-8 border-b border-border pb-8">` with the lede; the rule separates the standfirst from the body |
+| Utility page title (`h1`) | `text-3xl font-bold` | Centered status cards (`error.tsx`, `not-found.tsx`); intentionally no `sm:` bump |
+| Lede / deck | `text-lg text-text-secondary` | The single intro line directly under the `h1`, inside the `<header>` |
+| Section heading (`h2`) | `text-xl font-semibold` | |
+| Subheading (`h3`) | `font-medium` | Base 16px — do not add a size class |
+| Body | (none) | Base 16px |
+| Supporting text (captions, source/citation lists, FAQ answers, disclaimers) | `text-sm` | |
+
+Buttons get their text size from `Button.tsx` (`sm` 12 / `md` 14 / `lg` 16px) — use the `Button` component, don't hand-roll button-styled links.
+
 ## Project Structure
 
 - `components/` is grouped by surface: `map/` (MapGL, MapLayers, MapContainer orchestrator), `mobile/` (MobileDrawer), `panels/` (desktop ControlPanel/InspectPanel), `controls/` (Legend), `inspect/` (shared inspect sections), `search/` (CommandPalette), `ui/` (primitives, barrel-exported via `components/ui/index.ts`).

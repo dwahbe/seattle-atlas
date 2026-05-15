@@ -108,15 +108,18 @@ export default function AboutPage() {
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article>
-          <h1 className="text-3xl font-bold text-text-primary mb-6">About Seattle Atlas</h1>
-
-          <div className="space-y-6 text-text-secondary">
-            <p>
+          <header className="mb-8 border-b border-border pb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
+              About Seattle Atlas
+            </h1>
+            <p className="text-lg text-text-secondary">
               Seattle Atlas is an interactive map for exploring land use, transit, and urban
               planning in Seattle. View zoning rules, transit routes, bike infrastructure, and
               proposed development policies—all in one place.
             </p>
+          </header>
 
+          <div className="space-y-6 text-text-secondary">
             <section>
               <h2 className="text-xl font-semibold text-text-primary mb-3">
                 What&apos;s on the Map

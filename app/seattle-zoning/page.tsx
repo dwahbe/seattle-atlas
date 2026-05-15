@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ThemeToggle, Footer } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 
 const siteUrl = 'https://seattleatlas.org';
 
@@ -202,7 +203,7 @@ export default function SeattleZoningPage() {
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <article>
-          <header className="mb-8">
+          <header className="mb-8 border-b border-border pb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
               Seattle Zoning Explained
             </h1>
@@ -214,6 +215,7 @@ export default function SeattleZoningPage() {
           <div className="space-y-8 text-text-secondary">
             {/* Introduction */}
             <section className="space-y-4">
+              <h2 className="text-xl font-semibold text-text-primary">Why zoning matters</h2>
               <p>
                 Seattle faces a housing affordability crisis, and zoning plays a central role. The
                 city&apos;s land use code determines where housing can be built, how dense it can
@@ -432,11 +434,10 @@ export default function SeattleZoningPage() {
                 <li>Search by address or neighborhood</li>
               </ul>
               <div className="pt-4">
-                <Link
-                  href="/"
-                  className="inline-flex items-center justify-center rounded-md bg-accent px-6 py-3 text-base font-semibold text-white hover:opacity-90 transition-opacity"
-                >
-                  Open the map
+                <Link href="/">
+                  <Button variant="primary" size="lg">
+                    Open the map
+                  </Button>
                 </Link>
               </div>
             </section>
@@ -458,7 +459,7 @@ export default function SeattleZoningPage() {
 
             {/* Sources */}
             <section className="space-y-4 pt-4 border-t border-border">
-              <h2 className="text-lg font-semibold text-text-primary">
+              <h2 className="text-xl font-semibold text-text-primary">
                 Sources and further reading
               </h2>
               <ol className="list-decimal list-inside space-y-2 ml-2 text-sm">

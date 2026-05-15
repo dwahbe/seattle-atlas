@@ -9,7 +9,7 @@ export default function NotFound() {
         <div className="w-20 h-20 mx-auto mb-6 bg-secondary-bg rounded-full flex items-center justify-center">
           <IconMoodSad className="w-10 h-10 text-text-secondary" stroke={2} />
         </div>
-        <h1 className="text-2xl font-bold text-text-primary mb-3">Page not found</h1>
+        <h1 className="text-3xl font-bold text-text-primary mb-3">Page not found</h1>
         <p className="text-text-secondary mb-8">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
