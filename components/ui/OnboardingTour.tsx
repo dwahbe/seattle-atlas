@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
+import { onIntroDone } from '@/lib/intro-state';
 
 const STORAGE_KEY = 'atlas-onboarding-seen';
 
@@ -21,7 +22,7 @@ const STEPS: TourStep[] = [
   },
   {
     title: 'Click a parcel',
-    description: 'Click anywhere on the map to see zoning rules, Walk Score, permits, and more.',
+    description: 'Click anywhere on the map to see zoning rules, Car-Free Score, permits, and more.',
     target: 'map',
   },
   {
@@ -31,24 +32,36 @@ const STEPS: TourStep[] = [
   },
 ];
 
-function getTargetRect(target: TourStep['target']): {
-  top: number;
-  left: number;
-  width: number;
-  height: number;
-} {
+type Rect = { top: number; left: number; width: number; height: number };
+
+// The control panel hugs the viewport's left edge, so an 8px-expanded highlight
+// would bleed its rounded border off-screen. Keep the spotlight fully visible.
+function clampRectToViewport(rect: Rect, margin = 8): Rect {
+  const left = Math.max(margin, rect.left);
+  const top = Math.max(margin, rect.top);
+  const right = Math.min(rect.left + rect.width, window.innerWidth - margin);
+  const bottom = Math.min(rect.top + rect.height, window.innerHeight - margin);
+  return {
+    left,
+    top,
+    width: Math.max(0, right - left),
+    height: Math.max(0, bottom - top),
+  };
+}
+
+function getTargetRect(target: TourStep['target']): Rect {
   switch (target) {
     case 'search': {
       // Target the search input area in the control panel
       const el = document.querySelector('[data-tour="search"]') as HTMLElement | null;
       if (el) {
         const rect = el.getBoundingClientRect();
-        return {
+        return clampRectToViewport({
           top: rect.top - 8,
           left: rect.left - 8,
           width: rect.width + 16,
           height: rect.height + 16,
-        };
+        });
       }
       // Fallback: top-left area where search lives
       return { top: 60, left: 16, width: 296, height: 48 };
@@ -65,12 +78,22 @@ function getTargetRect(target: TourStep['target']): {
       const el = document.querySelector('[data-tour="layers"]') as HTMLElement | null;
       if (el) {
         const rect = el.getBoundingClientRect();
-        return {
-          top: rect.top - 8,
-          left: rect.left - 8,
-          width: rect.width + 16,
-          height: rect.height + 16,
-        };
+        // The panel hugs the viewport's left edge, so the left side has to be
+        // pinned to a small margin. Mirror the right side about the section's
+        // center so the spotlight reads as evenly inset on both sides. Tighter
+        // vertical inset because the section already carries py-4 padding.
+        const margin = 4;
+        const left = Math.max(margin, rect.left - 8);
+        const center = rect.left + rect.width / 2;
+        return clampRectToViewport(
+          {
+            top: rect.top + 4,
+            left,
+            width: (center - left) * 2,
+            height: rect.height - 8,
+          },
+          margin
+        );
       }
       // Fallback: left panel layers area
       return { top: 140, left: 16, width: 296, height: 160 };
@@ -80,20 +103,26 @@ function getTargetRect(target: TourStep['target']): {
 
 function getTooltipPosition(targetRect: ReturnType<typeof getTargetRect>) {
   const tooltipWidth = 300;
+  // Estimated max tooltip height (padding + title + 3-line description + buttons).
+  // Used only to keep the tooltip from clipping off the bottom of the viewport.
+  const tooltipHeight = 200;
   const padding = 16;
+
+  const clampTop = (top: number) =>
+    Math.max(padding, Math.min(top, window.innerHeight - tooltipHeight - padding));
 
   // Position tooltip to the right of the target, or below if not enough space
   const rightSpace = window.innerWidth - (targetRect.left + targetRect.width);
   if (rightSpace > tooltipWidth + padding * 2) {
     return {
-      top: targetRect.top,
+      top: clampTop(targetRect.top),
       left: targetRect.left + targetRect.width + padding,
     };
   }
 
   // Below the target
   return {
-    top: targetRect.top + targetRect.height + padding,
+    top: clampTop(targetRect.top + targetRect.height + padding),
     left: Math.max(padding, Math.min(targetRect.left, window.innerWidth - tooltipWidth - padding)),
   };
 }
@@ -106,9 +135,18 @@ export function OnboardingTour() {
 
   useEffect(() => {
     if (getStoredItem(STORAGE_KEY)) return;
-    // Small delay so the map has time to render
-    const timer = setTimeout(() => setCurrentStep(0), 1500);
-    return () => clearTimeout(timer);
+    // Wait for the intro splash to finish before arming the tour — otherwise
+    // the tooltip pops over the splash. Fires synchronously if the intro was
+    // already skipped (deep link / returning visitor).
+    let timer: ReturnType<typeof setTimeout>;
+    const unsubscribe = onIntroDone(() => {
+      // Small delay so the map has time to render
+      timer = setTimeout(() => setCurrentStep(0), 1500);
+    });
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const dismiss = useCallback(() => {

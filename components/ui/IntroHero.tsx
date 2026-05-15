@@ -6,6 +6,7 @@ import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { getLayerById } from '@/lib/layers';
 import { MAP_STATE_PARAMS } from '@/lib/url-state';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
+import { markIntroDone } from '@/lib/intro-state';
 
 const STORAGE_KEY = 'atlas-intro-seen';
 // Backstop unmount: exceeds the longest leave track (the 760ms intro-iris
@@ -126,6 +127,12 @@ export function IntroHero() {
     const id = requestAnimationFrame(() => setEntered(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  // Release the onboarding tour once the splash is fully gone — covers every
+  // exit path (scroll/skip, deep-link skip, returning visitor, reduced motion).
+  useEffect(() => {
+    if (phase === 'gone') markIntroDone();
+  }, [phase]);
 
   // Fallback unmount: transitionend never fires under reduced motion.
   useEffect(() => {
