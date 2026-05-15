@@ -8,9 +8,8 @@ import { MAP_STATE_PARAMS } from '@/lib/url-state';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
 
 const STORAGE_KEY = 'atlas-intro-seen';
-// Leave-transition duration (700ms in className) plus headroom. A fallback
-// timer forces unmount if `transitionend` never fires — which is exactly the
-// case for prefers-reduced-motion users (motion-reduce:transition-none).
+// Backstop unmount: exceeds the longest leave track (the 760ms intro-iris
+// animation). Forces unmount if neither animationend nor transitionend fires.
 const LEAVE_FALLBACK_MS = 800;
 
 type IntroBlobStyle = React.CSSProperties &
@@ -115,8 +114,10 @@ export function IntroHero() {
 
   // Deep links and returning visitors skip the splash entirely; the
   // pre-hydration script in app/layout.tsx already hid it via CSS, so this
-  // just unmounts. Otherwise gate the entrance one frame past first paint so
-  // the heavy backdrop compositing doesn't contend with Mapbox WebGL init.
+  // just unmounts. Otherwise gate the backdrop animation one frame past first
+  // paint so the heavy compositing doesn't contend with Mapbox WebGL init.
+  // The container itself is opaque from first paint so the SSR'd splash
+  // covers the live map on a cold first visit.
   useEffect(() => {
     if (shouldSkip()) {
       setPhase('gone');
@@ -186,15 +187,9 @@ export function IntroHero() {
         // Reduced-motion path: the leave is a plain opacity transition.
         if (leaving) setPhase('gone');
       }}
-      className={`fixed inset-0 z-[60] flex flex-col items-center overflow-hidden bg-panel-bg px-6 text-center outline-none transition-[opacity,transform] duration-700 ease-out motion-reduce:transition-none ${
+      className={`fixed inset-0 z-[60] flex flex-col items-center overflow-hidden bg-panel-bg px-6 text-center outline-none ${
         entered ? 'intro-animate' : ''
-      } ${
-        leaving
-          ? 'intro-leaving pointer-events-none'
-          : entered
-            ? 'translate-y-0 opacity-100'
-            : 'translate-y-2 opacity-0'
-      }`}
+      } ${leaving ? 'intro-leaving pointer-events-none' : ''}`}
     >
       <div
         aria-hidden="true"
