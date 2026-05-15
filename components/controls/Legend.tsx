@@ -64,7 +64,7 @@ export function Legend({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-3 pr-1.5">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
           Legend
         </h2>
