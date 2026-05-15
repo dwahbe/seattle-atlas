@@ -102,6 +102,46 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
     }, 150);
   }, []);
 
+  // The always-open MobileDrawer mounts a Radix Dialog whose FocusScope is
+  // "trapped" (vaul never forwards modal={false} to DialogPrimitive.Root, so
+  // Radix defaults to modal). Radix adds document-level focusin/focusout
+  // listeners that pull focus back into the drawer whenever focus lands
+  // outside it:
+  //   - focusin: target (the search input) isn't in the drawer -> refocus drawer
+  //   - focusout: focus moving INTO the search fires focusout on the previously
+  //     focused element (the drawer/body, outside the search subtree) with
+  //     relatedTarget = the input -> Radix refocuses the drawer
+  // Either path blurs the input before iOS Safari can open the keyboard.
+  //
+  // We install a single document capture-phase listener (runs before Radix's
+  // bubble-phase document listeners) that isolates every search-related focus
+  // event via stopImmediatePropagation, so neither Radix's trap nor React's
+  // delegated onFocus ever sees it. Because that also suppresses the React
+  // onFocus that would call open(), we take over "open on focus" here,
+  // synchronously inside the user-gesture-driven focusin so iOS still raises
+  // the keyboard. Re-subscribing when isVisible/open change keeps the handler
+  // closures fresh without mutating refs during render.
+  useEffect(() => {
+    if (!isMobile) return;
+    const inSearch = (n: EventTarget | null) =>
+      n instanceof Node && !!triggerRef.current?.contains(n);
+    const onFocusIn = (e: FocusEvent) => {
+      if (!inSearch(e.target)) return;
+      if (!isVisible) open();
+      e.stopImmediatePropagation();
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (!inSearch(e.target) && !inSearch(e.relatedTarget)) return;
+      e.stopImmediatePropagation();
+    };
+    document.addEventListener('focusin', onFocusIn, true);
+    document.addEventListener('focusout', onFocusOut, true);
+    return () => {
+      document.removeEventListener('focusin', onFocusIn, true);
+      document.removeEventListener('focusout', onFocusOut, true);
+    };
+  }, [isMobile, isVisible, open]);
+
   // Keyboard shortcut listener (Cmd+K / Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -272,7 +312,7 @@ export function PanelSearch({ onSelect, variant = 'desktop' }: PanelSearchProps)
             <span className="text-sm">⌘</span>K
           </kbd>
         )}
-        {isOpen && (
+        {isOpen && !isMobile && (
           <kbd className="px-1.5 py-0.5 text-xs font-medium text-text-tertiary bg-secondary-bg rounded border border-border">
             Esc
           </kbd>
