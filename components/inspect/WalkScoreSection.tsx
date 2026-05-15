@@ -26,7 +26,7 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
     <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
       <div className="flex items-baseline justify-between gap-2 mb-3">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-          Car-Free Friendly
+          Car-Free Scores
         </h3>
         <a
           href={attributionHref}

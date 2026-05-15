@@ -426,7 +426,7 @@ export default function AboutPage() {
                       >
                         Walk Score API
                       </a>{' '}
-                      &mdash; powers the Car-Free Friendly section&apos;s walk, transit, and bike
+                      &mdash; powers the Car-Free Scores section&apos;s walk, transit, and bike
                       scores
                     </li>
                   </ul>
