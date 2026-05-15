@@ -200,6 +200,72 @@ html.intro-seen #intro-hero {
   opacity: 0.12;
 }
 
+/* ----------------------------------------------------------------------------
+   Intro leave: cinematic iris reveal. The whole splash collapses through a
+   shrinking circle anchored near the "Scroll" prompt (like a camera shutter
+   opening onto the city) while the headline recedes with a focus-pull blur
+   and the aurora is swept outward. clip-path/transform/opacity only, so the
+   choreography stays on the compositor. animationend on `intro-iris` (the
+   longest track) drives unmount; the JS fallback timer covers reduced motion.
+   ---------------------------------------------------------------------------- */
+@keyframes intro-iris {
+  0% {
+    clip-path: circle(150% at 50% 86%);
+    transform: scale(1);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(0% at 50% 86%);
+    transform: scale(1.05);
+    opacity: 0;
+  }
+}
+
+@keyframes intro-content-out {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-28px) scale(0.94);
+    filter: blur(7px);
+    opacity: 0;
+  }
+}
+
+@keyframes intro-aurora-out {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+.intro-leaving {
+  animation: intro-iris 760ms cubic-bezier(0.66, 0, 0.34, 1) forwards;
+  will-change: clip-path, transform, opacity;
+}
+
+.intro-leaving .intro-content {
+  animation: intro-content-out 420ms cubic-bezier(0.5, 0, 0.75, 0) forwards;
+  will-change: transform, filter, opacity;
+}
+
+.intro-leaving .intro-aurora {
+  animation: intro-aurora-out 620ms ease-in forwards;
+}
+
+.intro-leaving .intro-grain {
+  opacity: 0;
+  transition: opacity 360ms ease-in;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .intro-animate .intro-aurora,
   .intro-animate .intro-blob {
@@ -211,6 +277,15 @@ html.intro-seen #intro-hero {
   }
   .intro-grain {
     display: none;
+  }
+  /* Skip the iris choreography; a plain fade still reads as "dismissed" and
+     the JS fallback timer handles unmount since no animationend fires. */
+  .intro-leaving,
+  .intro-leaving .intro-content,
+  .intro-leaving .intro-aurora {
+    animation: none;
+    opacity: 0;
+    transition: opacity 300ms ease;
   }
 }
 
@@ -520,4 +595,3 @@ body.scroll-lock {
     display: none !important;
   }
 }
-
