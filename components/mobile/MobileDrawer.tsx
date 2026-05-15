@@ -143,6 +143,13 @@ export function MobileDrawer({
 
   const isZoningActive = activeBaseLayer !== null && activeBaseLayer in ZONING_FILTER_IDS;
 
+  // Legend renders null when no active layer has legend entries; without this
+  // its bordered wrapper would still paint an empty strip under the Layers
+  // section (a stray double divider when every toggle is off).
+  const hasLegend = layers.some(
+    (layer) => activeLayers.includes(layer.id) && layer.legend.length > 0
+  );
+
   // Auto-expand when inspecting a feature.
   // Uses the "setState during render" pattern from React docs:
   // https://react.dev/reference/react/useState#storing-information-from-previous-renders
@@ -398,20 +405,22 @@ export function MobileDrawer({
                   </div>
 
                   {/* Legend — interactive for whichever zoning layer is active. */}
-                  <div className="border-b border-border">
-                    <div className="p-4">
-                      <Legend
-                        layers={layers}
-                        activeLayers={activeLayers}
-                        activeFilters={legendActiveFilters}
-                        interactiveLayerIds={
-                          isZoningActive && activeBaseLayer ? [activeBaseLayer] : []
-                        }
-                        onFilterToggle={isZoningActive ? handleLegendToggle : undefined}
-                        onClearFilters={isZoningActive ? handleClearLegendFilters : undefined}
-                      />
+                  {hasLegend && (
+                    <div>
+                      <div className="p-4">
+                        <Legend
+                          layers={layers}
+                          activeLayers={activeLayers}
+                          activeFilters={legendActiveFilters}
+                          interactiveLayerIds={
+                            isZoningActive && activeBaseLayer ? [activeBaseLayer] : []
+                          }
+                          onFilterToggle={isZoningActive ? handleLegendToggle : undefined}
+                          onClearFilters={isZoningActive ? handleClearLegendFilters : undefined}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 {/* Footer with toggle */}
