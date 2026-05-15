@@ -6,16 +6,14 @@ import { Donut, Skeleton } from '@/components/ui';
 interface WalkScoreSectionProps {
   walkScore: WalkScoreData | null;
   isLoading: boolean;
-  /** Compact mode for mobile - smaller donuts */
-  compact?: boolean;
 }
 
-export function WalkScoreSection({ walkScore, isLoading, compact = false }: WalkScoreSectionProps) {
+export function WalkScoreSection({ walkScore, isLoading }: WalkScoreSectionProps) {
   // Don't render if not loading and no data
   if (!isLoading && !walkScore) return null;
 
-  const donutSize = compact ? 56 : 64;
-  const strokeWidth = compact ? 5 : 6;
+  const donutSize = 60;
+  const strokeWidth = 6;
 
   const attributionHref =
     walkScore && !walkScore.error
@@ -23,8 +21,8 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
       : 'https://www.walkscore.com';
 
   return (
-    <div className={`border-b border-border ${compact ? 'px-4 py-3' : 'p-4'}`}>
-      <div className="flex items-baseline justify-between gap-2 mb-3">
+    <div className="border-b border-border px-4 py-3.5">
+      <div className="flex items-baseline justify-between gap-2 mb-5">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
           Car-Free Scores
         </h3>
@@ -32,7 +30,7 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
           href={attributionHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs leading-4 text-text-tertiary hover:text-text-secondary"
+          className="touch-target-inline text-xs leading-4 text-text-tertiary hover:text-text-secondary"
         >
           Scores by Walk Score®
         </a>
@@ -42,7 +40,7 @@ export function WalkScoreSection({ walkScore, isLoading, compact = false }: Walk
         <div className="flex justify-around">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex flex-col items-center gap-2">
-              <Skeleton className={`rounded-full ${compact ? 'w-14 h-14' : 'w-16 h-16'}`} />
+              <Skeleton className="rounded-full size-15" />
               <Skeleton className="h-4 w-10" />
             </div>
           ))}

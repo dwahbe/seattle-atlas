@@ -264,12 +264,11 @@ export function MobileDrawer({
                 {/* Park Info - compact */}
                 {data.isPark && data.parkData && <ParkInfo parkData={data.parkData} compact />}
 
-                {/* Walk Score - compact */}
+                {/* Walk Score */}
                 {data.isZoning && (
                   <WalkScoreSection
                     walkScore={data.walkScore}
                     isLoading={data.isLoadingWalkScore}
-                    compact
                   />
                 )}
 
