@@ -40,7 +40,7 @@ export interface LocationData {
   isPrecise: boolean;
 }
 
-export interface InspectData {
+interface InspectData {
   // Feature info
   feature: InspectedFeature | null;
   featurePoint: [number, number] | null;

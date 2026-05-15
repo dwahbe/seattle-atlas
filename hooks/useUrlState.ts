@@ -71,25 +71,6 @@ export function useUrlState() {
     [setParams]
   );
 
-  const toggleLayer = useCallback(
-    (layerId: string) => {
-      const newLayers = activeLayers.includes(layerId)
-        ? activeLayers.filter((id) => id !== layerId)
-        : [...activeLayers, layerId];
-      setActiveLayers(newLayers);
-    },
-    [activeLayers, setActiveLayers]
-  );
-
-  const setFilters = useCallback(
-    (newFilters: FilterState) => {
-      setParams({
-        filters: serializeFiltersParam(newFilters as Record<string, Record<string, string[]>>),
-      });
-    },
-    [setParams]
-  );
-
   const setFilter = useCallback(
     (layerId: string, filterId: string, values: string[]) => {
       const currentFilters = parseFiltersParam(params.filters);
@@ -143,8 +124,6 @@ export function useUrlState() {
     // Setters
     setViewState,
     setActiveLayers,
-    toggleLayer,
-    setFilters,
     setFilter,
     setInspectedFeatureId,
     setCompareMode,
