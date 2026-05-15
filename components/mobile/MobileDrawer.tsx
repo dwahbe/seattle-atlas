@@ -97,6 +97,21 @@ export function MobileDrawer({
   // Determine which base layer is active
   const activeBaseLayer = BASE_LAYER_IDS.find((id) => activeLayers.includes(id)) || null;
 
+  // Remember the user's preferred zoning view so the Simplified/Technical toggle
+  // stays meaningful even when the zoning layer is switched off.
+  const [preferredBaseLayer, setPreferredBaseLayer] = useState('zoning');
+  if (activeBaseLayer && activeBaseLayer !== preferredBaseLayer) {
+    setPreferredBaseLayer(activeBaseLayer);
+  }
+  const selectedView = activeBaseLayer ?? preferredBaseLayer;
+
+  // While zoning is on, switching view swaps the active layer. While it's off,
+  // just remember the choice for next time without re-enabling the layer.
+  const handleViewSelect = (layerId: string) => {
+    if (activeBaseLayer) onBaseLayerChange(layerId);
+    else setPreferredBaseLayer(layerId);
+  };
+
   // Check if transit is enabled (any transit layer active)
   const isTransitActive = TRANSIT_LAYER_IDS.some((id) => activeLayers.includes(id));
 
@@ -326,7 +341,9 @@ export function MobileDrawer({
                         </div>
                         <Switch
                           checked={activeBaseLayer !== null}
-                          onChange={() => onBaseLayerChange(activeBaseLayer ? null : 'zoning')}
+                          onChange={() =>
+                            onBaseLayerChange(activeBaseLayer ? null : preferredBaseLayer)
+                          }
                         />
                       </div>
                       {/* Transit Toggle */}
@@ -380,44 +397,38 @@ export function MobileDrawer({
                 {/* Footer with toggle */}
                 <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-secondary-bg border-t border-border">
                   <div className="flex flex-col items-start gap-1.5">
-                    {activeBaseLayer && (
-                      <div className="flex w-full items-center justify-between gap-2 text-xs">
-                        <span className="font-medium text-text-secondary">Zoning View</span>
-                        <ThemeToggle inline />
-                      </div>
-                    )}
-                    {activeBaseLayer ? (
-                      <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
-                        <button
-                          onClick={() => onBaseLayerChange('zoning')}
-                          className={`
-                            touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                            ${
-                              activeBaseLayer === 'zoning'
-                                ? 'bg-panel-bg text-text-primary shadow-sm'
-                                : 'text-text-secondary hover:text-text-primary'
-                            }
-                          `}
-                        >
-                          Simplified
-                        </button>
-                        <button
-                          onClick={() => onBaseLayerChange('zoning_detailed')}
-                          className={`
-                            touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
-                            ${
-                              activeBaseLayer === 'zoning_detailed'
-                                ? 'bg-panel-bg text-text-primary shadow-sm'
-                                : 'text-text-secondary hover:text-text-primary'
-                            }
-                          `}
-                        >
-                          Technical
-                        </button>
-                      </div>
-                    ) : (
+                    <div className="flex w-full items-center justify-between gap-2 text-xs">
+                      <span className="font-medium text-text-secondary">Zoning View</span>
                       <ThemeToggle inline />
-                    )}
+                    </div>
+                    <div className="flex items-center gap-1 p-0.5 rounded-full bg-secondary-hover">
+                      <button
+                        onClick={() => handleViewSelect('zoning')}
+                        className={`
+                          touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                          ${
+                            selectedView === 'zoning'
+                              ? 'bg-panel-bg text-text-primary shadow-sm'
+                              : 'text-text-secondary hover:text-text-primary'
+                          }
+                        `}
+                      >
+                        Simplified
+                      </button>
+                      <button
+                        onClick={() => handleViewSelect('zoning_detailed')}
+                        className={`
+                          touch-target-inline px-2.5 py-1 text-xs font-medium rounded-full transition-all
+                          ${
+                            selectedView === 'zoning_detailed'
+                              ? 'bg-panel-bg text-text-primary shadow-sm'
+                              : 'text-text-secondary hover:text-text-primary'
+                          }
+                        `}
+                      >
+                        Technical
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
