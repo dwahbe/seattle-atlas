@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { IconChevronDown } from '@tabler/icons-react';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { getLayerById } from '@/lib/layers';
-import { MAP_STATE_PARAMS } from '@/lib/url-state';
+import { hasMapStateParams } from '@/lib/url-state';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
 import { markIntroDone } from '@/lib/intro-state';
 
@@ -90,8 +90,7 @@ type Phase = 'visible' | 'leaving' | 'gone';
 
 function shouldSkip(): boolean {
   try {
-    const params = new URLSearchParams(window.location.search);
-    if (MAP_STATE_PARAMS.some((key) => params.has(key))) return true;
+    if (hasMapStateParams()) return true;
   } catch {
     return false;
   }

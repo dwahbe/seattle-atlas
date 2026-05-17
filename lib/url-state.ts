@@ -22,6 +22,16 @@ export const MAP_STATE_PARAMS = [
 
 export type MapStateParam = (typeof MAP_STATE_PARAMS)[number];
 
+// Shared deep-link detection. IntroHero skips the splash iff a map-state deep
+// link is present, and MapDeepLinkScroller scrolls the map into view in exactly
+// that case — the two must agree, so the predicate lives here next to
+// MAP_STATE_PARAMS rather than being hand-duplicated at each call site.
+export function hasMapStateParams(search?: string): boolean {
+  const searchString = search ?? (typeof window === 'undefined' ? '' : window.location.search);
+  const params = new URLSearchParams(searchString);
+  return MAP_STATE_PARAMS.some((key) => params.has(key));
+}
+
 // Default visible layers. Parks and the institutions overlay both ride along
 // with the zoning toggle (see MapContainer.handleBaseLayerChange), so they
 // appear together on first load. Institutions has fill-opacity 0 — it's a

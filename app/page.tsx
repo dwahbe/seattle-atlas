@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
+import { MapDeepLinkScroller } from '@/components/map/MapDeepLinkScroller';
 import { MapContainer } from '@/components/map/MapContainer';
 import { IntroHero } from '@/components/ui/IntroHero';
 
@@ -86,6 +87,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      <MapDeepLinkScroller />
       <main id="main-content" className="w-full h-screen overflow-hidden">
         <Suspense fallback={<MapLoading />}>
           <MapContainer />

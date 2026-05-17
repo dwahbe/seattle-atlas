@@ -41,15 +41,15 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 
 The standalone content/utility pages (`/about`, `/seattle-zoning`, `error.tsx`, `not-found.tsx`, `loading.tsx`) share one type scale. Match it when adding pages or sections — don't introduce one-off sizes.
 
-| Role | Class | Notes |
-| --- | --- | --- |
-| Article page title (`h1`) | `text-3xl sm:text-4xl font-bold` | `/about`, `/seattle-zoning` — inside `<header className="mb-8 border-b border-border pb-8">` with the lede; the rule separates the standfirst from the body |
-| Utility page title (`h1`) | `text-3xl font-bold` | Centered status cards (`error.tsx`, `not-found.tsx`); intentionally no `sm:` bump |
-| Lede / deck | `text-lg text-text-secondary` | The single intro line directly under the `h1`, inside the `<header>` |
-| Section heading (`h2`) | `text-xl font-semibold` | |
-| Subheading (`h3`) | `font-medium` | Base 16px — do not add a size class |
-| Body | (none) | Base 16px |
-| Supporting text (captions, source/citation lists, FAQ answers, disclaimers) | `text-sm` | |
+| Role                                                                        | Class                            | Notes                                                                                                                                                       |
+| --------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Article page title (`h1`)                                                   | `text-3xl sm:text-4xl font-bold` | `/about`, `/seattle-zoning` — inside `<header className="mb-8 border-b border-border pb-8">` with the lede; the rule separates the standfirst from the body |
+| Utility page title (`h1`)                                                   | `text-3xl font-bold`             | Centered status cards (`error.tsx`, `not-found.tsx`); intentionally no `sm:` bump                                                                           |
+| Lede / deck                                                                 | `text-lg text-text-secondary`    | The single intro line directly under the `h1`, inside the `<header>`                                                                                        |
+| Section heading (`h2`)                                                      | `text-xl font-semibold`          |                                                                                                                                                             |
+| Subheading (`h3`)                                                           | `font-medium`                    | Base 16px — do not add a size class                                                                                                                         |
+| Body                                                                        | (none)                           | Base 16px                                                                                                                                                   |
+| Supporting text (captions, source/citation lists, FAQ answers, disclaimers) | `text-sm`                        |                                                                                                                                                             |
 
 Buttons get their text size from `Button.tsx` (`sm` 12 / `md` 14 / `lg` 16px) — use the `Button` component, don't hand-roll button-styled links.
 
@@ -75,6 +75,8 @@ The URL is the source of truth for the map view. `useUrlState()` (via nuqs) sync
 Default center: Seattle (47.6062, -122.3321, zoom 12) and default layers `['zoning', 'parks_open_space', 'institutions']` are `SEATTLE_CENTER` / `DEFAULT_LAYERS` in `lib/url-state.ts`. Parks and the institutions overlay both ride along with the zoning toggle in `MapContainer.handleBaseLayerChange` and are not independently user-toggleable.
 
 **Sync constraint:** the pre-hydration inline script in `app/layout.tsx` hand-mirrors `MAP_STATE_PARAMS` as a literal `mapKeys` array (it can't import). If you change `MAP_STATE_PARAMS`, update that array too (it's already commented as a mirror).
+
+**Deep-link detection:** runtime "is this URL a map-state deep link?" checks are centralized in `hasMapStateParams()` (`lib/url-state.ts`, SSR-safe). Both `IntroHero` (skip the splash) and `MapDeepLinkScroller` (scroll the map into view) consume it and **must agree** — don't re-hand-roll the `MAP_STATE_PARAMS.some(...)` predicate at call sites.
 
 ### Routes
 
@@ -110,7 +112,17 @@ Default center: Seattle (47.6062, -122.3321, zoom 12) and default layers `['zoni
 ### Intro Splash & Onboarding
 
 - `components/ui/IntroHero.tsx` is a full-screen splash over the map (non-gating — the map mounts behind it). It self-skips when `atlas-intro-seen === '1'` or any map-state query param is present (deep links). The `app/layout.tsx` inline script adds `html.intro-seen` pre-hydration so CSS can hide it without a flash (`globals.css` `html.intro-seen #intro-hero`).
-- `components/ui/OnboardingTour.tsx` is desktop-only, `dynamic()`-imported in `MapContainer`, gated on `!isMobile` and `atlas-onboarding-seen`.
+- `components/ui/OnboardingTour.tsx` is desktop-only, `dynamic()`-imported in `MapContainer`, gated on `!isMobile` and `atlas-onboarding-seen`. It arms ~1s after the intro finishes (a delay so the map has rendered).
+- **Cross-tree intro signal** — `lib/intro-state.ts` (`markIntroDone` / `onIntroDone`) is a tiny pub-sub bridging siblings with no shared React ancestor. `IntroHero` calls `markIntroDone()` on **every** exit path (scroll-away, deep-link skip, returning-visitor skip, reduced-motion); `OnboardingTour` and the scroll-zoom gate subscribe. `onIntroDone` fires synchronously if the intro is already done. Anything that must wait for "splash fully gone" should subscribe here, not re-derive the condition.
+
+### Scroll-Zoom Gate
+
+A content hero sits above the full-screen map on `/`. Mapbox `scrollZoom` would otherwise capture the wheel the moment the cursor crosses the map and trap the page scroll. `lib/scroll-zoom-gate.ts` (`setupScrollZoomGate(map, container, { idleMs })`, wired in `MapGL`'s init effect, torn down in its cleanup) keeps `scrollZoom` disabled until **both** the map is ≥0.99 in view (IntersectionObserver) **and** the intro is done (`onIntroDone`), then waits `idleMs` of wheel-idle so momentum-scrolling past the hero doesn't blast into a zoom.
+
+- Desktop default `idleMs` is 1500; **mobile passes `scrollZoomIdleMs={0}`** from `MapContainer` (the `MapGL` prop), which skips the wheel listener and enables immediately on full visibility.
+- Without a hero (map is full-bleed) the IntersectionObserver hits ≥0.99 on mount, so behavior collapses to "enabled once intro is done" — the gate is correct and inert in that case.
+- No-`IntersectionObserver` fallback: `scrollZoom` is enabled unconditionally (never leave it permanently disabled).
+- `MapDeepLinkScroller` (`components/map/MapDeepLinkScroller.tsx`, rendered in `app/page.tsx`) scrolls `#main-content` into view on mount when `hasMapStateParams()` — so deep links land on the map, and the gate's IntersectionObserver then enables zoom naturally (no wheel, so no idle wait).
 
 ### API Routes
 

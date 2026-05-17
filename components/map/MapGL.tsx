@@ -7,6 +7,7 @@ import { initializeMapbox, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
 import { HoverTooltip } from './HoverTooltip';
 import { BIKE_LAYER_ID, INSTITUTIONS_LAYER_ID, TRANSIT_LAYER_IDS } from '@/lib/constants';
 import { getInstitutionInfo } from '@/lib/institutions';
+import { setupScrollZoomGate } from '@/lib/scroll-zoom-gate';
 import type { MapViewState, InspectedFeature, LayerConfig } from '@/types';
 
 interface HoverState {
@@ -29,6 +30,7 @@ interface MapGLProps {
   markerPosition?: [number, number] | null;
   showControls?: boolean;
   showHoverTooltip?: boolean;
+  scrollZoomIdleMs?: number;
 }
 
 import { HIGHLIGHT_COLOR } from '@/lib/constants';
@@ -58,6 +60,7 @@ export function MapGL({
   markerPosition,
   showControls = true,
   showHoverTooltip = true,
+  scrollZoomIdleMs,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -74,7 +77,8 @@ export function MapGL({
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current || isInitialized.current) return;
+    const container = mapContainer.current;
+    if (!container || isInitialized.current) return;
     if (!MAPBOX_TOKEN) {
       if (process.env.NODE_ENV === 'development') {
         console.error(
@@ -97,11 +101,14 @@ export function MapGL({
     appliedIsDarkRef.current = initialIsDark;
 
     const mapInstance = new mapboxgl.Map({
-      container: mapContainer.current,
+      container,
       style: initialIsDark ? MAP_STYLES.dark : MAP_STYLES.light,
       center: [viewState.lng, viewState.lat],
       zoom: viewState.zoom,
       attributionControl: false,
+    });
+    const cleanupScrollZoomGate = setupScrollZoomGate(mapInstance, container, {
+      idleMs: scrollZoomIdleMs,
     });
 
     if (showControls) {
@@ -136,6 +143,7 @@ export function MapGL({
     });
 
     return () => {
+      cleanupScrollZoomGate();
       mapInstance.remove();
       map.current = null;
       isInitialized.current = false;
