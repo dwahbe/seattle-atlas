@@ -22,7 +22,8 @@ const STEPS: TourStep[] = [
   },
   {
     title: 'Click a parcel',
-    description: 'Click anywhere on the map to see zoning rules, Car-Free Score, permits, and more.',
+    description:
+      'Click anywhere on the map to see zoning rules, Car-Free Score, permits, and more.',
     target: 'map',
   },
   {
@@ -141,7 +142,7 @@ export function OnboardingTour() {
     let timer: ReturnType<typeof setTimeout>;
     const unsubscribe = onIntroDone(() => {
       // Small delay so the map has time to render
-      timer = setTimeout(() => setCurrentStep(0), 1500);
+      timer = setTimeout(() => setCurrentStep(0), 1000);
     });
     return () => {
       unsubscribe();
