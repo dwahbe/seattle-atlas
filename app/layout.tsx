@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'sonner';
+import { getSiteUrl } from '@/lib/site-url';
 import './globals.css';
 
 const geistSans = Geist({
@@ -15,11 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : 'https://seattleatlas.org');
+const siteUrl = getSiteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -29,18 +26,6 @@ export const metadata: Metadata = {
   },
   description:
     'Interactive Seattle zoning map and planning atlas. Explore zoning rules, transit routes, and proposed land use changes across Seattle neighborhoods.',
-  keywords: [
-    'Seattle zoning',
-    'Seattle zoning map',
-    'Seattle land use',
-    'Seattle transit',
-    'Seattle urban planning',
-    'Seattle housing',
-    'Seattle comprehensive plan',
-    'Seattle neighborhoods',
-    'zoning map',
-    'GIS',
-  ],
   authors: [{ name: 'Seattle Atlas' }],
   openGraph: {
     title: 'Seattle Atlas – Seattle Zoning Map',
