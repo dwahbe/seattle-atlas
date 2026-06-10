@@ -36,6 +36,22 @@ export function getLayerGroups(): LayerGroup[] {
   ].filter((group) => group.layers.length > 0);
 }
 
+// Unique legend categories for a layer. The zoning legend lists one entry per
+// zone code, so category labels repeat — dedupe by label, keeping first-seen
+// order (which matches the Legend control's display order).
+export function getLegendCategories(layerId: string): { label: string; color: string }[] {
+  const layer = getLayerById(layerId);
+  if (!layer?.legend) return [];
+  const seen = new Set<string>();
+  const categories: { label: string; color: string }[] = [];
+  for (const item of layer.legend) {
+    if (seen.has(item.label)) continue;
+    seen.add(item.label);
+    categories.push({ label: item.label, color: item.color });
+  }
+  return categories;
+}
+
 // Get all layer IDs
 function getAllLayerIds(): string[] {
   return getLayers().map((layer) => layer.id);

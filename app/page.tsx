@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { MapDeepLinkScroller } from '@/components/map/MapDeepLinkScroller';
 import { MapContainer } from '@/components/map/MapContainer';
 import { IntroHero } from '@/components/ui/IntroHero';
+import { getSiteUrl } from '@/lib/site-url';
 
-const siteUrl = 'https://seattleatlas.org';
+const siteUrl = getSiteUrl();
 
 const homeTitle = 'Seattle Atlas – Seattle Zoning Map';
 const homeDescription =
@@ -58,7 +59,9 @@ export default function Home() {
         '@type': 'Organization',
         name: 'Seattle Atlas',
         url: siteUrl,
-        image: `${siteUrl}/og.svg`,
+        logo: `${siteUrl}/icon-512.png`,
+        image: `${siteUrl}/opengraph-image`,
+        sameAs: ['https://github.com/dwahbe/seattle-atlas'],
       },
       {
         '@type': 'WebSite',
@@ -112,36 +115,12 @@ export default function Home() {
         </p>
 
         <h2>Explore zoning by Seattle neighborhood</h2>
-        <ul>
-          <li>Capitol Hill zoning</li>
-          <li>Ballard zoning</li>
-          <li>Beacon Hill zoning</li>
-          <li>West Seattle zoning</li>
-          <li>South Lake Union zoning</li>
-          <li>Belltown zoning</li>
-          <li>Queen Anne zoning</li>
-          <li>Fremont zoning</li>
-          <li>Wallingford zoning</li>
-          <li>University District zoning</li>
-          <li>Greenwood and Phinney Ridge zoning</li>
-          <li>Ravenna and Roosevelt zoning</li>
-          <li>Northgate zoning</li>
-          <li>Lake City zoning</li>
-          <li>Magnolia zoning</li>
-          <li>Interbay zoning</li>
-          <li>Georgetown zoning</li>
-          <li>SoDo zoning</li>
-          <li>Pioneer Square zoning</li>
-          <li>International District / Chinatown zoning</li>
-          <li>First Hill zoning</li>
-          <li>Central District zoning</li>
-          <li>Madison Park, Madrona, and Leschi zoning</li>
-          <li>Mount Baker zoning</li>
-          <li>Columbia City and Hillman City zoning</li>
-          <li>Rainier Valley zoning</li>
-          <li>Downtown Seattle zoning</li>
-          <li>Pike Market and Waterfront zoning</li>
-        </ul>
+        <p>
+          Use the search to jump straight to a neighborhood — Capitol Hill, Ballard, Fremont, Queen
+          Anne, Wallingford, the University District, South Lake Union, Downtown, West Seattle,
+          Beacon Hill, Columbia City, and Greenwood are one keystroke away — or look up any Seattle
+          address to see how its parcel is zoned.
+        </p>
 
         <h2>Zone codes and land use designations</h2>
         <p>
@@ -174,6 +153,7 @@ export default function Home() {
         </ul>
 
         <nav aria-label="Site">
+          <Link href="/neighborhoods">Seattle zoning by neighborhood</Link>
           <Link href="/seattle-zoning">Guide to Seattle zoning</Link>
           <Link href="/about">About Seattle Atlas</Link>
         </nav>

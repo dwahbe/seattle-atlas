@@ -6,8 +6,9 @@ import { usePathname } from 'next/navigation';
 import { IconMenu2, IconX } from '@tabler/icons-react';
 
 const NAV_LINKS = [
-  { href: '/about', label: 'About' },
+  { href: '/neighborhoods', label: 'Neighborhoods' },
   { href: '/seattle-zoning', label: 'Seattle Zoning Guide' },
+  { href: '/about', label: 'About' },
 ];
 
 export function NavMenu() {
