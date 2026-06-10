@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
-import { ThemeToggle, Footer } from '@/components/ui';
+import { Footer, PageHeader } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
+import { getSiteUrl } from '@/lib/site-url';
 
-const siteUrl = 'https://seattleatlas.org';
+const siteUrl = getSiteUrl();
 
 const zoningTitle = 'Seattle Zoning Explained';
 const zoningDescription =
@@ -112,18 +113,25 @@ export default function SeattleZoningPage() {
         description:
           'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
         datePublished: '2026-01-15',
-        dateModified: '2026-04-12',
+        dateModified: '2026-05-15',
       },
       {
         '@type': 'Article',
         headline: 'Seattle Zoning Explained',
         url: `${siteUrl}/seattle-zoning`,
+        mainEntityOfPage: `${siteUrl}/seattle-zoning`,
+        image: [`${siteUrl}/opengraph-image`],
         description:
           'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
         datePublished: '2026-01-15',
-        dateModified: '2026-04-12',
+        dateModified: '2026-05-15',
         author: { '@type': 'Organization', name: 'Seattle Atlas', url: siteUrl },
-        publisher: { '@type': 'Organization', name: 'Seattle Atlas', url: siteUrl },
+        publisher: {
+          '@type': 'Organization',
+          name: 'Seattle Atlas',
+          url: siteUrl,
+          logo: { '@type': 'ImageObject', url: `${siteUrl}/icon-512.png` },
+        },
       },
       {
         '@type': 'BreadcrumbList',
@@ -144,7 +152,9 @@ export default function SeattleZoningPage() {
           name: faq.question,
           acceptedAnswer: {
             '@type': 'Answer',
-            text: faq.answer,
+            // Footnote markers ([1], [2], …) only make sense alongside the
+            // rendered sources list — strip them from structured data.
+            text: faq.answer.replace(/\s*\[\d+\]/g, ''),
           },
         })),
       },
@@ -158,47 +168,7 @@ export default function SeattleZoningPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
-          <Link href="/" className="group flex items-center">
-            <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
-              Seattle Atlas
-            </span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/about"
-              className="h-9 hidden sm:flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
-            >
-              <span className="grid">
-                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
-                  About
-                </span>
-                <span className="col-start-1 row-start-1">About</span>
-              </span>
-            </Link>
-            <span
-              aria-current="page"
-              className="h-9 hidden sm:flex items-center text-sm text-text-primary whitespace-nowrap"
-            >
-              <span className="grid">
-                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
-                  Zoning Guide
-                </span>
-                <span className="col-start-1 row-start-1 font-medium">Zoning Guide</span>
-              </span>
-            </span>
-            <Link
-              href="/"
-              className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
-            >
-              View Map
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <PageHeader current="/seattle-zoning" />
 
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">

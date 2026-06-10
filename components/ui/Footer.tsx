@@ -1,9 +1,11 @@
 import Link from 'next/link';
+import { ThemeToggle } from './ThemeToggle';
 
 const NAV_LINKS = [
   { href: '/', label: 'Map' },
-  { href: '/about', label: 'About' },
+  { href: '/neighborhoods', label: 'Neighborhoods' },
   { href: '/seattle-zoning', label: 'Zoning Guide' },
+  { href: '/about', label: 'About' },
 ];
 
 export function Footer() {
@@ -22,17 +24,20 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <p className="text-sm text-text-secondary">
-            Built by{' '}
-            <a
-              href="https://dylanwahbe.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-accent hover:underline"
-            >
-              Dylan Wahbe
-            </a>
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-text-secondary">
+              Built by{' '}
+              <a
+                href="https://dylanwahbe.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:underline"
+              >
+                Dylan Wahbe
+              </a>
+            </p>
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </footer>

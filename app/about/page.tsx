@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { ThemeToggle, Footer } from '@/components/ui';
+import { Footer, PageHeader } from '@/components/ui';
+import { getSiteUrl } from '@/lib/site-url';
 
-const siteUrl = 'https://seattleatlas.org';
+const siteUrl = getSiteUrl();
 
 const aboutTitle = 'About Seattle Atlas — Zoning Data Sources & Methodology';
 const aboutDescription =
@@ -63,47 +63,7 @@ export default function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
-          <Link href="/" className="group flex items-center">
-            <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
-              Seattle Atlas
-            </span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span
-              aria-current="page"
-              className="h-9 hidden sm:flex items-center text-sm text-text-primary whitespace-nowrap"
-            >
-              <span className="grid">
-                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
-                  About
-                </span>
-                <span className="col-start-1 row-start-1 font-medium">About</span>
-              </span>
-            </span>
-            <Link
-              href="/seattle-zoning"
-              className="h-9 hidden sm:flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
-            >
-              <span className="grid">
-                <span aria-hidden="true" className="col-start-1 row-start-1 invisible font-medium">
-                  Zoning Guide
-                </span>
-                <span className="col-start-1 row-start-1">Zoning Guide</span>
-              </span>
-            </Link>
-            <Link
-              href="/"
-              className="h-9 flex items-center text-sm text-accent hover:text-text-primary transition-colors whitespace-nowrap"
-            >
-              View Map
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <PageHeader current="/about" />
 
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12">

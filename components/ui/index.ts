@@ -5,6 +5,7 @@ export { Donut } from './Donut';
 export { Footer } from './Footer';
 export { IntroHero } from './IntroHero';
 export { NavMenu } from './NavMenu';
+export { PageHeader } from './PageHeader';
 export { Skeleton } from './Skeleton';
 export { StatCard } from './StatCard';
 export { Switch } from './Switch';
