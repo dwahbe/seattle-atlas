@@ -64,25 +64,6 @@ export function getRepresentativePoint(geometry: Geometry): [number, number] | n
 }
 
 /**
- * Convert meters to miles.
- */
-export function metersToMiles(meters: number): number {
-  return Math.round((meters / 1609.344) * 100) / 100;
-}
-
-/**
- * Format distance for display.
- */
-export function formatDistance(miles: number): string {
-  if (miles < 0.1) {
-    // Show in feet for very short distances
-    const feet = Math.round(miles * 5280);
-    return `${feet} ft`;
-  }
-  return `${miles.toFixed(1)} mi`;
-}
-
-/**
  * Check if a point is within a given radius of another point.
  *
  * @param center - Center point [lng, lat]

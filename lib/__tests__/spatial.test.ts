@@ -1,11 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import {
-  getRepresentativePoint,
-  isWithinRadius,
-  metersToMiles,
-  formatDistance,
-  getCentroid,
-} from '../spatial';
+import { getRepresentativePoint, isWithinRadius, getCentroid } from '../spatial';
 
 describe('getRepresentativePoint', () => {
   test('returns coords directly for Point geometry', () => {
@@ -80,34 +74,6 @@ describe('isWithinRadius', () => {
 
   test('same point is within any positive radius', () => {
     expect(isWithinRadius(spaceNeedle, spaceNeedle, 1)).toBe(true);
-  });
-});
-
-describe('metersToMiles', () => {
-  test('converts 1609.344 meters to ~1 mile', () => {
-    expect(metersToMiles(1609.344)).toBeCloseTo(1.0, 1);
-  });
-
-  test('converts 0 meters to 0 miles', () => {
-    expect(metersToMiles(0)).toBe(0);
-  });
-
-  test('converts 100 meters to ~0.06 miles', () => {
-    expect(metersToMiles(100)).toBeCloseTo(0.06, 1);
-  });
-});
-
-describe('formatDistance', () => {
-  test('shows feet for very short distances', () => {
-    expect(formatDistance(0.05)).toMatch(/ft$/);
-  });
-
-  test('shows miles for longer distances', () => {
-    expect(formatDistance(0.5)).toBe('0.5 mi');
-  });
-
-  test('shows miles for 1 mile', () => {
-    expect(formatDistance(1)).toBe('1.0 mi');
   });
 });
 
