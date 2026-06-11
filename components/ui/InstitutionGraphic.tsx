@@ -18,7 +18,7 @@ interface InstitutionGraphicProps {
 // Swedish has one logo shared across its three campuses (FH/CH/B). Codes without
 // an entry fall through to the category icon below.
 const LOGOS: Record<string, string> = {
-  'MIO-UW': '/institutions/mio-uw.png',
+  'MIO-UW': '/institutions/mio-uw.svg',
   'MIO-SU': '/institutions/mio-su.svg',
   'MIO-SPU': '/institutions/mio-spu.png',
   'MIO-NSC': '/institutions/mio-nsc.png',
