@@ -3,6 +3,13 @@
 import mapboxgl from 'mapbox-gl';
 import type { LayerConfig } from '@/types';
 import { HIGHLIGHT_COLOR } from '@/lib/constants';
+import { buildColorExpression } from '@/lib/map-expressions';
+
+export {
+  buildColorExpression,
+  buildFilterExpression,
+  resolveLegendItem,
+} from '@/lib/map-expressions';
 
 // Mapbox access token from environment
 export const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
@@ -109,139 +116,12 @@ export function getLayerPaint(layer: LayerConfig): Record<string, unknown> {
   return basePaint;
 }
 
-// Build a Mapbox expression for data-driven coloring
-function buildColorExpression(layer: LayerConfig): mapboxgl.Expression | string {
-  // If colorProperty is specified but no legend, use the property value directly
-  // This enables data-driven coloring from GeoJSON properties (e.g., transit route colors)
-  if (layer.colorProperty && layer.legend.length === 0) {
-    return ['get', layer.colorProperty] as mapboxgl.Expression;
-  }
-
-  if (layer.legend.length === 0) {
-    // Use paint fill-color/line-color if specified, otherwise default
-    return (
-      (layer.paint?.['fill-color'] as string) ||
-      (layer.paint?.['line-color'] as string) ||
-      '#888888'
-    );
-  }
-
-  if (layer.legend.length === 1) {
-    return layer.legend[0].color;
-  }
-
-  // Use colorProperty if specified, otherwise try to infer from layer config
-  const propertyName = layer.colorProperty || 'ZONELUT';
-
-  const overrides = layer.valueOverrides ?? [];
-  const overrideValues = new Set(overrides.map((o) => o.value));
-
-  const matchExpression: mapboxgl.Expression = ['match', ['get', propertyName]];
-
-  for (const item of layer.legend) {
-    // Pseudo values (e.g. SM_HIGHRISE) match a different property — handled
-    // by the case wrapper below, not the colorProperty match.
-    if (overrideValues.has(item.value)) continue;
-    matchExpression.push(item.value, item.color);
-  }
-
-  // Default color for unmatched values
-  matchExpression.push('#9CA3AF');
-
-  if (overrides.length === 0) {
-    return matchExpression;
-  }
-
-  // Overrides take precedence over the base match, so e.g. tower-zoned SM
-  // polygons color as Downtown & Highrise while ZONELUT still reads "SM".
-  const caseExpression: mapboxgl.Expression = ['case'];
-  for (const override of overrides) {
-    const item = layer.legend.find((i) => i.value === override.value);
-    if (!item) continue;
-    caseExpression.push(
-      ['in', ['get', override.property], ['literal', override.matchValues]],
-      item.color
-    );
-  }
-  caseExpression.push(matchExpression);
-  return caseExpression;
-}
-
 // Get layer layout properties
 export function getLayerLayout(layer: LayerConfig): mapboxgl.AnyLayout {
   return {
     visibility: 'visible',
     ...(layer.layout || {}),
   } as mapboxgl.AnyLayout;
-}
-
-// Build filter expression from filter state
-export function buildFilterExpression(
-  layer: LayerConfig,
-  filterState: Record<string, string[]>
-): mapboxgl.Expression | null {
-  if (!layer.filters || Object.keys(filterState).length === 0) {
-    return null;
-  }
-
-  const conditions: mapboxgl.Expression[] = [];
-  const overrides = layer.valueOverrides ?? [];
-  const overrideByValue = new Map(overrides.map((o) => [o.value, o]));
-
-  for (const filter of layer.filters) {
-    const values = filterState[filter.id];
-    if (values && values.length > 0) {
-      const plainValues = values.filter((v) => !overrideByValue.has(v));
-      const selectedOverrides = values.flatMap((v) => overrideByValue.get(v) ?? []);
-
-      const orConditions: mapboxgl.Expression[] = [];
-
-      if (plainValues.length > 0) {
-        // Build "in" expression for multiselect
-        let inExpression: mapboxgl.Expression = [
-          'in',
-          ['get', filter.property],
-          ['literal', plainValues],
-        ];
-        if (overrides.length > 0) {
-          // Features claimed by an override (e.g. tower-zoned SM) must not
-          // ride along with their base value — keep filtering consistent
-          // with the legend coloring.
-          inExpression = [
-            'all',
-            inExpression,
-            ...overrides.map(
-              (o): mapboxgl.Expression => [
-                '!',
-                ['in', ['get', o.property], ['literal', o.matchValues]],
-              ]
-            ),
-          ];
-        }
-        orConditions.push(inExpression);
-      }
-
-      for (const override of selectedOverrides) {
-        orConditions.push(['in', ['get', override.property], ['literal', override.matchValues]]);
-      }
-
-      if (orConditions.length === 1) {
-        conditions.push(orConditions[0]);
-      } else if (orConditions.length > 1) {
-        conditions.push(['any', ...orConditions]);
-      }
-    }
-  }
-
-  if (conditions.length === 0) {
-    return null;
-  }
-
-  if (conditions.length === 1) {
-    return conditions[0];
-  }
-
-  return ['all', ...conditions];
 }
 
 // Geocoding API helper

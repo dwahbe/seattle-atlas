@@ -130,8 +130,8 @@ export default function Home() {
           Seattle Mixed (SM); Master Planned Community (MPC); Downtown zones DMC, DMR, DOC1, DOC2,
           DRC, DH1, DH2; Pioneer Square Mixed (PSM); International District Mixed and Residential
           (IDM, IDR); Pike Market Mixed (PMM); Major Institution Overlay (MIO); and the industrial
-          zones Industrial Commercial (IC), Industrial Buffer (IB), Maritime
-          Manufacturing/Logistics (MML), Industry &amp; Innovation (II), and Urban Industrial (UI).
+          zones Industrial Commercial (IC), Industrial Buffer (IB), Maritime Manufacturing/Logistics
+          (MML), Industry &amp; Innovation (II), and Urban Industrial (UI).
         </p>
 
         <h2>Map layers</h2>

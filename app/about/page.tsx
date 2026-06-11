@@ -1,5 +1,6 @@
 import { Footer, PageHeader } from '@/components/ui';
 import { getSiteUrl } from '@/lib/site-url';
+import { getLegendColor } from '@/lib/layers';
 
 const siteUrl = getSiteUrl();
 
@@ -147,7 +148,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#FFE9AE' }}
+                    style={{ backgroundColor: getLegendColor('zoning', 'Homes & Small Shops') }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -168,7 +169,9 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#F9BC4F' }}
+                    style={{
+                      backgroundColor: getLegendColor('zoning', 'Midsize Residential & Shops'),
+                    }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -188,7 +191,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#EF7036' }}
+                    style={{ backgroundColor: getLegendColor('zoning', 'Large Buildings') }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -204,8 +207,7 @@ export default function AboutPage() {
                       <span className="font-mono text-xs">C1</span>,{' '}
                       <span className="font-mono text-xs">C2</span> (Commercial),{' '}
                       <span className="font-mono text-xs">SM</span> (Seattle Mixed, below 240 ft),
-                      and <span className="font-mono text-xs">MPC</span> (Master Planned
-                      Community).
+                      and <span className="font-mono text-xs">MPC</span> (Master Planned Community).
                     </div>
                   </div>
                 </li>
@@ -213,7 +215,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#34349B' }}
+                    style={{ backgroundColor: getLegendColor('zoning', 'Downtown & Highrise') }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -246,7 +248,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#4FAEDD' }}
+                    style={{ backgroundColor: getLegendColor('zoning', 'Institutions') }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -265,7 +267,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#8B919C' }}
+                    style={{ backgroundColor: getLegendColor('zoning', 'Industrial') }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">

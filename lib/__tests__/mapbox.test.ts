@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import type { LayerConfig } from '@/types';
-import { getLayerPaint, buildFilterExpression } from '@/lib/mapbox';
+import { getLayerPaint, buildFilterExpression, resolveLegendItem } from '@/lib/mapbox';
 import { getLayerById } from '@/lib/layers';
+import { getZoneInfo } from '@/lib/zoning-info';
 
 const zoning = getLayerById('zoning') as LayerConfig;
 const override = zoning.valueOverrides![0];
@@ -48,14 +49,16 @@ describe('zoning filter expression with valueOverrides', () => {
     expect(json).toContain('["!",["in",["get","ZONING"]');
   });
 
-  test('selecting both categories shows all SM polygons one way or the other', () => {
+  test('selecting both categories keeps tower SM positive and drops the carve-out', () => {
     const expr = buildFilterExpression(zoning, {
       zone_category: [...shopsValues, ...highriseValues],
     }) as unknown[];
     expect(expr[0]).toBe('any');
     const json = JSON.stringify(expr);
-    // Tower designations appear as a positive condition, not only an exclusion
-    expect(json.split('"SM-NG 240"').length).toBeGreaterThan(2);
+    // The positive tower condition makes the exclusion redundant
+    // ((A && !B) || B === A || B), so it is omitted.
+    expect(json).toContain('"SM-NG 240"');
+    expect(json).not.toContain('["!"');
   });
 
   test('legend pseudo value stays in sync with the filter options', () => {
@@ -64,5 +67,86 @@ describe('zoning filter expression with valueOverrides', () => {
     expect(legendValues).toContain(override.value);
     expect(filterValues).toContain(override.value);
     expect(legendValues.sort()).toEqual(filterValues.sort());
+  });
+});
+
+describe('override scoping with multiple filters', () => {
+  // A hypothetical second filter on the zoning layer that does not offer
+  // the SM_HIGHRISE pseudo value — its conditions must not inherit the
+  // tower carve-out.
+  const twoFilter: LayerConfig = {
+    ...zoning,
+    filters: [
+      ...zoning.filters!,
+      {
+        ...zoning.filters![0],
+        id: 'iz',
+        property: 'IZ',
+        options: [
+          { label: 'Yes', value: 'Y' },
+          { label: 'No', value: 'N' },
+        ],
+      },
+    ],
+  };
+
+  test('a filter that does not offer the pseudo value gets no carve-out', () => {
+    const expr = buildFilterExpression(twoFilter, { iz: ['Y'] }) as unknown[];
+    expect(JSON.stringify(expr)).not.toContain('ZONING');
+  });
+
+  test('with both filters active the carve-out stays inside zone_category', () => {
+    const expr = buildFilterExpression(twoFilter, {
+      iz: ['Y'],
+      zone_category: ['NR'],
+    }) as unknown[];
+    expect(expr[0]).toBe('all');
+    const [, zoneCondition, izCondition] = expr as [unknown, unknown, unknown];
+    expect(JSON.stringify(zoneCondition)).toContain('["!"');
+    expect(JSON.stringify(izCondition)).not.toContain('ZONING');
+  });
+});
+
+describe('degenerate override config', () => {
+  test('falls back to the base match when no override has a legend row', () => {
+    // Config drift: the SM_HIGHRISE legend row removed but valueOverrides
+    // kept. The builder must emit a valid plain match, not a 2-element
+    // 'case' that Mapbox rejects.
+    const drifted: LayerConfig = {
+      ...zoning,
+      legend: zoning.legend.filter((i) => i.value !== override.value),
+    };
+    const fillColor = getLayerPaint(drifted)['fill-color'] as unknown[];
+    expect(fillColor[0]).toBe('match');
+  });
+});
+
+describe('SM_HIGHRISE matchValues content', () => {
+  test('every matchValue parses to a tower-zoned SM designation (240 ft+)', () => {
+    expect(override.matchValues.length).toBeGreaterThan(0);
+    for (const designation of override.matchValues) {
+      const info = getZoneInfo('SM', designation);
+      expect(info).not.toBeNull();
+      expect(info!.maxHeightFt).toBeGreaterThanOrEqual(240);
+    }
+  });
+});
+
+describe('resolveLegendItem', () => {
+  test('overrides win over the ZONELUT lookup', () => {
+    const item = resolveLegendItem(zoning, {
+      ZONELUT: 'SM',
+      ZONING: override.matchValues[0],
+    });
+    expect(item!.value).toBe(override.value);
+  });
+
+  test('falls back to the colorProperty lookup', () => {
+    const item = resolveLegendItem(zoning, { ZONELUT: 'NR' });
+    expect(item!.label).toBe('Homes & Small Shops');
+  });
+
+  test('returns null for unknown values', () => {
+    expect(resolveLegendItem(zoning, { ZONELUT: 'NOPE' })).toBeNull();
   });
 });

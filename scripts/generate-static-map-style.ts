@@ -10,6 +10,8 @@
  */
 import { writeFile } from 'node:fs/promises';
 import layersConfig from '../data/layers.json';
+import type { LayerConfig } from '../types';
+import { buildColorExpression } from '../lib/map-expressions';
 
 interface Variant {
   file: string;
@@ -53,28 +55,7 @@ if (!token) {
   process.exit(1);
 }
 
-interface LegendItem {
-  value: string;
-  color: string;
-}
-
-interface ValueOverride {
-  value: string;
-  property: string;
-  matchValues: string[];
-}
-
-interface ConfigLayer {
-  id: string;
-  tileset: string;
-  sourceLayer: string;
-  colorProperty?: string;
-  legend: LegendItem[];
-  valueOverrides?: ValueOverride[];
-  paint?: Record<string, unknown>;
-}
-
-const configLayers = layersConfig as unknown as ConfigLayer[];
+const configLayers = layersConfig as unknown as LayerConfig[];
 const zoning = configLayers.find((l) => l.id === 'zoning');
 const parks = configLayers.find((l) => l.id === 'parks_open_space');
 if (!zoning || !parks) {
@@ -82,41 +63,14 @@ if (!zoning || !parks) {
   process.exit(1);
 }
 
-// Same shape as buildColorExpression in lib/mapbox.ts (which is client-only).
-function colorExpression(layer: ConfigLayer): unknown {
-  if (layer.legend.length === 1) return layer.legend[0].color;
-  const overrides = layer.valueOverrides ?? [];
-  const overrideValues = new Set(overrides.map((o) => o.value));
-  const match: unknown[] = ['match', ['get', layer.colorProperty ?? 'ZONELUT']];
-  for (const item of layer.legend) {
-    if (overrideValues.has(item.value)) continue;
-    match.push(item.value, item.color);
-  }
-  match.push('#9CA3AF');
-  if (overrides.length === 0) return match;
-
-  // Overrides (e.g. tower-zoned SM → Downtown & Highrise) win over the base match.
-  const caseExpr: unknown[] = ['case'];
-  for (const override of overrides) {
-    const item = layer.legend.find((i) => i.value === override.value);
-    if (!item) continue;
-    caseExpr.push(
-      ['in', ['get', override.property], ['literal', override.matchValues]],
-      item.color
-    );
-  }
-  caseExpr.push(match);
-  return caseExpr;
-}
-
-function fillLayer(layer: ConfigLayer, id: string, source: string, opacity?: number) {
+function fillLayer(layer: LayerConfig, id: string, source: string, opacity?: number) {
   return {
     id,
     type: 'fill',
     source,
     'source-layer': layer.sourceLayer,
     paint: {
-      'fill-color': colorExpression(layer),
+      'fill-color': buildColorExpression(layer),
       'fill-opacity': opacity ?? layer.paint?.['fill-opacity'] ?? 0.7,
       'fill-outline-color': layer.paint?.['fill-outline-color'] ?? '#2B3340',
     },

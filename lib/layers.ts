@@ -52,6 +52,17 @@ export function getLegendCategories(layerId: string): { label: string; color: st
   return categories;
 }
 
+// Strict legend color lookup for hand-written content pages: throws on an
+// unknown label so a renamed category fails the static build instead of
+// silently rendering a stale swatch.
+export function getLegendColor(layerId: string, label: string): string {
+  const category = getLegendCategories(layerId).find((c) => c.label === label);
+  if (!category) {
+    throw new Error(`Unknown legend label "${label}" for layer "${layerId}"`);
+  }
+  return category.color;
+}
+
 // Get all layer IDs
 function getAllLayerIds(): string[] {
   return getLayers().map((layer) => layer.id);
