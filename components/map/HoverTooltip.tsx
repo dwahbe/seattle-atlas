@@ -63,8 +63,17 @@ export function HoverTooltip({ x, y, properties, layerConfig }: HoverTooltipProp
   const value = properties[colorProperty] as string;
   if (!value) return null;
 
+  // valueOverrides win over the colorProperty lookup, mirroring the map's
+  // fill-color expression (e.g. tower-zoned SM → Downtown & Highrise).
+  const matchedOverride = (layerConfig.valueOverrides ?? []).find((override) => {
+    const overrideValue = properties[override.property];
+    return typeof overrideValue === 'string' && override.matchValues.includes(overrideValue);
+  });
+
   // Find the legend item that matches this value
-  const legendItem = layerConfig.legend.find((item) => item.value === value);
+  const legendItem = matchedOverride
+    ? layerConfig.legend.find((item) => item.value === matchedOverride.value)
+    : layerConfig.legend.find((item) => item.value === value);
 
   // For simplified view, use the legend label
   // For technical view, show the code and full name

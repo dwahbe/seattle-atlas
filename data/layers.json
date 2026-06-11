@@ -8,39 +8,210 @@
     "type": "fill",
     "zOrder": 0,
     "defaultVisible": true,
-    "description": "See what can be built across Seattle — from homes and small shops to downtown towers.",
+    "description": "See what can be built across Seattle — from homes and small shops to highrise towers downtown, in the U District, South Lake Union, and Northgate.",
     "colorProperty": "ZONELUT",
     "legend": [
-      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "NR", "percentage": 61.4 },
-      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "LR1", "percentage": 4.8 },
-      { "label": "Homes & Small Shops", "color": "#FCE8C8", "value": "LR2", "percentage": 3.2 },
-      { "label": "Midsize Buildings", "color": "#F4A261", "value": "LR3", "percentage": 4.5 },
-      { "label": "Midsize Buildings", "color": "#F4A261", "value": "MR", "percentage": 1.1 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC1", "percentage": 0.5 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC2", "percentage": 1.9 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "NC3", "percentage": 2.7 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "C1", "percentage": 1.6 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "C2", "percentage": 1.1 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "SM", "percentage": 1.4 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "UX", "percentage": 0.8 },
-      { "label": "Shops & Mixed-Use", "color": "#B388EB", "value": "MPC", "percentage": 0.1 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "HR", "percentage": 0.2 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DMC", "percentage": 0.5 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DMR", "percentage": 0.3 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DOC1", "percentage": 0.2 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DOC2", "percentage": 0.1 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DRC", "percentage": 0 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DH1", "percentage": 0.2 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "DH2", "percentage": 0 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "PSM", "percentage": 0.2 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "IDM", "percentage": 0.1 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "IDR", "percentage": 0 },
-      { "label": "Downtown & Towers", "color": "#7C5CBF", "value": "PMM", "percentage": 0 },
-      { "label": "Institutions", "color": "#7EC8E3", "value": "MIO", "percentage": 2.2 },
-      { "label": "Industrial", "color": "#6B7280", "value": "IC", "percentage": 0.3 },
-      { "label": "Industrial", "color": "#6B7280", "value": "IB", "percentage": 0 },
-      { "label": "Industrial", "color": "#6B7280", "value": "MML", "percentage": 9.9 },
-      { "label": "Industrial", "color": "#6B7280", "value": "II", "percentage": 0.8 }
+      {
+        "label": "Homes & Small Shops",
+        "color": "#FFE9AE",
+        "value": "NR",
+        "percentage": 61.4
+      },
+      {
+        "label": "Homes & Small Shops",
+        "color": "#FFE9AE",
+        "value": "LR1",
+        "percentage": 4.8
+      },
+      {
+        "label": "Homes & Small Shops",
+        "color": "#FFE9AE",
+        "value": "LR2",
+        "percentage": 3.2
+      },
+      {
+        "label": "Midsize Residential & Shops",
+        "color": "#F9BC4F",
+        "value": "LR3",
+        "percentage": 4.5
+      },
+      {
+        "label": "Midsize Residential & Shops",
+        "color": "#F9BC4F",
+        "value": "MR",
+        "percentage": 1.1
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "NC1",
+        "percentage": 0.5
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "NC2",
+        "percentage": 1.9
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "NC3",
+        "percentage": 2.7
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "C1",
+        "percentage": 1.6
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "C2",
+        "percentage": 1.1
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "SM",
+        "percentage": 0.9
+      },
+      {
+        "label": "Large Buildings",
+        "color": "#EF7036",
+        "value": "MPC",
+        "percentage": 0.1
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "HR",
+        "percentage": 0.2
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DMC",
+        "percentage": 0.5
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DMR",
+        "percentage": 0.3
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DOC1",
+        "percentage": 0.2
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DOC2",
+        "percentage": 0.1
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DRC",
+        "percentage": 0
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DH1",
+        "percentage": 0.2
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "DH2",
+        "percentage": 0
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "PSM",
+        "percentage": 0.2
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "IDM",
+        "percentage": 0.1
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "IDR",
+        "percentage": 0
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "PMM",
+        "percentage": 0
+      },
+      {
+        "label": "Downtown & Highrise",
+        "color": "#34349B",
+        "value": "SM_HIGHRISE",
+        "percentage": 0.5
+      },
+      {
+        "label": "Institutions",
+        "color": "#4FAEDD",
+        "value": "MIO",
+        "percentage": 2.2
+      },
+      {
+        "label": "Industrial",
+        "color": "#8B919C",
+        "value": "UX",
+        "percentage": 0.8
+      },
+      {
+        "label": "Industrial",
+        "color": "#8B919C",
+        "value": "IC",
+        "percentage": 0.3
+      },
+      {
+        "label": "Industrial",
+        "color": "#8B919C",
+        "value": "IB",
+        "percentage": 0
+      },
+      {
+        "label": "Industrial",
+        "color": "#8B919C",
+        "value": "MML",
+        "percentage": 9.9
+      },
+      {
+        "label": "Industrial",
+        "color": "#8B919C",
+        "value": "II",
+        "percentage": 0.8
+      }
+    ],
+    "valueOverrides": [
+      {
+        "value": "SM_HIGHRISE",
+        "property": "ZONING",
+        "matchValues": [
+          "SM-U 75-240 (M1)",
+          "SM-U 95-320 (M1)",
+          "SM-U/R 75-240 (M1)",
+          "SM-NG 240",
+          "SM-SLU 85-280",
+          "SM-SLU 175/85-280",
+          "SM-SLU 240/125-440"
+        ]
+      }
     ],
     "filters": [
       {
@@ -49,42 +220,136 @@
         "property": "ZONELUT",
         "type": "multiselect",
         "options": [
-          { "label": "Homes & Small Shops", "value": "NR" },
-          { "label": "Homes & Small Shops", "value": "LR1" },
-          { "label": "Homes & Small Shops", "value": "LR2" },
-          { "label": "Midsize Buildings", "value": "LR3" },
-          { "label": "Midsize Buildings", "value": "MR" },
-          { "label": "Shops & Mixed-Use", "value": "NC1" },
-          { "label": "Shops & Mixed-Use", "value": "NC2" },
-          { "label": "Shops & Mixed-Use", "value": "NC3" },
-          { "label": "Shops & Mixed-Use", "value": "C1" },
-          { "label": "Shops & Mixed-Use", "value": "C2" },
-          { "label": "Shops & Mixed-Use", "value": "SM" },
-          { "label": "Shops & Mixed-Use", "value": "UX" },
-          { "label": "Shops & Mixed-Use", "value": "MPC" },
-          { "label": "Downtown & Towers", "value": "HR" },
-          { "label": "Downtown & Towers", "value": "DMC" },
-          { "label": "Downtown & Towers", "value": "DMR" },
-          { "label": "Downtown & Towers", "value": "DOC1" },
-          { "label": "Downtown & Towers", "value": "DOC2" },
-          { "label": "Downtown & Towers", "value": "DRC" },
-          { "label": "Downtown & Towers", "value": "DH1" },
-          { "label": "Downtown & Towers", "value": "DH2" },
-          { "label": "Downtown & Towers", "value": "PSM" },
-          { "label": "Downtown & Towers", "value": "IDM" },
-          { "label": "Downtown & Towers", "value": "IDR" },
-          { "label": "Downtown & Towers", "value": "PMM" },
-          { "label": "Institutions", "value": "MIO" },
-          { "label": "Industrial", "value": "IC" },
-          { "label": "Industrial", "value": "IB" },
-          { "label": "Industrial", "value": "MML" },
-          { "label": "Industrial", "value": "II" }
+          {
+            "label": "Homes & Small Shops",
+            "value": "NR"
+          },
+          {
+            "label": "Homes & Small Shops",
+            "value": "LR1"
+          },
+          {
+            "label": "Homes & Small Shops",
+            "value": "LR2"
+          },
+          {
+            "label": "Midsize Residential & Shops",
+            "value": "LR3"
+          },
+          {
+            "label": "Midsize Residential & Shops",
+            "value": "MR"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "NC1"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "NC2"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "NC3"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "C1"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "C2"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "SM"
+          },
+          {
+            "label": "Large Buildings",
+            "value": "MPC"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "HR"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DMC"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DMR"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DOC1"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DOC2"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DRC"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DH1"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "DH2"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "PSM"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "IDM"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "IDR"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "PMM"
+          },
+          {
+            "label": "Downtown & Highrise",
+            "value": "SM_HIGHRISE"
+          },
+          {
+            "label": "Institutions",
+            "value": "MIO"
+          },
+          {
+            "label": "Industrial",
+            "value": "UX"
+          },
+          {
+            "label": "Industrial",
+            "value": "IC"
+          },
+          {
+            "label": "Industrial",
+            "value": "IB"
+          },
+          {
+            "label": "Industrial",
+            "value": "MML"
+          },
+          {
+            "label": "Industrial",
+            "value": "II"
+          }
         ]
       }
     ],
     "paint": {
       "fill-opacity": 0.7,
-      "fill-outline-color": "#374151"
+      "fill-outline-color": "#2B3340"
     },
     "source": "City of Seattle",
     "updated": "Jan 2026"
@@ -103,181 +368,181 @@
     "legend": [
       {
         "label": "NR - Neighborhood Residential",
-        "color": "#BEF264",
+        "color": "#FFE9AE",
         "value": "NR",
         "percentage": 61.4
       },
       {
         "label": "LR1 - Lowrise 1",
-        "color": "#FED7AA",
+        "color": "#FFD97D",
         "value": "LR1",
         "percentage": 4.8
       },
       {
         "label": "LR2 - Lowrise 2",
-        "color": "#FDBA74",
+        "color": "#FDC04F",
         "value": "LR2",
         "percentage": 3.2
       },
       {
         "label": "LR3 - Lowrise 3",
-        "color": "#FB923C",
+        "color": "#F69D31",
         "value": "LR3",
         "percentage": 4.5
       },
       {
         "label": "MR - Midrise",
-        "color": "#EA580C",
+        "color": "#E47220",
         "value": "MR",
         "percentage": 1.1
       },
       {
         "label": "HR - Highrise",
-        "color": "#DC2626",
+        "color": "#C44E16",
         "value": "HR",
         "percentage": 0.2
       },
       {
         "label": "NC1 - Neighborhood Commercial 1",
-        "color": "#E9D5FF",
+        "color": "#F8B4C0",
         "value": "NC1",
         "percentage": 0.5
       },
       {
         "label": "NC2 - Neighborhood Commercial 2",
-        "color": "#C4B5FD",
+        "color": "#EF8AA0",
         "value": "NC2",
         "percentage": 1.9
       },
       {
         "label": "NC3 - Neighborhood Commercial 3",
-        "color": "#A78BFA",
+        "color": "#E16182",
         "value": "NC3",
         "percentage": 2.7
       },
       {
         "label": "C1 - Commercial 1",
-        "color": "#F472B6",
+        "color": "#C93A63",
         "value": "C1",
         "percentage": 1.6
       },
       {
         "label": "C2 - Commercial 2",
-        "color": "#EC4899",
+        "color": "#A82550",
         "value": "C2",
         "percentage": 1.1
       },
       {
         "label": "SM - Seattle Mixed",
-        "color": "#60A5FA",
+        "color": "#1FA294",
         "value": "SM",
         "percentage": 1.4
       },
       {
         "label": "PSM - Pioneer Square Mixed",
-        "color": "#38BDF8",
+        "color": "#8E8BB8",
         "value": "PSM",
         "percentage": 0.2
       },
       {
         "label": "DMC - Downtown Mixed Commercial",
-        "color": "#6366F1",
+        "color": "#4C49A6",
         "value": "DMC",
         "percentage": 0.5
       },
       {
         "label": "DMR - Downtown Mixed Residential",
-        "color": "#818CF8",
+        "color": "#5E5BBE",
         "value": "DMR",
         "percentage": 0.3
       },
       {
         "label": "DOC1 - Downtown Office Core 1",
-        "color": "#4338CA",
+        "color": "#26246E",
         "value": "DOC1",
         "percentage": 0.2
       },
       {
         "label": "DOC2 - Downtown Office Core 2",
-        "color": "#3730A3",
+        "color": "#383584",
         "value": "DOC2",
         "percentage": 0.1
       },
       {
         "label": "DRC - Downtown Retail Core",
-        "color": "#5B21B6",
+        "color": "#7370D1",
         "value": "DRC",
         "percentage": 0
       },
       {
         "label": "MIO - Major Institution Overlay",
-        "color": "#2DD4BF",
+        "color": "#4FAEDD",
         "value": "MIO",
         "percentage": 2.2
       },
       {
         "label": "IC - Industrial Commercial",
-        "color": "#6B7280",
+        "color": "#8F95A1",
         "value": "IC",
         "percentage": 0.3
       },
       {
         "label": "IB - Industrial Buffer",
-        "color": "#9CA3AF",
+        "color": "#A8AEB8",
         "value": "IB",
         "percentage": 0
       },
       {
         "label": "MML - Maritime Manufacturing/Logistics",
-        "color": "#475569",
+        "color": "#5B6270",
         "value": "MML",
         "percentage": 9.9
       },
       {
         "label": "II - Industry & Innovation",
-        "color": "#64748B",
+        "color": "#767D8A",
         "value": "II",
         "percentage": 0.8
       },
       {
-        "label": "UX - Urban Center/Village",
-        "color": "#0EA5E9",
+        "label": "UI - Urban Industrial",
+        "color": "#5BBFB1",
         "value": "UX",
         "percentage": 0.8
       },
       {
         "label": "DH1 - Downtown Harborfront 1",
-        "color": "#1E3A5F",
+        "color": "#1B1A52",
         "value": "DH1",
         "percentage": 0.2
       },
       {
         "label": "DH2 - Downtown Harborfront 2",
-        "color": "#1E40AF",
+        "color": "#8B88DE",
         "value": "DH2",
         "percentage": 0
       },
       {
         "label": "IDM - International District Mixed",
-        "color": "#78716C",
+        "color": "#5A587F",
         "value": "IDM",
         "percentage": 0.1
       },
       {
         "label": "IDR - International District Residential",
-        "color": "#A8A29E",
+        "color": "#A9A7CC",
         "value": "IDR",
         "percentage": 0
       },
       {
         "label": "MPC - Master Planned Community",
-        "color": "#84CC16",
+        "color": "#8FA63C",
         "value": "MPC",
         "percentage": 0.1
       },
       {
         "label": "PMM - Pike Market Mixed",
-        "color": "#334155",
+        "color": "#6F6D99",
         "value": "PMM",
         "percentage": 0
       }
@@ -289,42 +554,132 @@
         "property": "ZONELUT",
         "type": "multiselect",
         "options": [
-          { "label": "Neighborhood Residential", "value": "NR" },
-          { "label": "Lowrise", "value": "LR1" },
-          { "label": "Lowrise", "value": "LR2" },
-          { "label": "Lowrise", "value": "LR3" },
-          { "label": "Midrise", "value": "MR" },
-          { "label": "Highrise", "value": "HR" },
-          { "label": "Neighborhood Commercial", "value": "NC1" },
-          { "label": "Neighborhood Commercial", "value": "NC2" },
-          { "label": "Neighborhood Commercial", "value": "NC3" },
-          { "label": "Commercial", "value": "C1" },
-          { "label": "Commercial", "value": "C2" },
-          { "label": "Seattle Mixed", "value": "SM" },
-          { "label": "Downtown", "value": "PSM" },
-          { "label": "Downtown", "value": "DMC" },
-          { "label": "Downtown", "value": "DMR" },
-          { "label": "Downtown", "value": "DOC1" },
-          { "label": "Downtown", "value": "DOC2" },
-          { "label": "Downtown", "value": "DRC" },
-          { "label": "Downtown", "value": "DH1" },
-          { "label": "Downtown", "value": "DH2" },
-          { "label": "Urban Center", "value": "UX" },
-          { "label": "Major Institution", "value": "MIO" },
-          { "label": "Industrial", "value": "IC" },
-          { "label": "Industrial", "value": "IB" },
-          { "label": "Industrial", "value": "MML" },
-          { "label": "Industrial", "value": "II" },
-          { "label": "Downtown", "value": "IDM" },
-          { "label": "Downtown", "value": "IDR" },
-          { "label": "Downtown", "value": "PMM" },
-          { "label": "Master Planned", "value": "MPC" }
+          {
+            "label": "Neighborhood Residential",
+            "value": "NR"
+          },
+          {
+            "label": "Lowrise",
+            "value": "LR1"
+          },
+          {
+            "label": "Lowrise",
+            "value": "LR2"
+          },
+          {
+            "label": "Lowrise",
+            "value": "LR3"
+          },
+          {
+            "label": "Midrise",
+            "value": "MR"
+          },
+          {
+            "label": "Highrise",
+            "value": "HR"
+          },
+          {
+            "label": "Neighborhood Commercial",
+            "value": "NC1"
+          },
+          {
+            "label": "Neighborhood Commercial",
+            "value": "NC2"
+          },
+          {
+            "label": "Neighborhood Commercial",
+            "value": "NC3"
+          },
+          {
+            "label": "Commercial",
+            "value": "C1"
+          },
+          {
+            "label": "Commercial",
+            "value": "C2"
+          },
+          {
+            "label": "Seattle Mixed",
+            "value": "SM"
+          },
+          {
+            "label": "Downtown",
+            "value": "PSM"
+          },
+          {
+            "label": "Downtown",
+            "value": "DMC"
+          },
+          {
+            "label": "Downtown",
+            "value": "DMR"
+          },
+          {
+            "label": "Downtown",
+            "value": "DOC1"
+          },
+          {
+            "label": "Downtown",
+            "value": "DOC2"
+          },
+          {
+            "label": "Downtown",
+            "value": "DRC"
+          },
+          {
+            "label": "Downtown",
+            "value": "DH1"
+          },
+          {
+            "label": "Downtown",
+            "value": "DH2"
+          },
+          {
+            "label": "Urban Industrial",
+            "value": "UX"
+          },
+          {
+            "label": "Major Institution",
+            "value": "MIO"
+          },
+          {
+            "label": "Industrial",
+            "value": "IC"
+          },
+          {
+            "label": "Industrial",
+            "value": "IB"
+          },
+          {
+            "label": "Industrial",
+            "value": "MML"
+          },
+          {
+            "label": "Industrial",
+            "value": "II"
+          },
+          {
+            "label": "Downtown",
+            "value": "IDM"
+          },
+          {
+            "label": "Downtown",
+            "value": "IDR"
+          },
+          {
+            "label": "Downtown",
+            "value": "PMM"
+          },
+          {
+            "label": "Master Planned",
+            "value": "MPC"
+          }
         ]
       }
     ],
     "paint": {
       "fill-opacity": 0.75,
-      "fill-outline-color": "#1f2937"
+      "fill-outline-color": "#1E242E"
     },
     "source": "City of Seattle",
     "updated": "Jan 2026"
@@ -342,14 +697,14 @@
     "legend": [
       {
         "label": "Parks & Open Space",
-        "color": "#86EFAC",
+        "color": "#4E9D70",
         "value": "park",
         "percentage": 12.1
       }
     ],
     "paint": {
       "fill-opacity": 0.85,
-      "fill-outline-color": "#16A34A"
+      "fill-outline-color": "#2F6B49"
     },
     "source": "Seattle Parks & Recreation",
     "updated": "2025"
@@ -383,8 +738,14 @@
         "property": "route_type",
         "type": "multiselect",
         "options": [
-          { "label": "Bus", "value": "bus" },
-          { "label": "Ferry", "value": "ferry" }
+          {
+            "label": "Bus",
+            "value": "bus"
+          },
+          {
+            "label": "Ferry",
+            "value": "ferry"
+          }
         ]
       }
     ],
@@ -447,8 +808,14 @@
         "property": "route_type",
         "type": "multiselect",
         "options": [
-          { "label": "Light Rail", "value": "light_rail" },
-          { "label": "Sounder", "value": "commuter_rail" }
+          {
+            "label": "Light Rail",
+            "value": "light_rail"
+          },
+          {
+            "label": "Sounder",
+            "value": "commuter_rail"
+          }
         ]
       }
     ],
@@ -494,7 +861,7 @@
       "circle-color": "#ffffff",
       "circle-radius": ["interpolate", ["linear"], ["zoom"], 13, 2, 16, 4, 18, 6],
       "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 13, 1, 16, 1.5, 18, 2],
-      "circle-stroke-color": "#374151",
+      "circle-stroke-color": "#2B3340",
       "circle-opacity": 0.9
     },
     "source": "King County Metro (GTFS)",
@@ -531,31 +898,31 @@
     "legend": [
       {
         "label": "Protected Bike Lane",
-        "color": "#2DC653",
+        "color": "#A21CAF",
         "value": "PBL",
         "percentage": 8.2
       },
       {
         "label": "Neighborhood Greenway",
-        "color": "#7AE582",
+        "color": "#C145CE",
         "value": "NGW",
         "percentage": 18.4
       },
       {
         "label": "Multi-Use Trail",
-        "color": "#52B788",
+        "color": "#86198F",
         "value": "MUT",
         "percentage": 12.1
       },
       {
         "label": "Bike Lane",
-        "color": "#80C055",
+        "color": "#D976E2",
         "value": "BL",
         "percentage": 24.6
       },
       {
         "label": "Sharrow",
-        "color": "#B8D99F",
+        "color": "#EDB7F0",
         "value": "SHR",
         "percentage": 36.7
       }
@@ -567,11 +934,26 @@
         "property": "PRIMARYFACILITYTYPE",
         "type": "multiselect",
         "options": [
-          { "label": "Protected Bike Lane", "value": "PBL" },
-          { "label": "Neighborhood Greenway", "value": "NGW" },
-          { "label": "Multi-Use Trail", "value": "MUT" },
-          { "label": "Bike Lane", "value": "BL" },
-          { "label": "Sharrow", "value": "SHR" }
+          {
+            "label": "Protected Bike Lane",
+            "value": "PBL"
+          },
+          {
+            "label": "Neighborhood Greenway",
+            "value": "NGW"
+          },
+          {
+            "label": "Multi-Use Trail",
+            "value": "MUT"
+          },
+          {
+            "label": "Bike Lane",
+            "value": "BL"
+          },
+          {
+            "label": "Sharrow",
+            "value": "SHR"
+          }
         ]
       }
     ],
@@ -580,16 +962,16 @@
         "match",
         ["get", "PRIMARYFACILITYTYPE"],
         "PBL",
-        "#2DC653",
+        "#A21CAF",
         "NGW",
-        "#7AE582",
+        "#C145CE",
         "MUT",
-        "#52B788",
+        "#86198F",
         "BL",
-        "#80C055",
+        "#D976E2",
         "SHR",
-        "#B8D99F",
-        "#2DC653"
+        "#EDB7F0",
+        "#A21CAF"
       ],
       "line-width": ["interpolate", ["linear"], ["zoom"], 12, 1.5, 16, 3, 18, 5],
       "line-opacity": 0.9

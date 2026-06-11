@@ -12,6 +12,11 @@ export interface ZoneInfo {
   summary: string;
   maxHeight: string;
   maxHeightFt: number;
+  /** Height limit when the designation carries an MHA suffix — (M), (M1), (M2).
+   * Only needed for zones whose designations have no numeric height suffix
+   * (LR2, LR3, MR, HR); MHA rezones raised their height limits in 2019. */
+  mhaMaxHeight?: string;
+  mhaMaxHeightFt?: number;
   aduAllowed: number;
   lotCoverage: string;
   far: string;
@@ -19,6 +24,8 @@ export interface ZoneInfo {
   smcLink: string;
   allowedUses: string[];
   notAllowedUses: string[];
+  /** Use-specific conditions worth surfacing (e.g. NR corner-store hours). */
+  useNotes?: string[];
 }
 
 const SMC_BASE_URL = 'https://library.municode.com/wa/seattle/codes/municipal_code';
@@ -40,8 +47,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     category: 'residential',
     summary:
       'Houses, townhomes, and multiplexes up to 6 units (9 with stacked-flat bonuses). ADUs allowed and count toward density.',
-    maxHeight: '32 ft',
-    maxHeightFt: 32,
+    maxHeight: '32–42 ft',
+    maxHeightFt: 42,
     aduAllowed: 2,
     lotCoverage: '50%',
     far: '0.6–1.6',
@@ -49,15 +56,17 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.44NERE`,
     allowedUses: [
       'Single-family homes',
-      'Duplexes & triplexes',
+      'Townhomes & rowhouses',
       'Multiplexes (up to 9 units)',
+      'Cottage housing & stacked flats',
       'ADUs (up to 2)',
-      'Small cafes & shops',
+      'Corner stores & cafes',
       'Daycares',
       'Home businesses',
       'Religious institutions',
     ],
     notAllowedUses: ['Large retail', 'Office buildings', 'Industrial', 'Hotels', 'Drive-throughs'],
+    useNotes: ['Shops and cafes may only operate between 6 AM and 10 PM.'],
   },
   // RSL is a legacy zone — rezoned to LR1 citywide under Ordinance 127376
   // (except in South Park, where RSL outside the new Neighborhood Center was
@@ -90,7 +99,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     maxHeightFt: 30,
     aduAllowed: 0,
     lotCoverage: '40%',
-    far: '1.0',
+    far: '1.0–1.3',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
     allowedUses: [
@@ -99,7 +108,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
       'Rowhouses',
       'Live-work units',
       'Daycares',
-      'Small retail',
+      'Street-level shops (select streets)',
     ],
     notAllowedUses: ['Large commercial', 'Offices', 'Industrial', 'Hotels'],
   },
@@ -107,12 +116,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     code: 'LR2',
     name: 'Lowrise 2',
     category: 'multifamily',
-    summary: 'Townhouses and apartments (up to 3 stories)',
+    summary: 'Townhouses and apartments (3–4 stories)',
     maxHeight: '30 ft',
     maxHeightFt: 30,
+    mhaMaxHeight: '30–40 ft',
+    mhaMaxHeightFt: 40,
     aduAllowed: 0,
     lotCoverage: '45%',
-    far: '1.3',
+    far: '1.1–1.6',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
     allowedUses: [
@@ -121,7 +132,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
       'Rowhouses',
       'Live-work units',
       'Daycares',
-      'Small retail',
+      'Street-level shops (select streets)',
     ],
     notAllowedUses: ['Large commercial', 'Offices', 'Industrial', 'Hotels'],
   },
@@ -129,19 +140,21 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     code: 'LR3',
     name: 'Lowrise 3',
     category: 'multifamily',
-    summary: 'Apartments and townhouses (up to 4 stories)',
-    maxHeight: '40 ft',
+    summary: 'Apartments and townhouses (up to 5 stories)',
+    maxHeight: '30–40 ft',
     maxHeightFt: 40,
+    mhaMaxHeight: '40–50 ft',
+    mhaMaxHeightFt: 50,
     aduAllowed: 0,
     lotCoverage: '50%',
-    far: '1.6',
+    far: '1.2–2.3',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
     allowedUses: [
-      'Apartments (4 stories)',
+      'Apartments (4-5 stories)',
       'Townhouses',
       'Live-work units',
-      'Ground-floor retail',
+      'Ground-floor retail (select streets & centers)',
       'Restaurants',
       'Daycares',
     ],
@@ -153,16 +166,18 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     code: 'MR',
     name: 'Midrise',
     category: 'multifamily',
-    summary: 'Mid-rise apartments (5-7 stories)',
-    maxHeight: '60 ft',
-    maxHeightFt: 60,
+    summary: 'Mid-rise apartments (6-8 stories)',
+    maxHeight: '60–75 ft',
+    maxHeightFt: 75,
+    mhaMaxHeight: '80 ft',
+    mhaMaxHeightFt: 80,
     aduAllowed: 0,
     lotCoverage: '75%',
-    far: '3.2',
+    far: '3.2–4.5',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
     allowedUses: [
-      'Apartments (5-7 stories)',
+      'Apartments (6-8 stories)',
       'Ground-floor retail',
       'Restaurants',
       'Services',
@@ -174,12 +189,14 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     code: 'HR',
     name: 'Highrise',
     category: 'multifamily',
-    summary: 'High-rise apartments (unlimited height)',
-    maxHeight: '240+ ft',
-    maxHeightFt: 240,
+    summary: 'Residential towers up to 44 stories, found only in the First Hill–Capitol Hill area',
+    maxHeight: '300 ft',
+    maxHeightFt: 300,
+    mhaMaxHeight: '440 ft',
+    mhaMaxHeightFt: 440,
     aduAllowed: 0,
     lotCoverage: '80%',
-    far: '6.0+',
+    far: '14–15 (with bonuses)',
     smcSection: '23.45',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.45NERE`,
     allowedUses: [
@@ -197,16 +214,16 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     code: 'NC1',
     name: 'Neighborhood Commercial 1',
     category: 'commercial',
-    summary: 'Small shops with apartments above (up to 30 ft)',
-    maxHeight: '30 ft',
-    maxHeightFt: 30,
+    summary: 'Small shops with apartments above',
+    maxHeight: '30–75 ft',
+    maxHeightFt: 75,
     aduAllowed: 0,
     lotCoverage: '80%',
     far: '2.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
     allowedUses: [
-      'Ground-floor retail (required)',
+      'Ground-floor shops & services',
       'Small restaurants & cafes',
       'Apartments above',
       'Services (salon, laundry)',
@@ -218,48 +235,51 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
       'Drive-throughs',
       'Large-format retail',
     ],
+    useNotes: ['On the busiest walking streets, new buildings must include shops at street level.'],
   },
   NC2: {
     code: 'NC2',
     name: 'Neighborhood Commercial 2',
     category: 'commercial',
-    summary: 'Shops and restaurants with apartments above (up to 40 ft)',
-    maxHeight: '40 ft',
-    maxHeightFt: 40,
+    summary: 'Shops and restaurants with apartments above',
+    maxHeight: '30–75 ft',
+    maxHeightFt: 75,
     aduAllowed: 0,
     lotCoverage: '80%',
     far: '3.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
     allowedUses: [
-      'Ground-floor retail (required)',
+      'Ground-floor shops & services',
       'Restaurants & bars',
       'Apartments above',
       'Small offices',
       'Services & medical/dental',
     ],
     notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
+    useNotes: ['On the busiest walking streets, new buildings must include shops at street level.'],
   },
   NC3: {
     code: 'NC3',
     name: 'Neighborhood Commercial 3',
     category: 'commercial',
-    summary: 'Mixed-use: retail, office, and apartments (up to 65 ft)',
-    maxHeight: '65 ft',
-    maxHeightFt: 65,
+    summary: 'Mixed-use: retail, office, and apartments',
+    maxHeight: '40–200 ft',
+    maxHeightFt: 200,
     aduAllowed: 0,
     lotCoverage: '85%',
     far: '4.0',
     smcSection: '23.47A',
     smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.47ACORE`,
     allowedUses: [
-      'Ground-floor retail (required)',
+      'Ground-floor shops & services',
       'Restaurants & bars',
       'Apartments above',
       'Offices',
       'Services & entertainment',
     ],
     notAllowedUses: ['Heavy industrial', 'Auto-oriented uses', 'Drive-throughs'],
+    useNotes: ['On the busiest walking streets, new buildings must include shops at street level.'],
   },
 
   // Commercial
@@ -268,8 +288,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Commercial 1',
     category: 'commercial',
     summary: 'Auto-oriented commercial and services',
-    maxHeight: '40 ft',
-    maxHeightFt: 40,
+    maxHeight: '30–200 ft',
+    maxHeightFt: 200,
     aduAllowed: 0,
     lotCoverage: '80%',
     far: '2.5',
@@ -290,8 +310,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Commercial 2',
     category: 'commercial',
     summary: 'General commercial with residential allowed',
-    maxHeight: '65 ft',
-    maxHeightFt: 65,
+    maxHeight: '30–75 ft',
+    maxHeightFt: 75,
     aduAllowed: 0,
     lotCoverage: '85%',
     far: '4.0',
@@ -308,14 +328,18 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     notAllowedUses: ['Heavy industrial', 'Bulk warehousing'],
   },
 
-  // Seattle Mixed
+  // Seattle Mixed — area-specific designations (SM-SLU, SM-U, SM-UP, SM-NG,
+  // SM-NR, SM-RB, SM-D) carry their own height suffixes, from 55 ft in
+  // Rainier Beach to 440 ft in South Lake Union. getZoneInfo() overrides
+  // code/name/height from the full ZONING designation when available.
   SM: {
     code: 'SM',
     name: 'Seattle Mixed',
     category: 'mixed',
-    summary: 'Mixed-use: housing, retail, office, light industrial',
-    maxHeight: '65-85 ft',
-    maxHeightFt: 85,
+    summary:
+      'Mixed-use districts near urban centers: housing, retail, office. Heights vary by area, from 55 ft up to 440 ft towers.',
+    maxHeight: '55–440 ft by area',
+    maxHeightFt: 440,
     aduAllowed: 0,
     lotCoverage: '85%',
     far: '4.5',
@@ -336,7 +360,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Pioneer Square Mixed',
     category: 'downtown',
     summary: 'Historic Pioneer Square: ground-floor commercial, housing above',
-    maxHeight: '85-245 ft',
+    maxHeight: '85–245 ft',
     maxHeightFt: 245,
     aduAllowed: 0,
     lotCoverage: '100%',
@@ -359,7 +383,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Downtown Mixed Commercial',
     category: 'downtown',
     summary: 'Downtown high-rise: office, retail, and housing',
-    maxHeight: '240-400 ft',
+    maxHeight: '240–400 ft',
     maxHeightFt: 400,
     aduAllowed: 0,
     lotCoverage: '100%',
@@ -374,7 +398,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Downtown Mixed Residential',
     category: 'downtown',
     summary: 'Downtown high-rise residential towers',
-    maxHeight: '240-400 ft',
+    maxHeight: '240–400 ft',
     maxHeightFt: 400,
     aduAllowed: 0,
     lotCoverage: '95%',
@@ -472,28 +496,30 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     notAllowedUses: ['Heavy industrial', 'Auto-oriented uses'],
   },
 
-  // Urban Center/Village
+  // Urban Industrial — created by the 2023 Industrial & Maritime Strategy
+  // (effective Oct 23, 2023). The tileset's ZONELUT is "UX" but official map
+  // designations read "UI" (e.g. "UI U/45") — the designation parser shows UI.
   UX: {
     code: 'UX',
-    name: 'Urban Center/Village',
-    category: 'mixed',
-    summary: 'High-density mixed-use in urban villages',
-    maxHeight: '75-125 ft',
-    maxHeightFt: 125,
+    name: 'Urban Industrial',
+    category: 'industrial',
+    summary:
+      'Industrial-to-residential transition areas for small-scale industry, arts, and limited housing — created by the 2023 Industrial & Maritime Strategy.',
+    maxHeight: '30–85 ft',
+    maxHeightFt: 85,
     aduAllowed: 0,
     lotCoverage: '85%',
-    far: '5.0',
-    smcSection: '23.48',
-    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.48SEMI`,
+    far: 'Varies by use',
+    smcSection: '23.50',
+    smcLink: `${SMC_BASE_URL}?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.50INZO`,
     allowedUses: [
-      'Housing',
+      'Light manufacturing & maker spaces',
+      'Arts & creative industries',
       'Retail & restaurants',
       'Offices',
-      'Hotels',
-      'Entertainment',
-      'Services',
+      'Housing (limited)',
     ],
-    notAllowedUses: ['Heavy industrial', 'Hazardous materials'],
+    notAllowedUses: ['Heavy manufacturing', 'Large warehousing & logistics'],
   },
 
   // Industrial
@@ -502,7 +528,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Industrial Commercial',
     category: 'industrial',
     summary: 'Light industrial with commercial uses',
-    maxHeight: '65 ft',
+    maxHeight: '45–65 ft',
     maxHeightFt: 65,
     aduAllowed: 0,
     lotCoverage: '75%',
@@ -532,8 +558,8 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'Maritime Manufacturing/Logistics',
     category: 'industrial',
     summary: 'Port and heavy industrial uses',
-    maxHeight: '65 ft',
-    maxHeightFt: 65,
+    maxHeight: '45–85 ft',
+    maxHeightFt: 85,
     aduAllowed: 0,
     lotCoverage: '75%',
     far: '2.0',
@@ -545,15 +571,15 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
       'Warehouses & logistics',
       'Industrial services',
     ],
-    notAllowedUses: ['Housing', 'Retail', 'Schools', 'Offices (non-accessory)'],
+    notAllowedUses: ['Housing', 'Mini-storage', 'Big-box retail', 'Schools'],
   },
   II: {
     code: 'II',
     name: 'Industry & Innovation',
     category: 'industrial',
     summary: 'Industrial with tech and innovation uses',
-    maxHeight: '65 ft',
-    maxHeightFt: 65,
+    maxHeight: '85–240 ft',
+    maxHeightFt: 240,
     aduAllowed: 0,
     lotCoverage: '75%',
     far: '2.5',
@@ -573,7 +599,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'International District Mixed',
     category: 'downtown',
     summary: 'Chinatown-International District: mixed-use commercial and housing',
-    maxHeight: '65-170 ft',
+    maxHeight: '65–170 ft',
     maxHeightFt: 170,
     aduAllowed: 0,
     lotCoverage: '80%',
@@ -594,7 +620,7 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
     name: 'International District Residential',
     category: 'downtown',
     summary: 'Chinatown-International District: residential with ground-floor retail',
-    maxHeight: '45-270 ft',
+    maxHeight: '45–270 ft',
     maxHeightFt: 270,
     aduAllowed: 0,
     lotCoverage: '75%',
@@ -666,11 +692,91 @@ const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
   },
 };
 
+/** Area names for Seattle Mixed designation prefixes (longest prefix first —
+ * "SM-UP" must be checked before "SM-U"). */
+const SM_AREA_NAMES: [string, string][] = [
+  ['SM-SLU', 'Seattle Mixed — South Lake Union'],
+  ['SM-UP', 'Seattle Mixed — Uptown'],
+  ['SM-NG', 'Seattle Mixed — Northgate'],
+  ['SM-NR', 'Seattle Mixed — North Rainier'],
+  ['SM-RB', 'Seattle Mixed — Rainier Beach'],
+  ['SM-D', 'Seattle Mixed — Dravus'],
+  ['SM-U', 'Seattle Mixed — U District'],
+];
+
+/**
+ * Derive the displayed code, name, and height limit from a full zoning
+ * designation (the tileset's ZONING property), e.g. "SM-U 95-320 (M1)",
+ * "SM-SLU 240/125-440", "NC3P-200 (M)", "DOC1 U/450-U", "MIO-160-HR (M)".
+ *
+ * Heights are the numeric tokens of the designation (the digit inside base
+ * codes like NC3/DOC1 is never a standalone token, and no Seattle height
+ * suffix is below 30). Industrial designations put FAR first ("MML U/45"),
+ * but the max numeric token is still the height for every current value —
+ * except MIO compounds, where the institution cap (the token right after
+ * "MIO-") wins over the underlying zone's often-larger limit.
+ */
+function applyDesignation(base: ZoneInfo, designation: string): ZoneInfo {
+  // MHA suffix — (M), (M1), (M2) — raises the height limit for zones whose
+  // designations carry no numeric suffix (LR2/LR3/MR/HR). Detect before stripping.
+  const hasMhaSuffix = /\(M\d?\)/.test(designation);
+
+  // Strip parenthesized suffixes: MHA tiers "(M)", "(M1)" and FAR variants "(0.75)".
+  const display = designation
+    .replace(/\s*\([^)]*\)/g, '')
+    .trim()
+    .toUpperCase();
+  if (!display) return base;
+
+  // MIO compounds pair an institution height cap with the underlying zone
+  // (e.g. "MIO-70-NC3P-200"). The displayed entry is the overlay, so the MIO
+  // cap — not the underlying zone's (often larger) limit — is the height.
+  const mioMatch = display.match(/^MIO-(\d+)/);
+  if (mioMatch) {
+    const cap = Number(mioMatch[1]);
+    return { ...base, code: display, maxHeight: `${cap} ft`, maxHeightFt: cap };
+  }
+
+  const heights = (display.match(/\b\d+\b/g) ?? []).map(Number).filter((n) => n >= 30);
+  if (heights.length === 0 && hasMhaSuffix && base.mhaMaxHeight && base.mhaMaxHeightFt) {
+    return {
+      ...base,
+      code: display,
+      maxHeight: base.mhaMaxHeight,
+      maxHeightFt: base.mhaMaxHeightFt,
+    };
+  }
+  if (display === base.code) return base;
+
+  const maxHeightFt = heights.length > 0 ? Math.max(...heights) : base.maxHeightFt;
+  // Downtown designations use "U" for unlimited height above the base limit
+  // (e.g. DOC1 U/450-U). Elsewhere (industrial) "U" means unlimited FAR.
+  const unlimited = base.category === 'downtown' && /\bU\b/.test(display);
+
+  let maxHeight = base.maxHeight;
+  if (heights.length > 0) {
+    maxHeight = unlimited ? `${maxHeightFt}+ ft` : `${maxHeightFt} ft`;
+  }
+
+  let name = base.name;
+  if (base.code === 'SM') {
+    const area = SM_AREA_NAMES.find(([prefix]) => display.startsWith(prefix));
+    if (area) name = area[1];
+  }
+
+  return { ...base, code: display, name, maxHeight, maxHeightFt };
+}
+
 /**
  * Get zone information for a zone code.
- * Handles height suffix variations (e.g., NC3-65, NC3-85).
+ *
+ * `zoneCode` is the base code (the tileset's ZONELUT property, e.g. "SM",
+ * "NC3") and resolves which ZONE_INFO_MAP entry applies; height suffix
+ * variations (e.g. NC3-65) are also accepted. When `designation` (the
+ * tileset's full ZONING property, e.g. "SM-U 95-320 (M1)") is provided, the
+ * returned code, name, and height limit reflect that specific designation.
  */
-export function getZoneInfo(zoneCode: string): ZoneInfo | null {
+export function getZoneInfo(zoneCode: string, designation?: string): ZoneInfo | null {
   if (!zoneCode) return null;
 
   // Normalize the code (uppercase, trim)
@@ -678,21 +784,18 @@ export function getZoneInfo(zoneCode: string): ZoneInfo | null {
 
   // Direct match
   if (ZONE_INFO_MAP[normalized]) {
-    return ZONE_INFO_MAP[normalized];
+    return designation
+      ? applyDesignation(ZONE_INFO_MAP[normalized], designation)
+      : ZONE_INFO_MAP[normalized];
   }
 
   // Handle height suffix (e.g., NC3-65 → NC3 base with 65ft height)
   const heightMatch = normalized.match(/^([A-Z]+\d?)[-/](\d+)$/);
   if (heightMatch) {
-    const [, baseCode, heightSuffix] = heightMatch;
+    const [, baseCode] = heightMatch;
     const baseInfo = ZONE_INFO_MAP[baseCode];
     if (baseInfo) {
-      return {
-        ...baseInfo,
-        code: normalized,
-        maxHeight: `${heightSuffix} ft`,
-        maxHeightFt: parseInt(heightSuffix, 10),
-      };
+      return applyDesignation(baseInfo, designation ?? normalized);
     }
   }
 
@@ -709,22 +812,8 @@ export function getZoneInfo(zoneCode: string): ZoneInfo | null {
 }
 
 /**
- * Get a simplified category label for display.
- */
-export function getCategoryLabel(category: ZoneInfo['category']): string {
-  const labels: Record<ZoneInfo['category'], string> = {
-    residential: 'Residential',
-    multifamily: 'Multi-Family',
-    commercial: 'Commercial',
-    mixed: 'Mixed Use',
-    downtown: 'Downtown',
-    industrial: 'Industrial',
-  };
-  return labels[category] || category;
-}
-
-/**
- * Get all known zone codes.
+ * Get all known zone codes. Only consumed by tests, which use it to validate
+ * every ZONE_INFO_MAP entry.
  */
 export function getAllZoneCodes(): string[] {
   return Object.keys(ZONE_INFO_MAP);

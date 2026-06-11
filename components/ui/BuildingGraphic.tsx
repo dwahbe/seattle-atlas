@@ -65,6 +65,9 @@ function getBuildingType(
   }
 
   if (category === 'mixed') {
+    // Tower-zoned Seattle Mixed designations (U District, South Lake Union,
+    // Northgate) allow 240 ft+ — show a highrise, not a midrise mixed-use block.
+    if (maxHeightFt >= 240) return 'highrise';
     return 'mixeduse';
   }
 

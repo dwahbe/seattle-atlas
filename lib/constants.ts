@@ -13,5 +13,5 @@ export const ZONING_FILTER_IDS: Record<string, string> = {
   zoning_detailed: 'zone_type',
 };
 
-/** Blue highlight color for inspected/selected features */
-export const HIGHLIGHT_COLOR = '#3B82F6';
+/** Cobalt highlight color for inspected/selected features — matches the UI accent */
+export const HIGHLIGHT_COLOR = '#1D63ED';

@@ -133,16 +133,38 @@ function buildColorExpression(layer: LayerConfig): mapboxgl.Expression | string 
   // Use colorProperty if specified, otherwise try to infer from layer config
   const propertyName = layer.colorProperty || 'ZONELUT';
 
+  const overrides = layer.valueOverrides ?? [];
+  const overrideValues = new Set(overrides.map((o) => o.value));
+
   const matchExpression: mapboxgl.Expression = ['match', ['get', propertyName]];
 
   for (const item of layer.legend) {
+    // Pseudo values (e.g. SM_HIGHRISE) match a different property — handled
+    // by the case wrapper below, not the colorProperty match.
+    if (overrideValues.has(item.value)) continue;
     matchExpression.push(item.value, item.color);
   }
 
   // Default color for unmatched values
   matchExpression.push('#9CA3AF');
 
-  return matchExpression;
+  if (overrides.length === 0) {
+    return matchExpression;
+  }
+
+  // Overrides take precedence over the base match, so e.g. tower-zoned SM
+  // polygons color as Downtown & Highrise while ZONELUT still reads "SM".
+  const caseExpression: mapboxgl.Expression = ['case'];
+  for (const override of overrides) {
+    const item = layer.legend.find((i) => i.value === override.value);
+    if (!item) continue;
+    caseExpression.push(
+      ['in', ['get', override.property], ['literal', override.matchValues]],
+      item.color
+    );
+  }
+  caseExpression.push(matchExpression);
+  return caseExpression;
 }
 
 // Get layer layout properties
@@ -163,17 +185,51 @@ export function buildFilterExpression(
   }
 
   const conditions: mapboxgl.Expression[] = [];
+  const overrides = layer.valueOverrides ?? [];
+  const overrideByValue = new Map(overrides.map((o) => [o.value, o]));
 
   for (const filter of layer.filters) {
     const values = filterState[filter.id];
     if (values && values.length > 0) {
-      // Build "in" expression for multiselect
-      const inExpression: mapboxgl.Expression = [
-        'in',
-        ['get', filter.property],
-        ['literal', values],
-      ];
-      conditions.push(inExpression);
+      const plainValues = values.filter((v) => !overrideByValue.has(v));
+      const selectedOverrides = values.flatMap((v) => overrideByValue.get(v) ?? []);
+
+      const orConditions: mapboxgl.Expression[] = [];
+
+      if (plainValues.length > 0) {
+        // Build "in" expression for multiselect
+        let inExpression: mapboxgl.Expression = [
+          'in',
+          ['get', filter.property],
+          ['literal', plainValues],
+        ];
+        if (overrides.length > 0) {
+          // Features claimed by an override (e.g. tower-zoned SM) must not
+          // ride along with their base value — keep filtering consistent
+          // with the legend coloring.
+          inExpression = [
+            'all',
+            inExpression,
+            ...overrides.map(
+              (o): mapboxgl.Expression => [
+                '!',
+                ['in', ['get', o.property], ['literal', o.matchValues]],
+              ]
+            ),
+          ];
+        }
+        orConditions.push(inExpression);
+      }
+
+      for (const override of selectedOverrides) {
+        orConditions.push(['in', ['get', override.property], ['literal', override.matchValues]]);
+      }
+
+      if (orConditions.length === 1) {
+        conditions.push(orConditions[0]);
+      } else if (orConditions.length > 1) {
+        conditions.push(['any', ...orConditions]);
+      }
     }
   }
 

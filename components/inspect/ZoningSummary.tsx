@@ -1,5 +1,6 @@
 'use client';
 
+import { IconInfoCircle } from '@tabler/icons-react';
 import type { ZoneInfo } from '@/lib/zoning-info';
 import { BuildingGraphic, InstitutionGraphic } from '@/components/ui';
 import type { InstitutionInfo } from '@/lib/institutions';
@@ -48,9 +49,17 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
       {/* Allowed Uses */}
       {zoneInfo.allowedUses.length > 0 && (
         <div>
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary mb-2">
-            What Can Be Built
-          </h3>
+          <div className="flex items-baseline justify-between gap-2 mb-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              What Can Be Built
+            </h3>
+            {/* Skip non-numeric limits like MPC's "Per master plan" (maxHeightFt 0) */}
+            {zoneInfo.maxHeightFt > 0 && (
+              <span className="text-xs font-medium text-text-tertiary shrink-0">
+                Max {zoneInfo.maxHeight}
+              </span>
+            )}
+          </div>
           <ul className="space-y-1 text-sm">
             {zoneInfo.allowedUses.map((use) => (
               <li key={use} className="flex gap-1.5 text-text-primary">
@@ -61,6 +70,16 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
               </li>
             ))}
           </ul>
+          {zoneInfo.useNotes && zoneInfo.useNotes.length > 0 && (
+            <div className="mt-3 space-y-1.5 border-t border-border pt-2.5">
+              {zoneInfo.useNotes.map((note) => (
+                <p key={note} className="flex gap-1.5 text-xs text-text-secondary">
+                  <IconInfoCircle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+                  {note}
+                </p>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

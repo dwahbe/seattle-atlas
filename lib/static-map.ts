@@ -15,7 +15,9 @@
  * zoning tileset drops the Referer and gets 403'd. If the zoning legend
  * changes, re-run the script, re-upload, and update STATIC_MAP_STYLE.
  */
-const STATIC_MAP_STYLE = 'dwahbe/cmq85s81u001001s9d3af8cjj';
+const STATIC_MAP_STYLE = 'dwahbe/cmq9vnkp4002901qz8bk094jy';
+/** Light-basemap variant (unused by the previews, published alongside the
+ * satellite style): dwahbe/cmq9vmz4w002l01qzbionfrik */
 
 export const STATIC_MAP_WIDTH = 800;
 export const STATIC_MAP_HEIGHT = 500;

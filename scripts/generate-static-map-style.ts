@@ -20,6 +20,12 @@ interface Variant {
   zoningOpacity: number;
   /** Parks are skipped on satellite — the imagery already shows greenery. */
   parks: boolean;
+  /** light-v11's labels are pale monochrome grays (hsl 220,1%,49–71%) tuned
+   * for a near-white canvas; over the saturated zoning fills they drop below
+   * 3:1. When set, land labels above the fills get dark ink + a solid white
+   * halo so text contrasts against its own halo regardless of fill color.
+   * Satellite's white-text/dark-halo labels already pass and are left alone. */
+  legibleLabels: boolean;
 }
 
 const VARIANTS: Variant[] = [
@@ -29,6 +35,7 @@ const VARIANTS: Variant[] = [
     base: 'mapbox/light-v11',
     zoningOpacity: 0.5,
     parks: true,
+    legibleLabels: true,
   },
   {
     file: 'static-map-style-satellite.json',
@@ -36,6 +43,7 @@ const VARIANTS: Variant[] = [
     base: 'mapbox/satellite-streets-v12',
     zoningOpacity: 0.45,
     parks: false,
+    legibleLabels: false,
   },
 ];
 
@@ -50,12 +58,19 @@ interface LegendItem {
   color: string;
 }
 
+interface ValueOverride {
+  value: string;
+  property: string;
+  matchValues: string[];
+}
+
 interface ConfigLayer {
   id: string;
   tileset: string;
   sourceLayer: string;
   colorProperty?: string;
   legend: LegendItem[];
+  valueOverrides?: ValueOverride[];
   paint?: Record<string, unknown>;
 }
 
@@ -70,10 +85,28 @@ if (!zoning || !parks) {
 // Same shape as buildColorExpression in lib/mapbox.ts (which is client-only).
 function colorExpression(layer: ConfigLayer): unknown {
   if (layer.legend.length === 1) return layer.legend[0].color;
+  const overrides = layer.valueOverrides ?? [];
+  const overrideValues = new Set(overrides.map((o) => o.value));
   const match: unknown[] = ['match', ['get', layer.colorProperty ?? 'ZONELUT']];
-  for (const item of layer.legend) match.push(item.value, item.color);
+  for (const item of layer.legend) {
+    if (overrideValues.has(item.value)) continue;
+    match.push(item.value, item.color);
+  }
   match.push('#9CA3AF');
-  return match;
+  if (overrides.length === 0) return match;
+
+  // Overrides (e.g. tower-zoned SM → Downtown & Highrise) win over the base match.
+  const caseExpr: unknown[] = ['case'];
+  for (const override of overrides) {
+    const item = layer.legend.find((i) => i.value === override.value);
+    if (!item) continue;
+    caseExpr.push(
+      ['in', ['get', override.property], ['literal', override.matchValues]],
+      item.color
+    );
+  }
+  caseExpr.push(match);
+  return caseExpr;
 }
 
 function fillLayer(layer: ConfigLayer, id: string, source: string, opacity?: number) {
@@ -85,7 +118,7 @@ function fillLayer(layer: ConfigLayer, id: string, source: string, opacity?: num
     paint: {
       'fill-color': colorExpression(layer),
       'fill-opacity': opacity ?? layer.paint?.['fill-opacity'] ?? 0.7,
-      'fill-outline-color': layer.paint?.['fill-outline-color'] ?? '#374151',
+      'fill-outline-color': layer.paint?.['fill-outline-color'] ?? '#2B3340',
     },
   };
 }
@@ -125,6 +158,21 @@ for (const variant of VARIANTS) {
   const firstSymbolIndex = style.layers.findIndex((l) => l.type === 'symbol');
   const insertAt = firstSymbolIndex === -1 ? style.layers.length : firstSymbolIndex;
   style.layers.splice(insertAt, 0, ...(added as never[]));
+
+  if (variant.legibleLabels) {
+    // Skip water labels (they sit on water, never on fills) and route shields
+    // (their text sits on the shield graphic).
+    const skip = /water|shield/;
+    for (const layer of style.layers.slice(insertAt + added.length)) {
+      const symbol = layer as { type: string; id: string; paint?: Record<string, unknown> };
+      if (symbol.type !== 'symbol' || skip.test(symbol.id)) continue;
+      symbol.paint ??= {};
+      symbol.paint['text-color'] = '#2B3340';
+      symbol.paint['text-halo-color'] = 'hsl(0, 0%, 100%)';
+      const halo = symbol.paint['text-halo-width'];
+      symbol.paint['text-halo-width'] = Math.max(typeof halo === 'number' ? halo : 0, 1.4);
+    }
+  }
 
   const outputPath = new URL(`./${variant.file}`, import.meta.url).pathname;
   await writeFile(outputPath, JSON.stringify(style, null, 2));

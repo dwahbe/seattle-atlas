@@ -116,7 +116,11 @@ export function useInspectData(
   const zoneInfo = useMemo<ZoneInfo | null>(() => {
     if (!feature || !isZoning) return null;
     const zoneCode = feature.properties.ZONELUT as string;
-    return getZoneInfo(zoneCode);
+    // The full designation (e.g. "SM-U 95-320 (M1)") carries the real height
+    // limit for this polygon — ZONELUT alone flattens it to the base zone.
+    const designation =
+      typeof feature.properties.ZONING === 'string' ? feature.properties.ZONING : undefined;
+    return getZoneInfo(zoneCode, designation);
   }, [feature, isZoning]);
 
   // Derived: park info (from clean tileset properties)

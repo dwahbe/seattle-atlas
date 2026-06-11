@@ -63,14 +63,16 @@ const LAYER_DISPLAY_CONFIGS: Record<string, LayerDisplayConfig> = {
   zoning_detailed: {
     layerId: 'zoning_detailed',
     displayFields: [
-      { key: 'ZONELUT', label: 'Zone Code', transform: 'uppercase', priority: 1 },
-      { key: 'ZONING_DESC', label: 'Full Name', priority: 2 },
-      { key: 'CATEGORY_DESC', label: 'Category', priority: 3 },
-      { key: 'IZ', label: 'Inclusionary Zoning', transform: 'yesNo', priority: 4 },
+      // ZONING is the full designation with the height limit suffix
+      // (e.g. "SM-U 95-320 (M1)") — the official map label for the parcel.
+      { key: 'ZONING', label: 'Designation', transform: 'uppercase', priority: 1 },
+      { key: 'ZONELUT', label: 'Zone Code', transform: 'uppercase', priority: 2 },
+      { key: 'ZONING_DESC', label: 'Full Name', priority: 3 },
+      { key: 'CATEGORY_DESC', label: 'Category', priority: 4 },
+      { key: 'IZ', label: 'Inclusionary Zoning', transform: 'yesNo', priority: 5 },
     ],
     hiddenFields: [
       'ZONEID',
-      'ZONING',
       'DETAIL_DESC',
       'CLASS_DESC',
       'CONTRACT',

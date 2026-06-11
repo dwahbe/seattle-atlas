@@ -9,6 +9,18 @@ export interface LegendItem {
   percentage?: number;
 }
 
+/**
+ * Maps a pseudo legend/filter value (e.g. "SM_HIGHRISE") to a match on a
+ * different feature property. Matching features take the pseudo value's
+ * color/filter instead of the colorProperty match — used to split tower-zoned
+ * Seattle Mixed designations out of the base SM code.
+ */
+export interface ValueOverride {
+  value: string;
+  property: string;
+  matchValues: string[];
+}
+
 export interface FilterOption {
   label: string;
   value: string;
@@ -36,6 +48,7 @@ export interface LayerConfig {
   zOrder: number;
   defaultVisible: boolean;
   legend: LegendItem[];
+  valueOverrides?: ValueOverride[];
   filters?: LayerFilter[];
   paint?: Record<string, unknown>;
   layout?: Record<string, unknown>;

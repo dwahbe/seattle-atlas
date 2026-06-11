@@ -7,7 +7,7 @@ describe('staticMapUrl', () => {
   test('builds a bbox-fitted Static Images URL', () => {
     const url = staticMapUrl(BOUNDS, { token: 'test-token' });
     expect(url).toBe(
-      'https://api.mapbox.com/styles/v1/dwahbe/cmq85s81u001001s9d3af8cjj/static/' +
+      'https://api.mapbox.com/styles/v1/dwahbe/cmq9vnkp4002901qz8bk094jy/static/' +
         `[-122.328,47.613,-122.305,47.632]/${STATIC_MAP_WIDTH}x${STATIC_MAP_HEIGHT}@2x` +
         '?padding=20&access_token=test-token'
     );

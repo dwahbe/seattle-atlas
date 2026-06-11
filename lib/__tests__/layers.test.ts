@@ -6,9 +6,9 @@ describe('getLegendCategories', () => {
     const categories = getLegendCategories('zoning');
     expect(categories.map((c) => c.label)).toEqual([
       'Homes & Small Shops',
-      'Midsize Buildings',
-      'Shops & Mixed-Use',
-      'Downtown & Towers',
+      'Midsize Residential & Shops',
+      'Large Buildings',
+      'Downtown & Highrise',
       'Institutions',
       'Industrial',
     ]);
