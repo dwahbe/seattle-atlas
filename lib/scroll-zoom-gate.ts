@@ -2,78 +2,56 @@ import type { Map as MapboxMap } from 'mapbox-gl';
 import { onIntroDone } from '@/lib/intro-state';
 
 // A content hero sits above the full-screen map on the home page. Mapbox's
-// scrollZoom would otherwise eat wheel events the moment the cursor crosses the
-// map, trapping the page scroll. We keep scrollZoom disabled until the map is
-// fully in view AND the intro splash is gone, then wait for the wheel to go
-// idle so momentum-scrolling past the hero doesn't blast straight into a zoom.
-const DEFAULT_SCROLL_ZOOM_IDLE_MS = 1500;
-const DESKTOP_LAYOUT_MEDIA_QUERY = '(min-width: 1024px)';
-
-interface ScrollZoomGateOptions {
-  idleMs?: number;
-}
-
-export function setupScrollZoomGate(
-  map: MapboxMap,
-  container: HTMLElement,
-  options: ScrollZoomGateOptions = {}
-): () => void {
-  const defaultIdleMs = window.matchMedia(DESKTOP_LAYOUT_MEDIA_QUERY).matches
-    ? DEFAULT_SCROLL_ZOOM_IDLE_MS
-    : 0;
-  const idleMs = options.idleMs ?? defaultIdleMs;
+// scrollZoom would otherwise eat wheel events the moment the cursor crosses
+// the map, trapping the page scroll — and the scroll that dismisses the intro
+// splash would blast straight into a zoom. We keep scrollZoom disabled until
+// the map is fully in view, the intro splash is gone, AND the user has shown
+// zoom intent: a pointerdown on the map (click, drag, tap) or a trackpad
+// pinch (delivered as ctrl+wheel). Plain wheel scrolling never arms it — a
+// timing heuristic can't tell leftover scroll momentum from deliberate zoom,
+// so any idle-window approach misfires on paused-then-resumed scrolling.
+export function setupScrollZoomGate(map: MapboxMap, container: HTMLElement): () => void {
   map.scrollZoom.disable();
 
   let observer: IntersectionObserver | null = null;
-  let enableTimeout: number | null = null;
   let isMapFullyVisible = false;
   let isIntroDone = false;
-  let lastWheelAt = 0;
-
-  const clearEnableTimeout = () => {
-    if (enableTimeout === null) return;
-    window.clearTimeout(enableTimeout);
-    enableTimeout = null;
-  };
-
-  const enableNow = () => {
-    clearEnableTimeout();
-    if (isMapFullyVisible && isIntroDone) map.scrollZoom.enable();
-  };
-
-  const enableAfterWheelIdle = () => {
-    if (idleMs <= 0) {
-      enableNow();
-      return;
-    }
-
-    clearEnableTimeout();
-    map.scrollZoom.disable();
-    enableTimeout = window.setTimeout(enableNow, idleMs);
-  };
-
-  const disable = () => {
-    clearEnableTimeout();
-    map.scrollZoom.disable();
-  };
+  let hasIntent = false;
 
   const sync = () => {
-    if (!isMapFullyVisible || !isIntroDone) {
-      disable();
-      return;
-    }
-    if (idleMs > 0 && Date.now() - lastWheelAt < idleMs) {
-      enableAfterWheelIdle();
+    if (isMapFullyVisible && isIntroDone && hasIntent) {
+      map.scrollZoom.enable();
     } else {
-      enableNow();
+      map.scrollZoom.disable();
     }
   };
 
-  const handleWheel = () => {
-    lastWheelAt = Date.now();
-    // Only re-arm while we're already debouncing; once scrollZoom is live,
-    // wheel events are the user zooming and must pass through untouched.
-    if (enableTimeout !== null) enableAfterWheelIdle();
+  // Intent is one-shot: once the user has engaged the map, scrollZoom only
+  // re-gates on visibility/intro, never on interaction again.
+  const markIntent = () => {
+    hasIntent = true;
+    removeIntentListeners();
+    sync();
+  };
+
+  const handlePointerDown = () => markIntent();
+
+  const handleWheel = (e: WheelEvent) => {
+    // Trackpad pinches arrive as wheel events with ctrlKey set — unambiguous
+    // zoom intent, unlike two-finger scrolling.
+    if (e.ctrlKey) markIntent();
+  };
+
+  // Capture phase so enabling lands before Mapbox's own handler sees the same
+  // event — the first pinch tick already zooms. Scoped to the map container,
+  // so clicks on sibling panels and the intro splash never count as intent.
+  const addIntentListeners = () => {
+    container.addEventListener('pointerdown', handlePointerDown, { capture: true });
+    container.addEventListener('wheel', handleWheel, { capture: true, passive: true });
+  };
+  const removeIntentListeners = () => {
+    container.removeEventListener('pointerdown', handlePointerDown, { capture: true });
+    container.removeEventListener('wheel', handleWheel, { capture: true });
   };
 
   const unsubscribeIntroDone = onIntroDone(() => {
@@ -82,9 +60,7 @@ export function setupScrollZoomGate(
   });
 
   if ('IntersectionObserver' in window) {
-    if (idleMs > 0) {
-      window.addEventListener('wheel', handleWheel, { capture: true, passive: true });
-    }
+    addIntentListeners();
     observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
@@ -102,10 +78,7 @@ export function setupScrollZoomGate(
 
   return () => {
     unsubscribeIntroDone();
-    if (idleMs > 0) {
-      window.removeEventListener('wheel', handleWheel, { capture: true });
-    }
-    clearEnableTimeout();
+    removeIntentListeners();
     observer?.disconnect();
   };
 }

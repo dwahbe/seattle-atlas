@@ -30,7 +30,6 @@ interface MapGLProps {
   markerPosition?: [number, number] | null;
   showControls?: boolean;
   showHoverTooltip?: boolean;
-  scrollZoomIdleMs?: number;
 }
 
 import { HIGHLIGHT_COLOR } from '@/lib/constants';
@@ -60,7 +59,6 @@ export function MapGL({
   markerPosition,
   showControls = true,
   showHoverTooltip = true,
-  scrollZoomIdleMs,
 }: MapGLProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -107,9 +105,7 @@ export function MapGL({
       zoom: viewState.zoom,
       attributionControl: false,
     });
-    const cleanupScrollZoomGate = setupScrollZoomGate(mapInstance, container, {
-      idleMs: scrollZoomIdleMs,
-    });
+    const cleanupScrollZoomGate = setupScrollZoomGate(mapInstance, container);
 
     if (showControls) {
       // Add navigation control

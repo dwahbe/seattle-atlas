@@ -298,7 +298,6 @@ export function MapContainer() {
         markerPosition={markerPosition}
         showControls={!isMobile}
         showHoverTooltip={!isMobile}
-        scrollZoomIdleMs={isMobile ? 0 : undefined}
       />
 
       {/* Map Layers Manager */}

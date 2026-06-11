@@ -134,12 +134,13 @@ Default center: Seattle (47.6062, -122.3321, zoom 12) and default layers `['zoni
 
 ### Scroll-Zoom Gate
 
-A content hero sits above the full-screen map on `/`. Mapbox `scrollZoom` would otherwise capture the wheel the moment the cursor crosses the map and trap the page scroll. `lib/scroll-zoom-gate.ts` (`setupScrollZoomGate(map, container, { idleMs })`, wired in `MapGL`'s init effect, torn down in its cleanup) keeps `scrollZoom` disabled until **both** the map is ≥0.99 in view (IntersectionObserver) **and** the intro is done (`onIntroDone`), then waits `idleMs` of wheel-idle so momentum-scrolling past the hero doesn't blast into a zoom.
+A content hero sits above the full-screen map on `/`. Mapbox `scrollZoom` would otherwise capture the wheel the moment the cursor crosses the map and trap the page scroll — and the scroll that dismisses the intro splash would blast straight into a zoom. `lib/scroll-zoom-gate.ts` (`setupScrollZoomGate(map, container)`, wired in `MapGL`'s init effect, torn down in its cleanup) keeps `scrollZoom` disabled until **all three** hold: the map is ≥0.99 in view (IntersectionObserver), the intro is done (`onIntroDone`), and the user has shown **zoom intent** — a `pointerdown` on the map container (click, drag, tap, the +/− controls) or a trackpad pinch (`wheel` with `ctrlKey`). Plain wheel scrolling never arms it: a timing heuristic can't tell leftover scroll momentum from deliberate zoom (an earlier wheel-idle version misfired on paused-then-resumed trackpad scrolling).
 
-- Desktop default `idleMs` is 1500; **mobile passes `scrollZoomIdleMs={0}`** from `MapContainer` (the `MapGL` prop), which skips the wheel listener and enables immediately on full visibility.
-- Without a hero (map is full-bleed) the IntersectionObserver hits ≥0.99 on mount, so behavior collapses to "enabled once intro is done" — the gate is correct and inert in that case.
+- Intent is one-shot per map instance, and the intent listeners are scoped to the map container in the capture phase (so the first pinch tick already zooms) — clicks on sibling panels or the splash don't count.
+- Touch devices need no special-casing: pinch/pan use `touchZoomRotate`/`dragPan` (never gated), and the first tap fires `pointerdown`, arming `scrollZoom` for any attached mouse.
+- Without a hero (map is full-bleed) the IntersectionObserver hits ≥0.99 on mount, so behavior collapses to "enabled once the intro is done and the map is first engaged".
 - No-`IntersectionObserver` fallback: `scrollZoom` is enabled unconditionally (never leave it permanently disabled).
-- `MapDeepLinkScroller` (`components/map/MapDeepLinkScroller.tsx`, rendered in `app/page.tsx`) scrolls `#main-content` into view on mount when `hasMapStateParams()` — so deep links land on the map, and the gate's IntersectionObserver then enables zoom naturally (no wheel, so no idle wait).
+- `MapDeepLinkScroller` (`components/map/MapDeepLinkScroller.tsx`, rendered in `app/page.tsx`) scrolls `#main-content` into view on mount when `hasMapStateParams()` — so deep links land on the map, and zoom arms on the visitor's first map interaction.
 
 ### API Routes
 
