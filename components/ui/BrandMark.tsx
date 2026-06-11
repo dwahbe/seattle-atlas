@@ -6,8 +6,9 @@ interface BrandMarkProps {
 
 /**
  * The Seattle Atlas brand mark — cobalt water and zoning-colored parcels with
- * an S-shaped channel of negative space between them. Mirrors app/icon.svg;
- * keep the two in sync. Decorative: always rendered next to the wordmark.
+ * an S-shaped channel of negative space between them. Mirrors app/icon.svg
+ * and lib/brand-icon.ts; lib/__tests__/brand-icon.test.ts fails if the
+ * copies drift. Decorative: always rendered next to the wordmark.
  */
 export function BrandMark({ size = 24, className }: BrandMarkProps) {
   return (

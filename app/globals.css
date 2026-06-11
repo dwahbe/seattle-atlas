@@ -160,13 +160,16 @@ html.intro-seen #intro-hero {
   }
 }
 
+/* Kept narrow (±8°, ≤1.1 saturation) so the drifting fields stay
+   recognizably within the brand palette — at ±16° the Large Buildings
+   orange read as red. */
 @keyframes intro-hue {
   0%,
   100% {
-    filter: hue-rotate(-16deg) saturate(1.05);
+    filter: hue-rotate(-8deg) saturate(1.02);
   }
   50% {
-    filter: hue-rotate(16deg) saturate(1.25);
+    filter: hue-rotate(8deg) saturate(1.1);
   }
 }
 
