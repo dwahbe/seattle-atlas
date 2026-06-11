@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useId } from 'react';
+import { IconInfoCircle } from '@tabler/icons-react';
 
 interface InfoTooltipProps {
   text: string;
@@ -15,7 +16,7 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
       {/* Invisible expanded touch target for mobile */}
       <button
         type="button"
-        className="touch-target-inline relative w-5 h-5 flex items-center justify-center"
+        className="touch-target-inline group relative w-5 h-5 flex items-center justify-center"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
@@ -27,9 +28,10 @@ export function InfoTooltip({ text }: InfoTooltipProps) {
         {/* Expanded touch area (invisible) */}
         <span className="absolute inset-[-8px]" aria-hidden="true" />
         {/* Visual indicator - smaller on mobile */}
-        <span className="w-3.5 h-3.5 md:w-4 md:h-4 rounded-full border border-text-tertiary text-text-tertiary text-[10px] font-medium flex items-center justify-center hover:border-text-secondary hover:text-text-secondary transition-colors pointer-events-none">
-          ?
-        </span>
+        <IconInfoCircle
+          className="w-3.5 h-3.5 md:w-4 md:h-4 text-text-tertiary group-hover:text-text-secondary transition-colors pointer-events-none"
+          aria-hidden="true"
+        />
       </button>
       {isVisible && (
         <div

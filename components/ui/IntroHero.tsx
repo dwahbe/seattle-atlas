@@ -29,7 +29,7 @@ const ZONING_COLORS: string[] = (() => {
       colors.push(item.color);
     }
   }
-  return colors.length > 0 ? colors : ['#FCE8C8'];
+  return colors.length > 0 ? colors : ['#FFE9AE'];
 })();
 
 // Static placement/motion per blob; color is sourced from the legend by index.

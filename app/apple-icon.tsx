@@ -9,14 +9,14 @@ export const size = {
 
 export const contentType = 'image/png';
 
-// Base64-encoded Space Needle SVG icon
-const spaceNeedleSvg = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwRjE3MkEiIC8+CiAgPHJlY3QgeD0iOTYiIHk9Ijk2IiB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgcng9IjcyIiBzdHJva2U9IiMxRjI5MzciIHN0cm9rZS13aWR0aD0iMTAiIC8+CiAgPHBhdGggZD0iTTI1NiA5MkwzMDAgMTg4SDIxMkwyNTYgOTJaIiBmaWxsPSIjMzhCREY4IiAvPgogIDxyZWN0IHg9IjIzNiIgeT0iMTg4IiB3aWR0aD0iNDAiIGhlaWdodD0iMTkyIiByeD0iMjAiIGZpbGw9IiMzOEJERjgiIC8+CiAgPHJlY3QgeD0iMTgwIiB5PSIxODgiIHdpZHRoPSIxNTIiIGhlaWdodD0iMjIiIHJ4PSIxMSIgZmlsbD0iIzM4QkRGOCIgLz4KICA8cmVjdCB4PSIyMTIiIHk9IjM3MiIgd2lkdGg9Ijg4IiBoZWlnaHQ9IjI2IiByeD0iMTMiIGZpbGw9IiMzOEJERjgiIC8+Cjwvc3ZnPg==`;
+// Base64-encoded waterfront S SVG icon (cobalt water + zoning parcels, S in the negative space)
+const iconSvg = `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMTIiIGZpbGw9IiMwQjBDMEUiIC8+CiAgPHJlY3QgeD0iMTUwIiB5PSI4MCIgd2lkdGg9IjI3OCIgaGVpZ2h0PSIxNDIiIHJ4PSIyMCIgZmlsbD0iI0VGNzAzNiIgLz4KICA8cmVjdCB4PSIxNTAiIHk9IjI0MCIgd2lkdGg9IjI3OCIgaGVpZ2h0PSI5MCIgcng9IjIwIiBmaWxsPSIjRkZFOUFFIiAvPgogIDxyZWN0IHg9IjE1MCIgeT0iMzQ4IiB3aWR0aD0iMjc4IiBoZWlnaHQ9Ijg0IiByeD0iMjAiIGZpbGw9IiM0RTlENzAiIC8+CiAgPHBhdGggZD0iTTMzNiA4MEMzMzYgMTU2IDE3MiAxNTIgMTcyIDIxNEMxNzIgMjc0IDM0MCAyNDAgMzQwIDMwMEMzNDAgMzYyIDE3NiAzNTYgMTc2IDQzMkwxMjggNDMyUTg0IDQzMiA4NCAzODhMODQgMTI0UTg0IDgwIDEyOCA4MFoiIGZpbGw9IiMxRDYzRUQiIC8+CiAgPHBhdGggZD0iTTMzNiA4MEMzMzYgMTU2IDE3MiAxNTIgMTcyIDIxNEMxNzIgMjc0IDM0MCAyNDAgMzQwIDMwMEMzNDAgMzYyIDE3NiAzNTYgMTc2IDQzMiIgc3Ryb2tlPSIjMEIwQzBFIiBzdHJva2Utd2lkdGg9IjQ4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIC8+Cjwvc3ZnPgo=`;
 
 export default function Icon() {
   return new ImageResponse(
     <div
       style={{
-        background: '#0F172A',
+        background: '#0B0C0E',
         width: '100%',
         height: '100%',
         display: 'flex',
@@ -25,7 +25,7 @@ export default function Icon() {
         borderRadius: 40,
       }}
     >
-      <img src={spaceNeedleSvg} width={160} height={160} alt="" />
+      <img src={iconSvg} width={180} height={180} alt="" />
     </div>,
     {
       ...size,

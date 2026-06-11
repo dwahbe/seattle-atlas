@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandMark } from './BrandMark';
 import { Button } from './Button';
 
 const NAV_ITEMS = [
@@ -24,7 +25,8 @@ export function PageHeader({ current, mapHref = '/' }: PageHeaderProps) {
   return (
     <header className="border-b border-border">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 min-h-[56px] flex items-center justify-between gap-4">
-        <Link href="/" className="group flex items-center">
+        <Link href="/" className="group flex items-center gap-2">
+          <BrandMark size={24} />
           <span className="text-lg font-bold leading-none text-text-primary group-hover:text-accent transition-colors">
             Seattle Atlas
           </span>

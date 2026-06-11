@@ -5,25 +5,25 @@
    ============================================================================ */
 
 :root {
-  /* Backgrounds */
+  /* Backgrounds — pure white panels, cool gray surfaces */
   --panel-bg: 255 255 255;
-  --secondary-bg: 248 250 252;
-  --secondary-hover: 241 245 249;
+  --secondary-bg: 246 247 249;
+  --secondary-hover: 237 239 243;
   --input-bg: 255 255 255;
-  --tooltip-bg: 15 23 42;
-  --tooltip-text: 248 250 252;
+  --tooltip-bg: 20 23 28;
+  --tooltip-text: 237 239 243;
 
-  /* Text */
-  --text-primary: 15 23 42;
-  --text-secondary: 100 116 139;
-  --text-tertiary: 148 163 184;
+  /* Text — cool near-black to cool gray */
+  --text-primary: 20 23 28;
+  --text-secondary: 92 101 114;
+  --text-tertiary: 139 148 163;
 
-  /* Accent */
-  --accent: 37 99 235;
-  --accent-hover: 29 78 216;
+  /* Accent — blueprint cobalt (#1D63ED); clears 4.5:1 on white */
+  --accent: 29 99 237;
+  --accent-hover: 23 79 190;
 
   /* Borders */
-  --border-color: 226 232 240;
+  --border-color: 227 230 235;
 
   /* Fonts */
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
@@ -31,25 +31,25 @@
 }
 
 .dark {
-  /* Backgrounds */
-  --panel-bg: 15 23 42;
-  --secondary-bg: 30 41 59;
-  --secondary-hover: 51 65 85;
-  --input-bg: 30 41 59;
-  --tooltip-bg: 248 250 252;
-  --tooltip-text: 15 23 42;
+  /* Backgrounds — near-black (#0B0C0E family) */
+  --panel-bg: 11 12 14;
+  --secondary-bg: 22 24 28;
+  --secondary-hover: 31 34 40;
+  --input-bg: 22 24 28;
+  --tooltip-bg: 237 239 243;
+  --tooltip-text: 20 23 28;
 
   /* Text */
-  --text-primary: 248 250 252;
-  --text-secondary: 148 163 184;
-  --text-tertiary: 100 116 139;
+  --text-primary: 237 239 243;
+  --text-secondary: 154 163 178;
+  --text-tertiary: 107 115 130;
 
-  /* Accent */
-  --accent: 96 165 250;
-  --accent-hover: 147 197 253;
+  /* Accent — lightened cobalt for dark surfaces */
+  --accent: 92 149 255;
+  --accent-hover: 130 176 255;
 
   /* Borders */
-  --border-color: 51 65 85;
+  --border-color: 39 43 51;
 }
 
 /* ============================================================================

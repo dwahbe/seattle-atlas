@@ -1,3 +1,4 @@
+export { BrandMark } from './BrandMark';
 export { BuildingGraphic } from './BuildingGraphic';
 export { InstitutionGraphic } from './InstitutionGraphic';
 export { Button } from './Button';

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BrandMark } from './BrandMark';
 import { ThemeToggle } from './ThemeToggle';
 
 const NAV_LINKS = [
@@ -13,6 +14,12 @@ export function Footer() {
     <footer className="border-t border-border mt-auto">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <Link href="/" className="group flex items-center gap-2">
+            <BrandMark size={20} />
+            <span className="text-sm font-semibold text-text-primary group-hover:text-accent transition-colors">
+              Seattle Atlas
+            </span>
+          </Link>
           <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-sm text-text-secondary sm:w-auto sm:justify-end">
             {NAV_LINKS.map((link) => (
               <Link
