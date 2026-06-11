@@ -101,6 +101,10 @@ export function IntroHero() {
   const [phase, setPhase] = useState<Phase>('visible');
   const [entered, setEntered] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  // True when the splash never showed (deep link / returning visitor) — the
+  // scroll-zoom gate waives its intent requirement for these visits because
+  // there was no dismissal scroll to absorb.
+  const skippedRef = useRef(false);
 
   useFocusTrap(containerRef, phase === 'visible');
 
@@ -120,6 +124,7 @@ export function IntroHero() {
   // covers the live map on a cold first visit.
   useEffect(() => {
     if (shouldSkip()) {
+      skippedRef.current = true;
       setPhase('gone');
       return;
     }
@@ -130,7 +135,7 @@ export function IntroHero() {
   // Release the onboarding tour once the splash is fully gone — covers every
   // exit path (scroll/skip, deep-link skip, returning visitor, reduced motion).
   useEffect(() => {
-    if (phase === 'gone') markIntroDone();
+    if (phase === 'gone') markIntroDone({ skipped: skippedRef.current });
   }, [phase]);
 
   // Fallback unmount: transitionend never fires under reduced motion.

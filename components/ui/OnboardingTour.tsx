@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
 import { onIntroDone } from '@/lib/intro-state';
+import { markTourDismissed } from '@/lib/tour-state';
 
 const STORAGE_KEY = 'atlas-onboarding-seen';
 
@@ -153,6 +154,9 @@ export function OnboardingTour() {
   const dismiss = useCallback(() => {
     setCurrentStep(null);
     setStoredItem(STORAGE_KEY, 'true');
+    // Every exit ("Got it", "Skip tour", overlay click, Escape) funnels here —
+    // an explicit click means the user is done reading, so release scrollZoom.
+    markTourDismissed();
   }, []);
 
   const next = useCallback(() => {

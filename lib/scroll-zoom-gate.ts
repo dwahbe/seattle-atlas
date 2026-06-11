@@ -1,15 +1,21 @@
 import type { Map as MapboxMap } from 'mapbox-gl';
 import { onIntroDone } from '@/lib/intro-state';
+import { onTourDismissed } from '@/lib/tour-state';
 
 // A content hero sits above the full-screen map on the home page. Mapbox's
 // scrollZoom would otherwise eat wheel events the moment the cursor crosses
 // the map, trapping the page scroll — and the scroll that dismisses the intro
 // splash would blast straight into a zoom. We keep scrollZoom disabled until
 // the map is fully in view, the intro splash is gone, AND the user has shown
-// zoom intent: a pointerdown on the map (click, drag, tap) or a trackpad
-// pinch (delivered as ctrl+wheel). Plain wheel scrolling never arms it — a
-// timing heuristic can't tell leftover scroll momentum from deliberate zoom,
-// so any idle-window approach misfires on paused-then-resumed scrolling.
+// zoom intent: a pointerdown on the map (click, drag, tap), a trackpad pinch
+// (delivered as ctrl+wheel), or dismissing the onboarding tour. Plain wheel
+// scrolling never arms it — a timing heuristic can't tell leftover scroll
+// momentum from deliberate zoom, so any idle-window approach misfires on
+// paused-then-resumed scrolling.
+//
+// The intent requirement exists solely to absorb that splash-dismiss scroll:
+// when the splash never showed (returning visitor, deep link), the intro
+// signal arrives with `skipped: true` and intent is waived.
 export function setupScrollZoomGate(map: MapboxMap, container: HTMLElement): () => void {
   map.scrollZoom.disable();
 
@@ -54,13 +60,16 @@ export function setupScrollZoomGate(map: MapboxMap, container: HTMLElement): () 
     container.removeEventListener('wheel', handleWheel, { capture: true });
   };
 
-  const unsubscribeIntroDone = onIntroDone(() => {
+  const unsubscribeIntroDone = onIntroDone(({ skipped }) => {
     isIntroDone = true;
-    sync();
+    // A skipped splash had no dismissal scroll to absorb — waive intent.
+    if (skipped) markIntent();
+    else sync();
   });
+  const unsubscribeTourDismissed = onTourDismissed(markIntent);
 
   if ('IntersectionObserver' in window) {
-    addIntentListeners();
+    if (!hasIntent) addIntentListeners();
     observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
@@ -78,6 +87,7 @@ export function setupScrollZoomGate(map: MapboxMap, container: HTMLElement): () 
 
   return () => {
     unsubscribeIntroDone();
+    unsubscribeTourDismissed();
     removeIntentListeners();
     observer?.disconnect();
   };
