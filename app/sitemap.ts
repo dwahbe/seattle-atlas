@@ -5,11 +5,16 @@ import { NEIGHBORHOOD_PAGES } from '@/data/neighborhood-pages';
 // Update when a page's user-visible content changes. Build-time stamps would
 // claim every page changed on every deploy, which trains crawlers to ignore
 // the field entirely.
+// 2026-06-11: simplified zoning categories renamed (Downtown & Highrise,
+// Midsize Residential & Shops, Large Buildings) and tower-zoned
+// SM areas split into Downtown & Highrise — legend appears on every page.
+// Same day: Blueprint rebrand — new zoning/parks/bike palette, cool
+// near-black dark mode, cobalt accent — also touches every page.
 const LAST_MODIFIED = {
-  home: '2026-06-10',
-  seattleZoning: '2026-05-15',
-  about: '2026-05-15',
-  neighborhoods: '2026-06-10',
+  home: '2026-06-11',
+  seattleZoning: '2026-06-11',
+  about: '2026-06-11',
+  neighborhoods: '2026-06-11',
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

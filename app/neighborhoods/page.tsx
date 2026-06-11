@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { IconChevronRight } from '@tabler/icons-react';
 import { Footer, PageHeader } from '@/components/ui';
 import { getSiteUrl } from '@/lib/site-url';
 import { NEIGHBORHOOD_PAGES } from '@/data/neighborhood-pages';
@@ -93,18 +94,16 @@ export default function NeighborhoodsIndexPage() {
             </p>
           </header>
 
-          <ul className="space-y-6 text-text-secondary">
+          <ul className="divide-y divide-border">
             {NEIGHBORHOOD_PAGES.map((page) => (
               <li key={page.slug}>
-                <h2 className="text-xl font-semibold">
-                  <Link
-                    href={`/neighborhoods/${page.slug}`}
-                    className="text-text-primary hover:text-accent transition-colors"
-                  >
-                    {page.name}
-                  </Link>
-                </h2>
-                <p className="text-sm mt-1">{page.lede}</p>
+                <Link
+                  href={`/neighborhoods/${page.slug}`}
+                  className="flex items-center justify-between py-3 font-medium text-text-primary hover:text-accent transition-colors"
+                >
+                  {page.name}
+                  <IconChevronRight size={18} className="text-text-secondary" aria-hidden="true" />
+                </Link>
               </li>
             ))}
           </ul>

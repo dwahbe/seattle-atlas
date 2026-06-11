@@ -127,18 +127,19 @@ export default function Home() {
           Seattle Atlas covers every zone in the Seattle Municipal Code Title 23, including
           Neighborhood Residential (NR); Lowrise 1, 2, and 3 (LR1, LR2, LR3); Midrise (MR); Highrise
           (HR); Neighborhood Commercial 1, 2, and 3 (NC1, NC2, NC3); Commercial 1 and 2 (C1, C2);
-          Seattle Mixed (SM); Urban Center / Village (UX); Master Planned Community (MPC); Downtown
-          zones DMC, DMR, DOC1, DOC2, DRC, DH1, DH2; Pioneer Square Mixed (PSM); International
-          District Mixed and Residential (IDM, IDR); Pike Market Mixed (PMM); Major Institution
-          Overlay (MIO); and the industrial zones Industrial Commercial (IC), Industrial Buffer
-          (IB), Maritime Manufacturing/Logistics (MML), and Industry &amp; Innovation (II).
+          Seattle Mixed (SM); Master Planned Community (MPC); Downtown zones DMC, DMR, DOC1, DOC2,
+          DRC, DH1, DH2; Pioneer Square Mixed (PSM); International District Mixed and Residential
+          (IDM, IDR); Pike Market Mixed (PMM); Major Institution Overlay (MIO); and the industrial
+          zones Industrial Commercial (IC), Industrial Buffer (IB), Maritime
+          Manufacturing/Logistics (MML), Industry &amp; Innovation (II), and Urban Industrial (UI).
         </p>
 
         <h2>Map layers</h2>
         <ul>
           <li>
-            Simplified zoning — what can be built (houses &amp; townhomes, apartments, mixed-use,
-            towers, institutions, industrial)
+            Simplified zoning — what can be built (homes and small shops, midsize residential and
+            shops, large buildings, downtown and highrise — including the tower-zoned Seattle Mixed
+            areas in the U District, South Lake Union, and Northgate — institutions, and industrial)
           </li>
           <li>Detailed technical zoning — every official Seattle zone code</li>
           <li>Parks and open space — 488 Seattle parks, greenbelts, and trails</li>

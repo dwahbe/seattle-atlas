@@ -63,6 +63,11 @@ const faqs = [
       'By restricting the supply of housing in high-demand areas, exclusionary zoning contributes to higher housing costs. When only one home can be built on a lot that could support four or more units, fewer people can live in desirable neighborhoods with good transit and jobs access. [3][4]',
   },
   {
+    question: 'Are towers allowed outside downtown?',
+    answer:
+      "Yes. Highrise zoning extends well beyond downtown. First Hill's HR zone allows residential towers, and Seattle Mixed (SM) zones carry area-specific height limits: up to 320 feet in the U District, 440 feet in South Lake Union, and 240 feet beside Northgate Station. The U District has seen a wave of tower construction since its 2017 rezone, while Northgate's tower zoning remains largely unbuilt. On the map, SM areas zoned for towers 240 feet or taller are grouped with Downtown & Highrise. [13]",
+  },
+  {
     question: 'What zoning changes has Seattle made?',
     answer:
       'Seattle adopted its Comprehensive Plan 2044 in December 2025, and Ordinance 127376 repealed and replaced the old single-family chapter of the Municipal Code (SMC Ch. 23.44), effective January 21, 2026. The new Neighborhood Residential zone allows houses, townhomes, duplexes through sixplexes, stacked flats, cottage housing, courtyard apartments, and ADUs on a single lot—with density of up to 6 units (9 with stacked-flat bonuses) and corner-store commercial uses. The previous NR1/NR2/NR3 sub-zones were collapsed into a single NR zone with uniform rules. Additional Centers and Corridors legislation is rolling out through 2026. [8][10]',
@@ -563,6 +568,18 @@ export default function SeattleZoningPage() {
                     className="text-accent hover:underline"
                   >
                     Seattle-focused urban policy coverage
+                  </a>
+                </li>
+                <li id="fn-13">
+                  Seattle Municipal Code,{' '}
+                  <a
+                    href="https://library.municode.com/wa/seattle/codes/municipal_code?nodeId=TIT23LAUSCO_SUBTITLE_IIILAUSRE_CH23.48SEMI"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-accent hover:underline"
+                  >
+                    Ch. 23.48 – Seattle Mixed (SM-U, SM-SLU, SM-NG, SM-UP designations and height
+                    limits)
                   </a>
                 </li>
               </ol>

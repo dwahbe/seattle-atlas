@@ -29,7 +29,6 @@ import { useLayers } from '@/hooks/useLayers';
 import { useInspect } from '@/hooks/useInspect';
 import { useTheme } from '@/hooks/useTheme';
 import { useIsMobile } from '@/hooks/useMediaQuery';
-import { getProposals } from '@/lib/proposals';
 import type { InspectedFeature, SearchResult } from '@/types';
 
 export function MapContainer() {
@@ -101,9 +100,6 @@ export function MapContainer() {
     setSearchedAddress(null);
     setHighlightedBounds(null);
   }, [clearInspectionBase]);
-
-  // All proposals for inspect panel
-  const allProposals = useMemo(() => getProposals(), []);
 
   // Get active layer configs
   const activeLayerConfigs = useMemo(() => getActiveLayerConfigs(), [getActiveLayerConfigs]);
@@ -339,7 +335,7 @@ export function MapContainer() {
             onBikeToggle={handleBikeToggle}
             onFilterChange={setFilter}
             inspectedFeature={inspectedFeature}
-            proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
+            proposals={relatedProposals}
             onCloseInspect={clearInspection}
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
@@ -364,7 +360,7 @@ export function MapContainer() {
           {/* Inspect Panel (right) */}
           <InspectPanel
             feature={inspectedFeature}
-            proposals={relatedProposals.length > 0 ? relatedProposals : allProposals}
+            proposals={relatedProposals}
             onClose={clearInspection}
             isOpen={inspectedFeature !== null}
             layerConfigs={activeLayerConfigs}

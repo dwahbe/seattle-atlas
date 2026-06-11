@@ -92,8 +92,8 @@ export default function AboutPage() {
                   <h3 className="font-medium text-text-primary mb-1">Zoning</h3>
                   <ul className="list-disc list-inside space-y-1 ml-2">
                     <li>
-                      Simplified view showing what can be built (houses &amp; townhomes, apartments,
-                      mixed-use, etc.)
+                      Simplified view showing what can be built (homes &amp; small shops, midsize
+                      residential, large buildings, downtown &amp; highrise, etc.)
                     </li>
                     <li>
                       Detailed technical zoning codes (NR, LR2, NC3, etc.), reflecting the Jan 21,
@@ -147,7 +147,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#FCE8C8' }}
+                    style={{ backgroundColor: '#FFE9AE' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -156,9 +156,10 @@ export default function AboutPage() {
                       <span className="font-normal text-text-tertiary">— 69.4% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
-                      Low-density residential: houses, townhomes, small multiplexes, ADUs, and
-                      corner cafes. Includes <span className="font-mono text-xs">NR</span>{' '}
-                      (Neighborhood Residential), <span className="font-mono text-xs">LR1</span> and{' '}
+                      Low-density residential: houses, townhomes, multiplexes up to 6 units (9 with
+                      bonuses), ADUs, and corner stores and cafes newly allowed under the 2026 code.
+                      Includes <span className="font-mono text-xs">NR</span> (Neighborhood
+                      Residential), <span className="font-mono text-xs">LR1</span> and{' '}
                       <span className="font-mono text-xs">LR2</span> (Lowrise 1 &amp; 2).
                     </div>
                   </div>
@@ -167,16 +168,17 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#F4A261' }}
+                    style={{ backgroundColor: '#F9BC4F' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
                     <div className="font-medium text-text-primary">
-                      Midsize Buildings{' '}
+                      Midsize Residential & Shops{' '}
                       <span className="font-normal text-text-tertiary">— 5.6% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
-                      Apartment buildings roughly 3–7 stories. Includes{' '}
+                      Apartment buildings roughly 3–8 stories, with ground-floor shops allowed in
+                      centers and on residential-commercial streets. Includes{' '}
                       <span className="font-mono text-xs">LR3</span> (Lowrise 3) and{' '}
                       <span className="font-mono text-xs">MR</span> (Midrise).
                     </div>
@@ -186,13 +188,13 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#B388EB' }}
+                    style={{ backgroundColor: '#EF7036' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
                     <div className="font-medium text-text-primary">
-                      Shops &amp; Mixed-Use{' '}
-                      <span className="font-normal text-text-tertiary">— 10.1% of Seattle</span>
+                      Large Buildings{' '}
+                      <span className="font-normal text-text-tertiary">— 8.8% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
                       Commercial corridors and urban villages where apartments sit above
@@ -201,9 +203,9 @@ export default function AboutPage() {
                       <span className="font-mono text-xs">NC3</span> (Neighborhood Commercial),{' '}
                       <span className="font-mono text-xs">C1</span>,{' '}
                       <span className="font-mono text-xs">C2</span> (Commercial),{' '}
-                      <span className="font-mono text-xs">SM</span> (Seattle Mixed),{' '}
-                      <span className="font-mono text-xs">UX</span> (Urban Center/Village), and{' '}
-                      <span className="font-mono text-xs">MPC</span> (Master Planned Community).
+                      <span className="font-mono text-xs">SM</span> (Seattle Mixed, below 240 ft),
+                      and <span className="font-mono text-xs">MPC</span> (Master Planned
+                      Community).
                     </div>
                   </div>
                 </li>
@@ -211,17 +213,21 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#7C5CBF' }}
+                    style={{ backgroundColor: '#34349B' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
                     <div className="font-medium text-text-primary">
-                      Downtown &amp; Towers{' '}
-                      <span className="font-normal text-text-tertiary">— 1.8% of Seattle</span>
+                      Downtown &amp; Highrise{' '}
+                      <span className="font-normal text-text-tertiary">— 2.3% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
-                      High-rise zones concentrated downtown, in the International District, and Pike
-                      Market. Includes <span className="font-mono text-xs">HR</span> (Highrise),{' '}
+                      High-rise zones downtown, in the International District, and Pike Market —
+                      plus tower zoning outside downtown: First Hill, and the Seattle Mixed areas
+                      zoned for 240 ft+ towers around the U District, South Lake Union, and
+                      Northgate light rail stations. Includes{' '}
+                      <span className="font-mono text-xs">HR</span> (Highrise),{' '}
+                      <span className="font-mono text-xs">SM</span> (Seattle Mixed, 240 ft+),{' '}
                       <span className="font-mono text-xs">DMC</span>,{' '}
                       <span className="font-mono text-xs">DMR</span>,{' '}
                       <span className="font-mono text-xs">DOC1</span>,{' '}
@@ -240,7 +246,7 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#7EC8E3' }}
+                    style={{ backgroundColor: '#4FAEDD' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
@@ -259,13 +265,13 @@ export default function AboutPage() {
                 <li className="flex gap-3">
                   <span
                     className="mt-1 h-4 w-4 shrink-0 rounded-sm border border-border"
-                    style={{ backgroundColor: '#6B7280' }}
+                    style={{ backgroundColor: '#8B919C' }}
                     aria-hidden="true"
                   />
                   <div className="text-sm">
                     <div className="font-medium text-text-primary">
                       Industrial{' '}
-                      <span className="font-normal text-text-tertiary">— 11.0% of Seattle</span>
+                      <span className="font-normal text-text-tertiary">— 11.8% of Seattle</span>
                     </div>
                     <div className="text-text-secondary">
                       Manufacturing, maritime, and industrial land — mostly in SoDo, Ballard,
@@ -273,8 +279,10 @@ export default function AboutPage() {
                       <span className="font-mono text-xs">IC</span> (Industrial Commercial),{' '}
                       <span className="font-mono text-xs">IB</span> (Industrial Buffer),{' '}
                       <span className="font-mono text-xs">MML</span> (Maritime
-                      Manufacturing/Logistics), and <span className="font-mono text-xs">II</span>{' '}
-                      (Industry &amp; Innovation).
+                      Manufacturing/Logistics), <span className="font-mono text-xs">II</span>{' '}
+                      (Industry &amp; Innovation), and <span className="font-mono text-xs">UI</span>{' '}
+                      (Urban Industrial) — the latter three created by the 2023 Industrial &amp;
+                      Maritime Strategy.
                     </div>
                   </div>
                 </li>

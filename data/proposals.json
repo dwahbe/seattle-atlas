@@ -1,40 +1,40 @@
 [
   {
-    "id": "station_central",
-    "name": "Central Station Area Rezone",
-    "status": "Draft",
-    "summary": "Proposed zoning changes around Central Link Light Rail stations to allow higher density mixed-use development within a quarter-mile of station entrances. This proposal aims to maximize transit-oriented development opportunities and increase housing supply near high-capacity transit.",
+    "id": "centers_corridors",
+    "name": "One Seattle Plan: Centers & Corridors Rezones",
+    "status": "Under Review",
+    "summary": "Zoning legislation transmitted to City Council in January 2026 to implement the One Seattle Plan growth strategy: rezones in 29 new Neighborhood Centers plus a 30th in South Park, five Urban Centers with expanded boundaries (Greenwood, Queen Anne, Graham, Admiral, and Morgan Junction), a new Pinehurst–Haller Lake Urban Center, and along frequent transit routes. Most rezones allow 5–6 story apartments and condos, with MHA affordability requirements applying to all rezoned properties; Lowrise and Midrise development standards are also updated, including a new 6-story MR zone. Rezones of Seattle's seven regional centers, such as Downtown and Capitol Hill, follow in a later phase.",
     "links": [
       {
-        "title": "Station Area Planning",
-        "url": "https://www.seattle.gov/opcd/station-area-planning"
+        "title": "Centers & Corridors Director's Report (Jan 2026)",
+        "url": "https://www.seattle.gov/documents/Departments/OPCD/SeattlePlan/OneSeattlePlanCentersAndCorridorsDirectorsReportJan2026.pdf"
       },
       {
-        "title": "One Seattle Plan",
+        "title": "One Seattle Plan Zoning Update",
         "url": "https://www.seattle.gov/opcd/one-seattle-plan"
       }
     ],
-    "layers": ["proposal_station_area"],
+    "layers": ["zoning", "zoning_detailed"],
     "effectiveDate": null,
     "jurisdiction": "City of Seattle"
   },
   {
     "id": "adu_citywide",
-    "name": "Citywide ADU Policy Update",
-    "status": "Public Comment",
-    "summary": "Proposed updates to accessory dwelling unit (ADU) regulations to allow two ADUs per single-family lot, remove owner-occupancy requirements, and reduce parking minimums. The goal is to expand gentle density options and provide more housing choices across Seattle neighborhoods.",
+    "name": "Citywide ADU Reform",
+    "status": "Adopted",
+    "summary": "Seattle allows two accessory dwelling units per residential lot with no owner-occupancy requirement, adopted in July 2019 as Ordinance 125854 (effective August 8, 2019). Ordinance 127211, signed May 2025, further eased ADU size and siting barriers to comply with Washington's statewide HB 1337 ADU law.",
     "links": [
       {
-        "title": "ADU Code Updates",
-        "url": "https://www.seattle.gov/sdci/codes/changes-to-code/accessory-dwelling-units-code-updates"
+        "title": "Ordinance 125854 (2019 ADU Reform)",
+        "url": "https://clerk.seattle.gov/search/ordinances/125854"
       },
       {
-        "title": "ADU Permit Guide",
-        "url": "https://www.seattle.gov/sdci/permits/common-projects/accessory-dwelling-units"
+        "title": "Ordinance 127211 (HB 1337 Update)",
+        "url": "https://seattle.legistar.com/LegislationDetail.aspx?ID=7256212&GUID=64CA4E99-2A2A-426C-BF46-B424B1655DDE"
       }
     ],
-    "layers": ["proposal_adu"],
-    "effectiveDate": null,
+    "layers": ["zoning", "zoning_detailed"],
+    "effectiveDate": "2019-08-08",
     "jurisdiction": "City of Seattle"
   },
   {
@@ -48,8 +48,8 @@
         "url": "https://www.seattle.gov/opcd/one-seattle-plan"
       },
       {
-        "title": "Ordinance 127376 (NR code)",
-        "url": "https://www.seattle.gov/documents/departments/sdci/codes/nrordinance127376.pdf"
+        "title": "Ordinance 127376 (City Clerk)",
+        "url": "https://clerk.seattle.gov/search/ordinances/127376"
       },
       {
         "title": "Project Documents",
@@ -60,7 +60,7 @@
         "url": "https://www.seattle.gov/documents/Departments/OPCD/SeattlePlan/OneSeattlePlanFEISExecutiveSummary2025.pdf"
       }
     ],
-    "layers": ["proposal_station_area"],
+    "layers": ["zoning", "zoning_detailed"],
     "effectiveDate": "2026-01-21",
     "jurisdiction": "City of Seattle"
   },
@@ -79,7 +79,7 @@
         "url": "https://www.seattle.gov/transportation/projects-and-programs/programs/light-rail/ballard-link-extension"
       }
     ],
-    "layers": ["proposal_station_area"],
+    "layers": ["zoning", "zoning_detailed"],
     "effectiveDate": null,
     "jurisdiction": "City of Seattle / Sound Transit"
   },
@@ -87,19 +87,19 @@
     "id": "industrial_maritime",
     "name": "Industrial & Maritime Strategy Update",
     "status": "Adopted",
-    "summary": "Updated policies for Seattle's industrial and maritime zones to balance job preservation with flexibility for compatible uses. Includes provisions for limited residential development in designated areas while protecting core industrial lands.",
+    "summary": "First major overhaul of Seattle's industrial and maritime zoning in 35 years, passed July 2023 and effective October 23, 2023. Created three new zones: Maritime, Manufacturing & Logistics (MML) protecting core industrial lands; Industry & Innovation (II) allowing dense multi-story industrial-plus-office development near light rail; and Urban Industrial (UI) supporting small-scale industry with limited housing and retail at neighborhood edges.",
     "links": [
       {
         "title": "Industrial & Maritime Strategy",
-        "url": "https://www.seattle.gov/opcd/current-projects/industrial-and-maritime-strategy"
+        "url": "https://www.seattle.gov/opcd/ongoing-initiatives/industrial-and-maritime-strategy"
       },
       {
         "title": "Industrial Zoning Summary",
         "url": "https://www.seattle.gov/Documents/Departments/SDCI/Codes/IndustrialZoningSummary.pdf"
       }
     ],
-    "layers": [],
-    "effectiveDate": "2024-07-01",
+    "layers": ["zoning", "zoning_detailed"],
+    "effectiveDate": "2023-10-23",
     "jurisdiction": "City of Seattle"
   }
 ]
