@@ -74,7 +74,9 @@ export function AllowedUses({ zoneInfo, compact = false }: AllowedUsesProps) {
             <div className="mt-3 space-y-1.5 border-t border-border pt-2.5">
               {zoneInfo.useNotes.map((note) => (
                 <p key={note} className="flex gap-1.5 text-xs text-text-secondary">
-                  <IconInfoCircle size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
+                  <span className="flex h-[1lh] items-center shrink-0">
+                    <IconInfoCircle size={14} aria-hidden="true" />
+                  </span>
                   {note}
                 </p>
               ))}
