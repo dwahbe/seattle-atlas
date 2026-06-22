@@ -33,7 +33,6 @@ describe('NEIGHBORHOOD_PAGES', () => {
     for (const page of NEIGHBORHOOD_PAGES) {
       expect(page.description.length).toBeGreaterThan(50);
       expect(page.description.length).toBeLessThanOrEqual(170);
-      expect(page.lede.length).toBeGreaterThan(0);
       expect(page.paragraphs.length).toBeGreaterThanOrEqual(2);
       expect(page.highlights.length).toBeGreaterThanOrEqual(3);
     }

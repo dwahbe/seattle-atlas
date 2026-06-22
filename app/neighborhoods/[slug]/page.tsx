@@ -115,11 +115,8 @@ export default async function NeighborhoodPage({ params }: { params: Promise<{ s
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
         <article>
-          <header className="mb-8 border-b border-border pb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">
-              {page.name} Zoning
-            </h1>
-            <p className="text-lg text-text-secondary">{page.lede}</p>
+          <header className="mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary">{page.name} Zoning</h1>
           </header>
 
           <div className="space-y-8 text-text-secondary">
