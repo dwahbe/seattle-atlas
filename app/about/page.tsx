@@ -82,6 +82,31 @@ export default function AboutPage() {
 
           <div className="space-y-6 text-text-secondary">
             <section>
+              <h2 className="text-xl font-semibold text-text-primary mb-3">Why I Built This</h2>
+              <p className="mb-3">
+                Zoning shapes all of our lives in ways I didn&apos;t fully understand until recently.
+                The decisions our local and state governments make about zoning, transit, and bike
+                infrastructure can dramatically reshape our cities, making them affordable, walkable,
+                and conducive to real community, or expensive, car-dependent, and isolating. As I
+                came to see how tightly these issues are connected, and the progress Seattle has made
+                toward less car-dependent development, I wanted a way to visually engage with how far
+                the city has come and where there&apos;s still room to grow.
+              </p>
+              <p>
+                To read more about why I built Seattle Atlas, see my{' '}
+                <a
+                  href="https://www.theurbanist.org/op-ed-seattle-atlas-can-demystify-zoning-build-case-for-more-housing/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-accent hover:underline"
+                >
+                  op-ed in The Urbanist
+                </a>
+                .
+              </p>
+            </section>
+
+            <section>
               <h2 className="text-xl font-semibold text-text-primary mb-3">
                 What&apos;s on the Map
               </h2>
