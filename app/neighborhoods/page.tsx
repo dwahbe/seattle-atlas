@@ -89,8 +89,7 @@ export default function NeighborhoodsIndexPage() {
             <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">{indexTitle}</h1>
             <p className="text-lg text-text-secondary">
               Zoning shapes every Seattle neighborhood differently. Pick one to see its zoning
-              pattern, commercial corridors, and transit — and jump into the interactive map for
-              parcel-level detail.
+              pattern, commercial corridors, and transit.
             </p>
           </header>
 
