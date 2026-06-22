@@ -557,7 +557,7 @@ export default function AboutPage() {
 
             <section>
               <h2 className="text-xl font-semibold text-text-primary mb-3">Open Source</h2>
-              <p>
+              <p className="text-pretty">
                 Seattle Atlas is open source, built with{' '}
                 <a
                   href="https://nextjs.org/"
@@ -585,7 +585,7 @@ export default function AboutPage() {
                 >
                   Mapbox GL JS
                 </a>
-                . View the full code and tech stack on{' '}
+                . View the source code on{' '}
                 <a
                   href="https://github.com/dwahbe/seattle-atlas"
                   target="_blank"
