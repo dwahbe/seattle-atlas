@@ -601,7 +601,8 @@ export default function AboutPage() {
             <section>
               <h2 className="text-xl font-semibold text-text-primary mb-3">Contact</h2>
               <p>
-                Questions, corrections, bug reports, or data updates? Email{' '}
+                Have a question, spotted an error, or know of an update I should make? I&apos;d
+                love to hear from you — email{' '}
                 <a href="mailto:hello@seattleatlas.org" className="text-accent hover:underline">
                   hello@seattleatlas.org
                 </a>
