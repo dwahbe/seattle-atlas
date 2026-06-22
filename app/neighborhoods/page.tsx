@@ -85,7 +85,7 @@ export default function NeighborhoodsIndexPage() {
       {/* Content */}
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
         <article>
-          <header className="mb-8 border-b border-border pb-8">
+          <header className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-text-primary mb-4">{indexTitle}</h1>
             <p className="text-lg text-text-secondary">
               Zoning shapes every Seattle neighborhood differently. Pick one to see its zoning
