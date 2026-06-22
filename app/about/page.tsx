@@ -557,20 +557,8 @@ export default function AboutPage() {
 
             <section>
               <h2 className="text-xl font-semibold text-text-primary mb-3">Open Source</h2>
-              <p className="mb-3">
-                Seattle Atlas is open source. View the code on{' '}
-                <a
-                  href="https://github.com/dwahbe/seattle-atlas"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  GitHub
-                </a>
-                .
-              </p>
-              <p className="mb-3">
-                The app is built with{' '}
+              <p>
+                Seattle Atlas is open source, built with{' '}
                 <a
                   href="https://nextjs.org/"
                   target="_blank"
@@ -578,8 +566,8 @@ export default function AboutPage() {
                   className="text-accent hover:underline"
                 >
                   Next.js
-                </a>{' '}
-                (App Router),{' '}
+                </a>
+                ,{' '}
                 <a
                   href="https://react.dev/"
                   target="_blank"
@@ -590,33 +578,6 @@ export default function AboutPage() {
                 </a>
                 , and{' '}
                 <a
-                  href="https://www.typescriptlang.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  TypeScript
-                </a>
-                , styled with{' '}
-                <a
-                  href="https://tailwindcss.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Tailwind CSS
-                </a>
-                , with icons from{' '}
-                <a
-                  href="https://tabler.io/icons"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Tabler Icons
-                </a>
-                . Maps are rendered client-side with{' '}
-                <a
                   href="https://docs.mapbox.com/mapbox-gl-js/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -624,54 +585,25 @@ export default function AboutPage() {
                 >
                   Mapbox GL JS
                 </a>
-                , with shareable map state (position, active layers, filters) synced to URL query
-                params via{' '}
+                . View the full code and tech stack on{' '}
                 <a
-                  href="https://nuqs.47ng.com/"
+                  href="https://github.com/dwahbe/seattle-atlas"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-accent hover:underline"
                 >
-                  nuqs
-                </a>
-                . API routes validate input with{' '}
-                <a
-                  href="https://zod.dev/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Zod
+                  GitHub
                 </a>
                 .
               </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-semibold text-text-primary mb-3">Contact</h2>
               <p>
-                Source data is processed into vector tiles using{' '}
-                <a
-                  href="https://github.com/felt/tippecanoe"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Tippecanoe
-                </a>{' '}
-                and hosted on Mapbox. The project uses{' '}
-                <a
-                  href="https://bun.sh/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Bun
-                </a>{' '}
-                as its package manager and test runner, and is deployed on{' '}
-                <a
-                  href="https://vercel.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-accent hover:underline"
-                >
-                  Vercel
+                Questions, corrections, bug reports, or data updates? Email{' '}
+                <a href="mailto:hello@seattleatlas.org" className="text-accent hover:underline">
+                  hello@seattleatlas.org
                 </a>
                 .
               </p>
