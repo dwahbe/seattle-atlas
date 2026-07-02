@@ -75,7 +75,18 @@ export interface ProposalLink {
   url: string;
 }
 
-export type ProposalStatus = 'Draft' | 'Public Comment' | 'Under Review' | 'Adopted' | 'Rejected';
+// "Adopted" is the terminal status for enacted legislation — the Charter's
+// ~30-day adopted→effective window is deliberately not modeled (lib/__tests__/
+// proposals.test.ts enforces membership, since the JSON import is cast).
+export const PROPOSAL_STATUSES = [
+  'Draft',
+  'Public Comment',
+  'Under Review',
+  'Adopted',
+  'Rejected',
+] as const;
+
+export type ProposalStatus = (typeof PROPOSAL_STATUSES)[number];
 
 export interface Proposal {
   id: string;

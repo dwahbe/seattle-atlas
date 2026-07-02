@@ -76,6 +76,7 @@ export function InspectPanel({
       tabIndex={-1}
       aria-label="Feature Details"
       className={`
+        outline-none
         absolute right-0 top-0 bottom-0 w-96 z-10
         bg-panel-bg
         border-l border-border

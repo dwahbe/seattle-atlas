@@ -19,7 +19,9 @@ export function CollapsibleSection({
     <div className="border-b border-border">
       <button
         onClick={onToggle}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-secondary-bg transition-colors"
+        aria-expanded={isExpanded}
+        // Inset ring, not the global outline — panel overflow clips an outline's side edges on full-width rows
+        className="w-full px-4 py-3 flex items-center justify-between hover:bg-secondary-bg transition-colors focus:outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
       >
         <h3 className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
           {title}
