@@ -206,7 +206,10 @@ export const NEIGHBORHOOD_PAGES: NeighborhoodPage[] = [
       'The First Hill Streetcar runs through the neighborhood, built as Sound Transit’s substitute after a planned Link station here was dropped over the cost and risk of mining one so deep; it links Capitol Hill to Pioneer Square and the Chinatown-International District. In the One Seattle Plan, First Hill is grouped with Capitol Hill as a single designated regional center planned for continued density.',
     ],
     highlights: [
-      { label: 'Predominant Zoning', value: 'Multifamily Highrise (HR), with Major Institution Overlays' },
+      {
+        label: 'Predominant Zoning',
+        value: 'Multifamily Highrise (HR), with Major Institution Overlays',
+      },
       { label: 'Major Institutions', value: 'Swedish, Virginia Mason, Harborview' },
       { label: 'Transit', value: 'First Hill Streetcar, frequent buses' },
     ],
@@ -236,7 +239,10 @@ export const NEIGHBORHOOD_PAGES: NeighborhoodPage[] = [
       'The International District/Chinatown Link Station (the 1 and 2 Lines) and the First Hill Streetcar both stop at 5th Ave S and S Jackson St, with King Street Station and a dense web of bus routes alongside. The neighborhood remains at the center of debate over how nearby transit and downtown growth should — or shouldn’t — reshape one of Seattle’s most historically significant communities.',
     ],
     highlights: [
-      { label: 'Predominant Zoning', value: 'International District Mixed (IDM) and Residential (IDR)' },
+      {
+        label: 'Predominant Zoning',
+        value: 'International District Mixed (IDM) and Residential (IDR)',
+      },
       { label: 'Historic District', value: 'International Special Review District (1973)' },
       { label: 'Transit', value: 'International District/Chinatown Link Station, Streetcar' },
     ],
@@ -266,7 +272,10 @@ export const NEIGHBORHOOD_PAGES: NeighborhoodPage[] = [
       'A commercial strip along Airport Way S — bars, galleries, and an artist live-work tradition dating to the 1980s — gives Georgetown a neighborhood center inside the jobs district. Metro routes (including the 124 and 131/132) connect it to downtown and to Link light rail at Tukwila; there is no light rail in Georgetown itself.',
     ],
     highlights: [
-      { label: 'Predominant Zoning', value: 'Maritime Manufacturing/Logistics (MML) and Urban Industrial (UI)' },
+      {
+        label: 'Predominant Zoning',
+        value: 'Maritime Manufacturing/Logistics (MML) and Urban Industrial (UI)',
+      },
       { label: 'Industrial Center', value: 'Greater Duwamish Manufacturing/Industrial Center' },
       { label: 'Transit', value: 'Metro routes 124 and 131/132; Link at Tukwila' },
     ],
