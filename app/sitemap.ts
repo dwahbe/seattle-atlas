@@ -10,11 +10,14 @@ import { NEIGHBORHOOD_PAGES } from '@/data/neighborhood-pages';
 // SM areas split into Downtown & Highrise — legend appears on every page.
 // Same day: Blueprint rebrand — new zoning/parks/bike palette, cool
 // near-black dark mode, cobalt accent — also touches every page.
+// 2026-06-22: added six neighborhood pages (First Hill, Pioneer Square,
+// Chinatown-International District, Belltown, Georgetown, Northgate) and
+// the new entries on the /neighborhoods index.
 const LAST_MODIFIED = {
   home: '2026-06-11',
   seattleZoning: '2026-06-11',
   about: '2026-06-11',
-  neighborhoods: '2026-06-11',
+  neighborhoods: '2026-06-22',
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

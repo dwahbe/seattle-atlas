@@ -196,6 +196,96 @@ export const NEIGHBORHOOD_PAGES: NeighborhoodPage[] = [
       { label: 'Transit', value: 'Route 5, RapidRide E (Aurora)' },
     ],
   },
+  {
+    slug: 'first-hill',
+    name: 'First Hill',
+    description:
+      'First Hill zoning on an interactive map: the Major Institution Overlays around its hospitals, highrise apartment towers, and the First Hill Streetcar.',
+    paragraphs: [
+      'First Hill — long nicknamed “Pill Hill” — is anchored by three major medical institutions: Swedish, Virginia Mason, and Harborview at its northern edge. Each grows under a Major Institution Overlay (Seattle Municipal Code Chapter 23.69) that governs how its campus can expand. Between the hospitals, the base zoning is Multifamily Highrise (HR) — one of the few places outside downtown where residential towers are allowed — with Midrise and Neighborhood Commercial filling in along the edges.',
+      'The First Hill Streetcar runs through the neighborhood, built as Sound Transit’s substitute after a planned Link station here was dropped over the cost and risk of mining one so deep; it links Capitol Hill to Pioneer Square and the Chinatown-International District. In the One Seattle Plan, First Hill is grouped with Capitol Hill as a single designated regional center planned for continued density.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'Multifamily Highrise (HR), with Major Institution Overlays' },
+      { label: 'Major Institutions', value: 'Swedish, Virginia Mason, Harborview' },
+      { label: 'Transit', value: 'First Hill Streetcar, frequent buses' },
+    ],
+  },
+  {
+    slug: 'pioneer-square',
+    name: 'Pioneer Square',
+    description:
+      'Pioneer Square zoning on an interactive map: the Pioneer Square Mixed zone, the city’s oldest preservation district, and its landmark brick blocks.',
+    paragraphs: [
+      'Pioneer Square is zoned Pioneer Square Mixed (PSM), a downtown designation written specifically for the neighborhood’s 19th-century brick-and-stone warehouses and the shops, galleries, offices, and housing inside them. The whole district sits within the Pioneer Square Preservation District — Seattle’s first local historic district, established in 1970 — so changes to buildings are reviewed to protect the area’s Richardsonian Romanesque character.',
+      'Pioneer Square Station puts Link light rail (the 1 and 2 Lines) under the neighborhood, with King Street Station next door serving Amtrak and Sounder trains and the stadiums and ferry terminal a short walk south. Unlike Seattle’s residential neighborhoods, the rules here govern preservation and scale rather than how many homes a lot may hold.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'Pioneer Square Mixed (PSM)' },
+      { label: 'Historic District', value: 'Pioneer Square Preservation District (1970)' },
+      { label: 'Transit', value: 'Pioneer Square Link Station, King Street Station' },
+    ],
+  },
+  {
+    slug: 'chinatown-international-district',
+    name: 'Chinatown-International District',
+    description:
+      'Chinatown-International District zoning on an interactive map: International District Mixed zones, the historic special-review district, and light rail.',
+    paragraphs: [
+      'The Chinatown-International District is zoned International District Mixed (IDM) and International District Residential (IDR) — downtown designations meant to keep ground-floor shops, community spaces, and housing layered together. Its three historic cores — Chinatown, Japantown (Nihonmachi), and Little Saigon — all sit within the International Special Review District, a preservation overlay established in 1973 that reviews new development to protect the neighborhood’s scale and character.',
+      'The International District/Chinatown Link Station (the 1 and 2 Lines) and the First Hill Streetcar both stop at 5th Ave S and S Jackson St, with King Street Station and a dense web of bus routes alongside. The neighborhood remains at the center of debate over how nearby transit and downtown growth should — or shouldn’t — reshape one of Seattle’s most historically significant communities.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'International District Mixed (IDM) and Residential (IDR)' },
+      { label: 'Historic District', value: 'International Special Review District (1973)' },
+      { label: 'Transit', value: 'International District/Chinatown Link Station, Streetcar' },
+    ],
+  },
+  {
+    slug: 'belltown',
+    name: 'Belltown',
+    description:
+      'Belltown zoning on an interactive map: the Downtown Mixed Residential highrise towers, frequent buses and the monorail, and waterfront edge.',
+    paragraphs: [
+      'Belltown is zoned mostly Downtown Mixed Residential (DMR), the downtown designation that emphasizes housing — which is why one of Seattle’s densest neighborhoods is a wall of residential highrises rather than office towers, with Downtown Mixed Commercial (DMC) along its eastern and southern edges. As across the rest of downtown, the rules regulate height and floor area rather than capping the number of homes.',
+      'Belltown has no light rail station of its own, but it is well served by buses — including RapidRide lines on the 3rd Ave transit spine — and the Seattle Center Monorail crosses it on the way to Westlake Station, the busiest stop in the Link system, about a ten-minute walk away. The neighborhood runs from the edge of the downtown retail core down to the Elliott Bay waterfront.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'Downtown Mixed Residential (DMR), DMC at the edges' },
+      { label: 'Commercial Corridors', value: '1st and 2nd Aves, Bell St' },
+      { label: 'Transit', value: 'RapidRide and buses on 3rd Ave, Monorail, nearby Westlake Link' },
+    ],
+  },
+  {
+    slug: 'georgetown',
+    name: 'Georgetown',
+    description:
+      'Georgetown zoning on an interactive map: industrial Maritime and Urban Industrial zones, the maker and arts district, and the Duwamish jobs core.',
+    paragraphs: [
+      'Georgetown is one of Seattle’s few predominantly industrial neighborhoods, sitting inside the Greater Duwamish Manufacturing/Industrial Center. The city’s 2023 Industrial and Maritime Strategy replaced the older industrial zones here with Maritime Manufacturing/Logistics (MML) and Urban Industrial (UI) — the latter written explicitly for the light-industry, makers, and creative-arts uses that fill Georgetown’s historic brickwork and the old Rainier Brewery.',
+      'A commercial strip along Airport Way S — bars, galleries, and an artist live-work tradition dating to the 1980s — gives Georgetown a neighborhood center inside the jobs district. Metro routes (including the 124 and 131/132) connect it to downtown and to Link light rail at Tukwila; there is no light rail in Georgetown itself.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'Maritime Manufacturing/Logistics (MML) and Urban Industrial (UI)' },
+      { label: 'Industrial Center', value: 'Greater Duwamish Manufacturing/Industrial Center' },
+      { label: 'Transit', value: 'Metro routes 124 and 131/132; Link at Tukwila' },
+    ],
+  },
+  {
+    slug: 'northgate',
+    name: 'Northgate',
+    description:
+      'Northgate zoning on an interactive map: the regional growth center around its light rail station, the redeveloped mall, and surrounding homes.',
+    paragraphs: [
+      'Northgate is a designated regional growth center built around its light rail station and bus hub. The blocks near the station carry mixed-use commercial and midrise zoning, stepping down to Lowrise and Neighborhood Residential across the surrounding streets. The former Northgate Mall — one of the country’s first — is being redeveloped into a mixed-use district, with the Kraken Community Iceplex, the NHL team’s practice facility, already open on the site.',
+      'Northgate Station opened in October 2021 as part of the Northgate Link Extension, connecting the neighborhood to downtown and the University District in minutes, with a Metro bus hub feeding it. A Northgate regional-center plan is in progress to guide further growth and station-area rezoning.',
+    ],
+    highlights: [
+      { label: 'Predominant Zoning', value: 'Mixed-use and midrise near the station, NR beyond' },
+      { label: 'Designation', value: 'Regional Growth Center' },
+      { label: 'Transit', value: 'Northgate Link Station, Metro bus hub' },
+    ],
+  },
 ];
 
 export function getNeighborhoodPage(slug: string): NeighborhoodPage | undefined {

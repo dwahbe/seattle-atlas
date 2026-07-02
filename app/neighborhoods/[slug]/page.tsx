@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { Footer, PageHeader } from '@/components/ui';
+import { Breadcrumb, Footer, PageHeader } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { getSiteUrl } from '@/lib/site-url';
 import { getLegendCategories } from '@/lib/layers';
@@ -116,7 +116,12 @@ export default async function NeighborhoodPage({ params }: { params: Promise<{ s
       <main id="main-content" className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-12 w-full">
         <article>
           <header className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-text-primary">{page.name} Zoning</h1>
+            <Breadcrumb
+              items={[{ label: 'Neighborhoods', href: '/neighborhoods' }, { label: page.name }]}
+            />
+            <h1 className="mt-3 text-3xl sm:text-4xl font-bold text-text-primary">
+              {page.name} Zoning
+            </h1>
           </header>
 
           <div className="space-y-8 text-text-secondary">

@@ -1,4 +1,5 @@
 export { BrandMark } from './BrandMark';
+export { Breadcrumb } from './Breadcrumb';
 export { BuildingGraphic } from './BuildingGraphic';
 export { InstitutionGraphic } from './InstitutionGraphic';
 export { Button } from './Button';

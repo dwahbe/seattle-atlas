@@ -18,4 +18,13 @@ export const NEIGHBORHOODS: Neighborhood[] = [
   { name: 'Beacon Hill', bounds: [-122.32, 47.555, -122.295, 47.585] },
   { name: 'Columbia City', bounds: [-122.295, 47.555, -122.275, 47.575] },
   { name: 'Greenwood', bounds: [-122.365, 47.69, -122.345, 47.71] },
+  { name: 'First Hill', bounds: [-122.328, 47.603, -122.31, 47.617] },
+  { name: 'Pioneer Square', bounds: [-122.337, 47.598, -122.327, 47.604] },
+  {
+    name: 'Chinatown-International District',
+    bounds: [-122.328, 47.595, -122.312, 47.602],
+  },
+  { name: 'Belltown', bounds: [-122.355, 47.61, -122.34, 47.62] },
+  { name: 'Georgetown', bounds: [-122.327, 47.535, -122.305, 47.555] },
+  { name: 'Northgate', bounds: [-122.335, 47.695, -122.315, 47.715] },
 ];
