@@ -1,13 +1,14 @@
 'use client';
 
-import type { PermitsData } from '@/types';
+import { useState } from 'react';
+import type { PermitData, PermitsData } from '@/types';
 import { Skeleton } from '@/components/ui';
-import { IconFileText } from '@tabler/icons-react';
+import { IconChevronDown, IconExternalLink, IconFileText } from '@tabler/icons-react';
 
 interface PermitsSectionProps {
   permits: PermitsData | null;
   isLoading: boolean;
-  /** Compact mode for mobile - fewer permits shown */
+  /** Compact mode for mobile - denser cards, description shown only when expanded */
   compact?: boolean;
 }
 
@@ -27,6 +28,71 @@ function prettifyDescription(raw: string): string {
   return lowered.replace(/(^|[.!?]\s+)([a-z])/g, (_, prefix, char) => prefix + char.toUpperCase());
 }
 
+function PermitCard({ permit, compact }: { permit: PermitData; compact: boolean }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const description = permit.description ? prettifyDescription(permit.description) : '';
+
+  return (
+    <div className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}>
+      <button
+        type="button"
+        onClick={() => setIsExpanded((prev) => !prev)}
+        aria-expanded={isExpanded}
+        className="w-full text-left"
+      >
+        <div className="flex items-start justify-between gap-2">
+          <span
+            className={`text-xs font-medium text-text-primary ${compact && !isExpanded ? 'line-clamp-1' : ''}`}
+          >
+            {permit.permit_type}
+          </span>
+          <span className="flex items-center gap-1 shrink-0">
+            {permit.issue_date && (
+              <span className="text-xs text-text-secondary">
+                {new Date(permit.issue_date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  year: compact ? '2-digit' : 'numeric',
+                })}
+              </span>
+            )}
+            <IconChevronDown
+              className={`w-3.5 h-3.5 text-text-secondary transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+              stroke={2}
+              aria-hidden="true"
+            />
+          </span>
+        </div>
+        {!compact && !isExpanded && (
+          <p className="text-xs text-text-secondary mt-1 line-clamp-2">
+            {description || permit.address}
+          </p>
+        )}
+      </button>
+      {isExpanded && (
+        <div className="mt-1 space-y-2">
+          {description && <p className="text-xs text-text-secondary">{description}</p>}
+          <p className="text-xs text-text-tertiary">
+            {permit.address && <>{permit.address} · </>}
+            {permit.status}
+            {typeof permit.value === 'number' && permit.value > 0 && (
+              <> · Est. ${permit.value.toLocaleString()}</>
+            )}
+          </p>
+          <a
+            href={permit.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs font-medium text-accent hover:underline"
+          >
+            View Permit
+            <IconExternalLink className="w-3.5 h-3.5" stroke={2} aria-hidden="true" />
+          </a>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function PermitsSection({ permits, isLoading, compact = false }: PermitsSectionProps) {
   if (isLoading) {
     return (
@@ -39,38 +105,17 @@ export function PermitsSection({ permits, isLoading, compact = false }: PermitsS
   }
 
   if (permits && permits.permits.length > 0) {
+    const shown = permits.permits.length;
+    const hasMore = permits.total > shown;
     return (
       <div className={compact ? 'space-y-2' : 'space-y-3'}>
         <p className="text-xs text-text-secondary">
-          {permits.total} permit{permits.total !== 1 ? 's' : ''}{' '}
+          {permits.total.toLocaleString()} permit{permits.total !== 1 ? 's' : ''}{' '}
           {compact ? 'nearby (2yr)' : 'in last 2 years within 300m'}
+          {hasMore && (compact ? ` · ${shown} shown` : ` · showing ${shown} most recent`)}
         </p>
-        {permits.permits.map((permit) => (
-          <div
-            key={permit.permit_number}
-            className={`bg-secondary-bg rounded-lg ${compact ? 'p-2' : 'p-3'}`}
-          >
-            <div className="flex items-start justify-between gap-2">
-              <span
-                className={`text-xs font-medium text-text-primary ${compact ? 'line-clamp-1' : ''}`}
-              >
-                {permit.permit_type}
-              </span>
-              {permit.issue_date && (
-                <span className="text-xs text-text-secondary shrink-0">
-                  {new Date(permit.issue_date).toLocaleDateString('en-US', {
-                    month: 'short',
-                    year: compact ? '2-digit' : 'numeric',
-                  })}
-                </span>
-              )}
-            </div>
-            {!compact && (
-              <p className="text-xs text-text-secondary mt-1 line-clamp-2">
-                {permit.description ? prettifyDescription(permit.description) : permit.address}
-              </p>
-            )}
-          </div>
+        {permits.permits.map((permit, index) => (
+          <PermitCard key={`${permit.permit_number}-${index}`} permit={permit} compact={compact} />
         ))}
       </div>
     );

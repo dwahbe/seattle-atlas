@@ -230,7 +230,7 @@ export function useInspectData(
     const [lng, lat] = featurePoint;
     let cancelled = false;
 
-    fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=5`)
+    fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=16`)
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setPermits(data);
