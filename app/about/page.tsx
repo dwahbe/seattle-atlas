@@ -98,6 +98,7 @@ export default function AboutPage() {
                 </a>
                 .
               </p>
+              <p className="mt-3">—Dylan</p>
             </section>
 
             <section>
