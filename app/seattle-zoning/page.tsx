@@ -44,31 +44,43 @@ const faqs = [
   {
     question: 'Why does Seattle have so much single-family zoning?',
     answer:
-      'Historically, Seattle—like most American cities—adopted single-family zoning in the early 20th century. These rules were often designed to maintain neighborhood character and, in some cases, to exclude certain populations. A large share of Seattle residential land has historically been reserved for detached single-family homes. [1][2]',
+      'Historically, Seattle—like most American cities—adopted single-family zoning in the early 20th century. These rules were often designed to maintain neighborhood character and, in some cases, to exclude certain populations. A large share of Seattle residential land has historically been reserved for detached single-family homes.[1][2]',
   },
   {
     question: 'What is missing middle housing?',
     answer:
-      "Missing middle housing refers to building types between single-family homes and large apartment complexes: duplexes, triplexes, fourplexes, townhouses, and small apartment buildings. These housing types were common before modern zoning and—under Ordinance 127376, effective January 21, 2026—are once again legal by right across Seattle's Neighborhood Residential zones. [5][10]",
+      "Missing middle housing refers to building types between single-family homes and large apartment complexes: duplexes, triplexes, fourplexes, townhouses, and small apartment buildings. These housing types were common before modern zoning and—under Ordinance 127376, effective January 21, 2026—are once again legal by right across Seattle's Neighborhood Residential zones.[5][10]",
   },
   {
     question: 'How does zoning affect housing costs?',
     answer:
-      'By restricting the supply of housing in high-demand areas, exclusionary zoning contributes to higher housing costs. When only one home can be built on a lot that could support four or more units, fewer people can live in desirable neighborhoods with good transit and jobs access. [3][4]',
+      'By restricting the supply of housing in high-demand areas, exclusionary zoning contributes to higher housing costs. When only one home can be built on a lot that could support four or more units, fewer people can live in desirable neighborhoods with good transit and jobs access.[3][4]',
   },
   {
     question: 'Are towers allowed outside downtown?',
     answer:
-      "Yes. Highrise zoning extends well beyond downtown. First Hill's HR zone allows residential towers, and Seattle Mixed (SM) zones carry area-specific height limits: up to 320 feet in the U District, 440 feet in South Lake Union, and 240 feet beside Northgate Station. The U District has seen a wave of tower construction since its 2017 rezone, while Northgate's tower zoning remains largely unbuilt. On the map, SM areas zoned for towers 240 feet or taller are grouped with Downtown & Highrise. [13]",
+      "Yes. Highrise zoning extends well beyond downtown. First Hill's HR zone allows residential towers, and Seattle Mixed (SM) zones carry area-specific height limits: up to 320 feet in the U District, 440 feet in South Lake Union, and 240 feet beside Northgate Station. The U District has seen a wave of tower construction since its 2017 rezone, while Northgate's tower zoning remains largely unbuilt. On the map, SM areas zoned for towers 240 feet or taller are grouped with Downtown & Highrise.[13]",
   },
   {
     question: 'What zoning changes has Seattle made?',
     answer:
-      'Seattle adopted its Comprehensive Plan 2044 in December 2025, and Ordinance 127376 repealed and replaced the old single-family chapter of the Municipal Code (SMC Ch. 23.44), effective January 21, 2026. The new Neighborhood Residential zone allows houses, townhomes, duplexes through sixplexes, stacked flats, cottage housing, courtyard apartments, and ADUs on a single lot—with density of up to 6 units (9 with stacked-flat bonuses) and corner-store commercial uses. The previous NR1/NR2/NR3 sub-zones were collapsed into a single NR zone with uniform rules. Additional Centers and Corridors legislation is rolling out through 2026. [8][10]',
+      'Seattle adopted its Comprehensive Plan 2044 in December 2025, and Ordinance 127376 repealed and replaced the old single-family chapter of the Municipal Code (SMC Ch. 23.44), effective January 21, 2026. The new Neighborhood Residential zone allows houses, townhomes, duplexes through sixplexes, stacked flats, cottage housing, courtyard apartments, and ADUs on a single lot—with density of up to 6 units (9 with stacked-flat bonuses) and corner-store commercial uses. The previous NR1/NR2/NR3 sub-zones were collapsed into a single NR zone with uniform rules. Additional Centers and Corridors legislation is rolling out through 2026.[8][10]',
   },
 ];
 
 const footnoteRegex = /\[(\d+)\]/g;
+
+function FootnoteRef({ n }: { n: number }) {
+  return (
+    <sup>
+      [
+      <a href={`#fn-${n}`} className="text-accent hover:underline">
+        {n}
+      </a>
+      ]
+    </sup>
+  );
+}
 
 function renderAnswerWithFootnotes(answer: string) {
   const nodes: (string | ReactNode)[] = [];
@@ -81,15 +93,7 @@ function renderAnswerWithFootnotes(answer: string) {
     }
 
     const footnoteNumber = match[1];
-    nodes.push(
-      <sup key={`${footnoteNumber}-${matchIndex}`}>
-        [
-        <a href={`#fn-${footnoteNumber}`} className="text-accent hover:underline">
-          {footnoteNumber}
-        </a>
-        ]
-      </sup>
-    );
+    nodes.push(<FootnoteRef key={`${footnoteNumber}-${matchIndex}`} n={Number(footnoteNumber)} />);
 
     lastIndex = matchIndex + match[0].length;
   }
@@ -112,18 +116,18 @@ export default function SeattleZoningPage() {
         description:
           'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
         datePublished: '2026-01-15',
-        dateModified: '2026-05-15',
+        dateModified: '2026-07-18',
       },
       {
         '@type': 'Article',
         headline: 'Seattle Zoning Explained',
         url: `${siteUrl}/seattle-zoning`,
         mainEntityOfPage: `${siteUrl}/seattle-zoning`,
-        image: [`${siteUrl}/opengraph-image`],
+        image: [`${siteUrl}${OG_IMAGE.url}`],
         description:
           'Understanding Seattle zoning: how land use rules shape housing, density, and neighborhoods.',
         datePublished: '2026-01-15',
-        dateModified: '2026-05-15',
+        dateModified: '2026-07-18',
         author: { '@type': 'Organization', name: 'Seattle Atlas', url: siteUrl },
         publisher: {
           '@type': 'Organization',
@@ -191,11 +195,7 @@ export default function SeattleZoningPage() {
                 be, and what types of buildings are permitted. Many of these rules trace back to
                 mid-20th-century zoning practices and have significant consequences for housing
                 supply, neighborhood composition, and transportation patterns.
-                <sup>
-                  <a href="#fn-1" className="text-accent hover:underline">
-                    1
-                  </a>
-                </sup>
+                <FootnoteRef n={1} />
               </p>
               <p>
                 Understanding zoning is essential for anyone interested in Seattle&apos;s housing
@@ -218,25 +218,15 @@ export default function SeattleZoningPage() {
                 replaced with the new Neighborhood Residential (NR) zone—covering roughly 61% of
                 Seattle&apos;s land and legalizing houses, townhomes, and up to six-unit multiplexes
                 by right.
-                <sup>
-                  <a href="#fn-2" className="text-accent hover:underline">
-                    2
-                  </a>
-                  <a href="#fn-10" className="text-accent hover:underline">
-                    10
-                  </a>
-                </sup>
+                <FootnoteRef n={2} />
+                <FootnoteRef n={10} />
               </p>
               <p>
                 This pattern is not unique to Seattle. Most American cities adopted similar zoning
                 codes in the early-to-mid 1900s. However, the consequences have become increasingly
                 apparent: by restricting housing supply in desirable areas, single-family zoning
                 contributes to higher housing costs, longer commutes, and increased car dependence.
-                <sup>
-                  <a href="#fn-1" className="text-accent hover:underline">
-                    1
-                  </a>
-                </sup>
+                <FootnoteRef n={1} />
               </p>
               <p>
                 Research in urban economics consistently shows that restrictive zoning is associated
@@ -244,14 +234,8 @@ export default function SeattleZoningPage() {
                 supply cannot respond, prices rise. The people priced out are typically those with
                 lower incomes, often workers in service industries who must then commute long
                 distances to their jobs.
-                <sup>
-                  <a href="#fn-3" className="text-accent hover:underline">
-                    3
-                  </a>{' '}
-                  <a href="#fn-4" className="text-accent hover:underline">
-                    4
-                  </a>
-                </sup>
+                <FootnoteRef n={3} />
+                <FootnoteRef n={4} />
               </p>
             </section>
 
@@ -264,11 +248,7 @@ export default function SeattleZoningPage() {
                 buildings. These &quot;missing middle&quot; housing types provided naturally
                 affordable options and allowed neighborhoods to accommodate residents at different
                 life stages and income levels.
-                <sup>
-                  <a href="#fn-5" className="text-accent hover:underline">
-                    5
-                  </a>
-                </sup>
+                <FootnoteRef n={5} />
               </p>
               <p>
                 Seattle&apos;s zoning largely eliminated this diversity. The result is a bifurcated
@@ -295,11 +275,7 @@ export default function SeattleZoningPage() {
                 to justify frequent service. This creates a feedback loop: without good transit,
                 residents depend on cars; with car dependence entrenched, there&apos;s less
                 political will to increase density.
-                <sup>
-                  <a href="#fn-6" className="text-accent hover:underline">
-                    6
-                  </a>
-                </sup>
+                <FootnoteRef n={6} />
               </p>
               <p>
                 Seattle has invested heavily in light rail, yet much of the land near stations
@@ -307,11 +283,7 @@ export default function SeattleZoningPage() {
                 opportunity. Transit-oriented development—higher density housing near transit
                 stations—is one of the most effective ways to reduce car dependence and create
                 sustainable urban neighborhoods.
-                <sup>
-                  <a href="#fn-7" className="text-accent hover:underline">
-                    7
-                  </a>
-                </sup>
+                <FootnoteRef n={7} />
               </p>
               <p>
                 The{' '}
@@ -338,11 +310,7 @@ export default function SeattleZoningPage() {
                 </a>
                 , the document that guides land use policy for the next 20 years. The plan includes
                 significant zoning reforms:
-                <sup>
-                  <a href="#fn-8" className="text-accent hover:underline">
-                    8
-                  </a>
-                </sup>
+                <FootnoteRef n={8} />
               </p>
               <ul className="list-disc list-inside space-y-2 ml-2">
                 <li>
@@ -374,11 +342,7 @@ export default function SeattleZoningPage() {
               <p>
                 Similar reforms are playing out nationally as cities reconsider zoning to increase
                 housing supply and reuse underutilized space.
-                <sup>
-                  <a href="#fn-9" className="text-accent hover:underline">
-                    9
-                  </a>
-                </sup>
+                <FootnoteRef n={9} />
               </p>
             </section>
 
