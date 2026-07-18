@@ -4,6 +4,7 @@ import { MapDeepLinkScroller } from '@/components/map/MapDeepLinkScroller';
 import { MapContainer } from '@/components/map/MapContainer';
 import { IntroHero } from '@/components/ui/IntroHero';
 import { getSiteUrl } from '@/lib/site-url';
+import { OG_IMAGE } from '@/lib/og-image';
 
 const siteUrl = getSiteUrl();
 
@@ -24,14 +25,7 @@ export const metadata = {
     siteName: 'Seattle Atlas',
     type: 'website',
     locale: 'en_US',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Seattle Atlas — Seattle zoning, transit, and land use in one map',
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
@@ -60,7 +54,7 @@ export default function Home() {
         name: 'Seattle Atlas',
         url: siteUrl,
         logo: `${siteUrl}/icon-512.png`,
-        image: `${siteUrl}/opengraph-image`,
+        image: `${siteUrl}${OG_IMAGE.url}`,
         sameAs: ['https://github.com/dwahbe/seattle-atlas'],
       },
       {

@@ -1,5 +1,6 @@
 import { Footer, PageHeader } from '@/components/ui';
 import { getSiteUrl } from '@/lib/site-url';
+import { OG_IMAGE } from '@/lib/og-image';
 import { getLegendColor } from '@/lib/layers';
 
 const siteUrl = getSiteUrl();
@@ -21,14 +22,7 @@ export const metadata = {
     siteName: 'Seattle Atlas',
     type: 'website',
     locale: 'en_US',
-    images: [
-      {
-        url: '/opengraph-image',
-        width: 1200,
-        height: 630,
-        alt: 'Seattle Atlas — Seattle zoning, transit, and land use in one map',
-      },
-    ],
+    images: [OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

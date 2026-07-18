@@ -6,9 +6,9 @@ import { BRAND_ICON_SVG } from '../brand-icon';
 const root = join(import.meta.dir, '..', '..');
 
 // The brand mark exists in three encodings: the BRAND_ICON_SVG constant
-// (consumed by the generated-image routes), app/icon.svg (Next metadata
-// file), and BrandMark.tsx (JSX). These tests turn "keep them in sync"
-// from a convention into a CI failure.
+// (consumed by the apple-icon route and the social-card script), app/icon.svg
+// (Next metadata file), and BrandMark.tsx (JSX). These tests turn "keep them
+// in sync" from a convention into a CI failure.
 describe('brand mark copies stay in sync', () => {
   test('app/icon.svg matches BRAND_ICON_SVG byte for byte', () => {
     const file = readFileSync(join(root, 'app', 'icon.svg'), 'utf8');

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { Breadcrumb, Footer, PageHeader } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { getSiteUrl } from '@/lib/site-url';
+import { OG_IMAGE } from '@/lib/og-image';
 import { getLegendCategories } from '@/lib/layers';
 import { staticMapUrl, STATIC_MAP_WIDTH, STATIC_MAP_HEIGHT } from '@/lib/static-map';
 import {
@@ -46,14 +47,7 @@ export async function generateMetadata({
       siteName: 'Seattle Atlas',
       type: 'article',
       locale: 'en_US',
-      images: [
-        {
-          url: '/opengraph-image',
-          width: 1200,
-          height: 630,
-          alt: 'Seattle Atlas — Seattle zoning, transit, and land use in one map',
-        },
-      ],
+      images: [OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',

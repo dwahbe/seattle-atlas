@@ -1,9 +1,10 @@
 /**
- * Single source for the brand mark SVG (the "waterfront S"). The three
- * generated-image routes (apple-icon, opengraph-image, twitter-image) build
- * their data URIs from this constant. Two copies can't import it and are
- * asserted against it in lib/__tests__/brand-icon.test.ts instead:
- * app/icon.svg (must stay a real file for Next's metadata convention) and
+ * Single source for the brand mark SVG (the "waterfront S"). Consumers that
+ * import it: the apple-icon route and the social card baked by
+ * scripts/generate-og-map.ts (re-run it after a brand tweak — the card PNG
+ * is committed, not built). Two copies can't import it and are asserted
+ * against it in lib/__tests__/brand-icon.test.ts instead: app/icon.svg
+ * (must stay a real file for Next's metadata convention) and
  * components/ui/BrandMark.tsx (JSX). A brand tweak that misses one fails CI.
  */
 export const BRAND_ICON_SVG = `<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
