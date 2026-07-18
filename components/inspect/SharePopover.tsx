@@ -64,7 +64,13 @@ export function SharePopover({ url, title }: SharePopoverProps) {
         aria-label="Share This View"
         aria-expanded={isOpen}
       >
-        <IconShare2 className="w-5 h-5 text-text-secondary" stroke={2} aria-hidden="true" />
+        {/* Optical nudge: share-2's box sits low in its viewBox (arrow ascends above);
+            without it the glyph reads ~2px lower than the sibling close X. */}
+        <IconShare2
+          className="w-5 h-5 -translate-y-0.5 text-text-secondary"
+          stroke={2}
+          aria-hidden="true"
+        />
       </button>
 
       {isOpen && (
