@@ -13,11 +13,16 @@ import { NEIGHBORHOOD_PAGES } from '@/data/neighborhood-pages';
 // 2026-06-22: added six neighborhood pages (First Hill, Pioneer Square,
 // Chinatown-International District, Belltown, Georgetown, Northgate) and
 // the new entries on the /neighborhoods index.
+// 2026-07-18: /seattle-zoning footnote markers standardized to bracketed
+// [n] style (adjacent bare superscripts previously read as "210").
+// Same day: site font switched to Instrument Sans (the intended Geist never
+// actually applied) — touches every page; neighborhood pages also got the
+// glued "Capitol Hillto" text fix.
 const LAST_MODIFIED = {
-  home: '2026-06-11',
-  seattleZoning: '2026-06-11',
-  about: '2026-06-11',
-  neighborhoods: '2026-06-22',
+  home: '2026-07-18',
+  seattleZoning: '2026-07-18',
+  about: '2026-07-18',
+  neighborhoods: '2026-07-18',
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {
