@@ -25,9 +25,11 @@
   /* Borders */
   --border-color: 227 230 235;
 
-  /* Fonts */
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  /* Fonts — --font-instrument-sans / --font-geist-mono are declared by
+     next/font classes on <html> (app/layout.tsx); they must be on the root
+     element for these references to resolve. */
+  --font-stack-sans: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-stack-mono: var(--font-geist-mono), monospace;
 }
 
 .dark {
@@ -66,8 +68,8 @@
   --color-text-tertiary: rgb(var(--text-tertiary));
   --color-secondary-hover: rgb(var(--secondary-hover));
   --color-accent-hover: rgb(var(--accent-hover));
-  --font-family-sans: var(--font-sans);
-  --font-family-mono: var(--font-mono);
+  --font-sans: var(--font-stack-sans);
+  --font-mono: var(--font-stack-mono);
 }
 
 /* ============================================================================
@@ -293,7 +295,7 @@ html.intro-seen #intro-hero {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: var(--font-stack-sans);
   background-color: rgb(var(--panel-bg));
   color: rgb(var(--text-primary));
   -webkit-font-smoothing: antialiased;
@@ -305,7 +307,7 @@ body {
    ============================================================================ */
 
 .mapboxgl-map {
-  font-family: var(--font-sans);
+  font-family: var(--font-stack-sans);
 }
 
 .mapboxgl-ctrl-group {

@@ -1,13 +1,13 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist_Mono, Instrument_Sans } from 'next/font/google';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { Analytics } from '@vercel/analytics/react';
 import { Toaster } from 'sonner';
 import { getSiteUrl } from '@/lib/site-url';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const instrumentSans = Instrument_Sans({
+  variable: '--font-instrument-sans',
   subsets: ['latin'],
 });
 
@@ -70,7 +70,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    // The font variable classes must sit on <html>: globals.css defines
+    // --font-stack-sans on :root, and a custom property resolves its var()
+    // references where it's declared — on <body> the fonts never apply.
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${instrumentSans.variable} ${geistMono.variable}`}
+    >
       <head>
         <link rel="preconnect" href="https://api.mapbox.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.mapbox.com" />
@@ -99,7 +106,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased">
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-lg focus:outline-none"
