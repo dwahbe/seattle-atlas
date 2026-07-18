@@ -171,9 +171,9 @@ export default async function NeighborhoodPage({ params }: { params: Promise<{ s
             <section className="space-y-4">
               <h2 className="text-xl font-semibold text-text-primary">See It on the Map</h2>
               <p>
-                Open the interactive map centered on {page.name} to see every parcel&apos;s zoning,
-                click for allowed uses and nearby permits, and toggle transit and bike layers. New
-                to zone codes? Start with the{' '}
+                Open the interactive map centered on {page.name} to see every parcel’s zoning, click
+                for allowed uses and nearby permits, and toggle transit and bike layers. New to zone
+                codes? Start with the{' '}
                 <Link href="/seattle-zoning" className="text-accent hover:underline">
                   guide to Seattle zoning
                 </Link>
