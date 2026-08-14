@@ -1,8 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { BRAND_ICON_SVG } from '@/lib/brand-icon';
 
-export const runtime = 'edge';
-
 export const size = {
   width: 180,
   height: 180,
