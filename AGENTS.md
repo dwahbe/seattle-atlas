@@ -6,15 +6,6 @@ This file provides guidance to coding agents (Claude Code, Codex, and others) wh
 
 Seattle Atlas — an interactive map for exploring Seattle's zoning and transit data. Built with Next.js 16, React 19, Mapbox GL JS, and Tailwind CSS v4. Deployed on Vercel. Beyond the map at `/`, it ships SEO/marketing pages (`/about`, `/seattle-zoning`, `/neighborhoods`, `/neighborhoods/[slug]`) and generated social/icon images.
 
-## Commands
-
-- `bun dev` — start dev server (127.0.0.1)
-- `bun run build` — production build
-- `bun run lint` — ESLint (via `bunx`)
-- `bun run format` — Prettier
-- `bun test` — run all tests (Bun's built-in test runner)
-- `bun test lib/__tests__/validation.test.ts` — run a single test file
-
 ## Tech Stack & Conventions
 
 - **Next.js 16** with App Router. No `proxy.ts` / `middleware.ts` — server-side work happens in `app/api/*/route.ts` handlers.
@@ -27,9 +18,7 @@ Seattle Atlas — an interactive map for exploring Seattle's zoning and transit 
 - **mapbox-gl** — client-side only map rendering.
 - **@tabler/icons-react** — the icon standard. Do not add inline `<svg>` for UI icons; inline SVG survives only in illustrative graphics (`BuildingGraphic`, `InstitutionGraphic`, `Donut`, `BrandMark`).
 - **react-share** — social share UI, via `components/inspect/SharePopover.tsx` (wired into `InspectHeader`).
-- **Prettier** — semicolons, single quotes, 2-space indent, trailing commas (ES5), 100 char width.
 - **ESLint** — `react-hooks/set-state-in-effect` is intentionally downgraded to `warn`; setState in effects is used deliberately for data fetching and state resets.
-- **Bun** is the package manager; tests use Bun's built-in `bun:test` runner.
 
 ## UI Copy
 
@@ -55,9 +44,8 @@ Buttons get their text size from `Button.tsx` (`sm` 12 / `md` 14 / `lg` 16px) �
 
 ## Project Structure
 
-- `components/` is grouped by surface: `map/` (MapGL, MapLayers, MapContainer orchestrator), `mobile/` (MobileDrawer), `panels/` (desktop ControlPanel/InspectPanel), `controls/` (Legend), `inspect/` (shared inspect sections), `search/` (CommandPalette), `ui/` (primitives, barrel-exported via `components/ui/index.ts`).
 - **Inspect sections are shared between desktop and mobile** via a `compact` prop (`components/inspect/*`, barrel `components/inspect/index.ts`) — don't fork them per platform. Exception: `WalkScoreSection` takes no `compact` prop — it renders one intrinsically responsive layout (fixed donut size) identically on both surfaces.
-- `hooks/` (barrel `hooks/index.ts`): `useUrlState` (URL ⇄ state), `useMapState`, `useLayers`, `useInspect`, `useInspectData` (inspect data fetching), `useTheme`, `useMediaQuery`/`useIsMobile`, `useIsMounted` (standard SSR/client-only & portal gate). `useFocusTrap` exists but is not in the barrel.
+- Hooks: `useIsMounted` is the standard SSR/client-only & portal gate; `useFocusTrap` exists but is not in the `hooks/index.ts` barrel.
 - `data/` static datasets: `layers.json` (layer config), `proposals.json`, `parks-stats.json`, `neighborhoods.ts` (quick-nav bounds), `neighborhood-pages.ts` (per-neighborhood page copy + map-link helpers), `seattle-parks-clean.geojson`.
 
 ## Architecture
@@ -110,7 +98,7 @@ Default center: Seattle (47.6062, -122.3321, zoom 12) and default layers `['zoni
 - `zoning` and `zoning_detailed` are mutually exclusive (see `BASE_LAYER_IDS` in `lib/constants.ts`) — switch between them via `handleBaseLayerChange`, never by toggling individual layers.
 - Both `zoning` (simplified) and `zoning_detailed` (technical) layers read `ZONELUT` from the same tileset. The simplified layer maps zone codes to 6 categories client-side via the legend config in `layers.json`; the technical layer maps each code to its own color. Adding or renaming simplified categories is a code-only change (no tileset re-upload).
 - **`valueOverrides` (simplified zoning only):** all Seattle Mixed polygons share `ZONELUT = "SM"`, but their real height limits (55–440 ft) live in the full-designation `ZONING` property (e.g. `"SM-U 95-320 (M1)"`). The `valueOverrides` block in `layers.json` maps the pseudo legend/filter value `SM_HIGHRISE` to the SM designations zoned ≥240 ft so they color and filter as "Downtown & Highrise" instead of "Large Buildings". All override semantics live in `lib/map-expressions.ts` (`buildColorExpression` / `buildFilterExpression` for the GL paths, `resolveLegendItem` for JS-side lookups like `HoverTooltip`), shared by `lib/mapbox.ts` and the static-map script — there is one implementation, don't add parallel copies. The `matchValues` strings must byte-match the tileset's `ZONING` values; `lib/__tests__/mapbox.test.ts` asserts each parses to a ≥240 ft SM designation.
-- **2026 rezone watch:** the One Seattle Plan "Centers & Corridors" legislation (transmitted to Council Jan 2026) and the later regional-center rezones (Downtown, U District, Northgate, etc.) will change LR/MR standards and rezone SM/NC areas. When either is adopted: re-export the city's "Current Land Use Zoning Detail" dataset to the Mapbox tileset, re-verify `valueOverrides.matchValues` against the dataset's distinct `ZONING` values (ArcGIS REST query on the `Current_Land_Use_Zoning_Detail_2` FeatureServer), update heights/FARs in `lib/zoning-info.ts` and the proposal entries in `data/proposals.json`, then re-run `bun scripts/generate-static-map-style.ts`, re-upload to Studio, and re-run `bun scripts/generate-og-map.ts`.
+- **2026 rezone watch:** One Seattle Plan rezones will change LR/MR standards and rezone SM/NC areas; when adopted, follow the `rezone-update` skill (`.claude/skills/rezone-update/SKILL.md`).
 - **The `Legend` doubles as the zoning filter UI**: clicking a legend row filters that zoning layer. `interactiveLayerIds` / `onFilterToggle` map rows to `ZONING_FILTER_IDS` (`lib/constants.ts`).
 - `lib/zoning-info.ts` contains per-zone-code data including `allowedUses` / `notAllowedUses` arrays, rendered by the `AllowedUses` component in the inspect panel. `getZoneInfo(zoneCode, designation?)` takes `ZONELUT` for the base entry plus the optional full `ZONING` designation, from which it derives the displayed code, per-area SM names, and the real height limit.
 - The `institutions` layer is a silent enrichment source (fill-opacity 0, empty legend, no controls toggle). `MapGL.handleClick` runs a secondary `queryRenderedFeatures` against it and attaches matched institution data to the inspected feature, which `ZoningSummary` then uses to swap the building graphic for the institution's logo + name. Canonical data + logo lookup live in `lib/institutions.ts` and `components/ui/InstitutionGraphic.tsx`. Logos are bundled in `public/institutions/{lowercase-code}.{ext}` keyed on the tileset's `OVERLAY` code (e.g. `mio-uw.png`); codes without a logo fall back to a category icon (university/college/hospital). Swedish's three campuses share one logo file.
