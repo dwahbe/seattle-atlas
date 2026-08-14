@@ -15,3 +15,6 @@ export const ZONING_FILTER_IDS: Record<string, string> = {
 
 /** Cobalt highlight color for inspected/selected features — matches the UI accent */
 export const HIGHLIGHT_COLOR = '#1D63ED';
+
+/** Square feet per acre — keeps the acres/sqft round-trip a single definition */
+export const SQ_FT_PER_ACRE = 43560;

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { coordsSchema, parseSearchParams } from '@/lib/validation';
+import { SQ_FT_PER_ACRE } from '@/lib/constants';
 
 export interface ParcelResponse {
   pin: string;
@@ -76,11 +77,14 @@ export async function GET(request: NextRequest): Promise<NextResponse<ParcelResp
 
     // Extract PIN and area
     const pin = String(attrs.PIN || '').trim();
-    // Shape.STArea() is in square feet (State Plane coordinate system)
+    // Shape.STArea() is in square feet (State Plane coordinate system).
+    // This is the drawn GIS polygon's area, which runs ~0.5-1% off the
+    // assessor's legal lot size — it's only the fallback; KCA_ACRES from the
+    // PropertyInfo query below is authoritative when available.
     const areaKey = Object.keys(attrs).find((k) => k.includes('STArea'));
     const areaSqFt = areaKey ? Number(attrs[areaKey]) : null;
-    const lotSqFt = areaSqFt ? Math.round(areaSqFt) : null;
-    const acres = lotSqFt ? lotSqFt / 43560 : null;
+    let lotSqFt = areaSqFt ? Math.round(areaSqFt) : null;
+    let acres = lotSqFt ? lotSqFt / SQ_FT_PER_ACRE : null;
 
     // Try to get additional property info from PropertyInfo layer
     let presentUse: string | null = null;
@@ -94,7 +98,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<ParcelResp
         geometryType: 'esriGeometryPoint',
         inSR: '4326',
         spatialRel: 'esriSpatialRelIntersects',
-        outFields: 'PREUSE_DESC,KCA_ZONING',
+        outFields: 'PIN,PREUSE_DESC,KCA_ZONING,KCA_ACRES',
         returnGeometry: 'false',
         f: 'json',
       });
@@ -108,8 +112,20 @@ export async function GET(request: NextRequest): Promise<NextResponse<ParcelResp
         const propData = await propResponse.json();
         if (propData.features && propData.features.length > 0) {
           const propAttrs = propData.features[0].attributes || {};
-          presentUse = propAttrs.PREUSE_DESC ? String(propAttrs.PREUSE_DESC).trim() : null;
-          zoning = propAttrs.KCA_ZONING ? String(propAttrs.KCA_ZONING).trim() : null;
+          // PropertyInfo is an independent point query against different
+          // polygon geometry — near a lot line it can resolve to a neighboring
+          // parcel. Only trust its record when its PIN matches the Parcels
+          // layer's (skip the check when either PIN is unavailable).
+          const propPin = String(propAttrs.PIN || '').trim();
+          if (!pin || !propPin || propPin === pin) {
+            presentUse = propAttrs.PREUSE_DESC ? String(propAttrs.PREUSE_DESC).trim() : null;
+            zoning = propAttrs.KCA_ZONING ? String(propAttrs.KCA_ZONING).trim() : null;
+            const kcaAcres = Number(propAttrs.KCA_ACRES);
+            if (Number.isFinite(kcaAcres) && kcaAcres > 0) {
+              acres = kcaAcres;
+              lotSqFt = Math.round(kcaAcres * SQ_FT_PER_ACRE);
+            }
+          }
         }
       }
     } catch {
