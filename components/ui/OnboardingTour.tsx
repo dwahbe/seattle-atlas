@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { getStoredItem, setStoredItem } from '@/lib/storage';
 import { onIntroDone } from '@/lib/intro-state';
 import { markTourDismissed } from '@/lib/tour-state';
+import { hasPinParam } from '@/lib/url-state';
 
 const STORAGE_KEY = 'atlas-onboarding-seen';
 
@@ -137,6 +138,11 @@ export function OnboardingTour() {
 
   useEffect(() => {
     if (getStoredItem(STORAGE_KEY)) return;
+    // A pin deep link restores an inspect panel on its own a beat after load.
+    // The tour's modal overlay would land on top of it, and its "Click a
+    // parcel" step would narrate something already done — so sit this load out
+    // (without marking the tour seen; the visitor still gets it next time).
+    if (hasPinParam()) return;
     // Wait for the intro splash to finish before arming the tour — otherwise
     // the tooltip pops over the splash. Fires synchronously if the intro was
     // already skipped (deep link / returning visitor).

@@ -53,6 +53,8 @@ interface MobileDrawerProps {
   searchedAddress?: string | null;
   /** Click point for more accurate reverse geocoding */
   clickPoint?: [number, number] | null;
+  /** Whether the inspection opened without a user gesture (deep-link restore) */
+  autoOpened?: boolean;
 }
 
 export function MobileDrawer({
@@ -69,6 +71,7 @@ export function MobileDrawer({
   layerConfigs,
   searchedAddress,
   clickPoint,
+  autoOpened = false,
 }: MobileDrawerProps) {
   const [snapIndex, setSnapIndex] = useState(DETENT_HALF);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
@@ -158,8 +161,11 @@ export function MobileDrawer({
   if (prevIsInspecting !== isInspecting) {
     setPrevIsInspecting(isInspecting);
     if (isInspecting) {
-      // Transitioning to inspect mode — expand drawer to show content
-      setSnapIndex(DETENT_HALF);
+      // Transitioning to inspect mode — expand drawer to show content. A
+      // restored inspection arrives without a gesture, so it may only raise the
+      // sheet: dropping a reader from the full detent mid-scroll for something
+      // they never tapped is worse than leaving it where they put it.
+      setSnapIndex((current) => (autoOpened ? Math.max(current, DETENT_HALF) : DETENT_HALF));
     }
   }
 

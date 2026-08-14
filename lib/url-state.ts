@@ -17,6 +17,7 @@ export const MAP_STATE_PARAMS = [
   'layers',
   'filters',
   'inspect',
+  'pin',
   'compare',
 ] as const;
 
@@ -30,6 +31,14 @@ export function hasMapStateParams(search?: string): boolean {
   const searchString = search ?? (typeof window === 'undefined' ? '' : window.location.search);
   const params = new URLSearchParams(searchString);
   return MAP_STATE_PARAMS.some((key) => params.has(key));
+}
+
+// True when the URL carries an inspect pin — i.e. this load will auto-open
+// the inspect panel via MapGL's deep-link restore. OnboardingTour consumes
+// this to stay out of the restored panel's way.
+export function hasPinParam(search?: string): boolean {
+  const searchString = search ?? (typeof window === 'undefined' ? '' : window.location.search);
+  return new URLSearchParams(searchString).has('pin');
 }
 
 // Default visible layers. Parks and the institutions overlay both ride along
@@ -51,6 +60,33 @@ export function parseLayersParam(layersString: string | null | undefined): strin
 // Empty array becomes empty string (not omitted) so we know user chose no layers
 export function serializeLayersParam(layers: string[]): string {
   return layers.join(',');
+}
+
+// Parse pin string ("lat,lng") to an internal [lng, lat] position — the
+// inspect marker / click point. URL order is lat,lng to match the lat/lng
+// params; internal order matches Mapbox. Restore mechanics: see MapGL's
+// deep-link restore effect.
+export function parsePinParam(pinString: string | null | undefined): [number, number] | null {
+  if (!pinString) return null;
+  const parts = pinString.split(',');
+  if (parts.length !== 2 || parts.some((part) => part.trim() === '')) return null;
+  const lat = Number(parts[0]);
+  const lng = Number(parts[1]);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null;
+  return [lng, lat];
+}
+
+// Serialize an internal [lng, lat] position to the pin param ("lat,lng").
+// 6 decimals ≈ 0.1 m — the pin feeds parcel/permit point lookups, where
+// coarser rounding could land in a neighboring parcel. Longitude is wrapped
+// into [-180, 180]: Mapbox reports unwrapped lngs after panning across world
+// copies (e.g. 237.67 for Seattle), which parsePinParam would reject.
+export function serializePinParam(position: [number, number] | null): string {
+  if (!position) return '';
+  const [lng, lat] = position;
+  const wrappedLng = ((((lng + 180) % 360) + 360) % 360) - 180;
+  return `${lat.toFixed(6)},${wrappedLng.toFixed(6)}`;
 }
 
 // Parse filters string to object
@@ -100,6 +136,7 @@ export function buildShareableUrl(params: {
   layers: string[];
   filters: Record<string, Record<string, string[]>>;
   inspectedFeatureId: string | null;
+  pinPosition: [number, number] | null;
   compare: boolean;
 }): string {
   const searchParams = new URLSearchParams();
@@ -127,6 +164,11 @@ export function buildShareableUrl(params: {
 
   if (params.inspectedFeatureId) {
     searchParams.set('inspect', params.inspectedFeatureId);
+  }
+
+  const pinStr = serializePinParam(params.pinPosition);
+  if (pinStr) {
+    searchParams.set('pin', pinStr);
   }
 
   if (params.compare) {

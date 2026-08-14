@@ -14,7 +14,7 @@ import {
   PARKS_LAYER_ID,
   INSTITUTIONS_LAYER_ID,
 } from '@/lib/constants';
-import { getInstitutionInfo } from '@/lib/institutions';
+import { queryInspectableFeature } from '@/lib/mapbox';
 import { PanelSearch } from '@/components/search';
 import { NavMenu } from '@/components/ui';
 import dynamic from 'next/dynamic';
@@ -48,11 +48,13 @@ export function MapContainer() {
     activeLayers: urlActiveLayers,
     filters,
     inspectedFeatureId,
+    pinPosition,
     shareableUrl,
     setViewState: setUrlViewState,
     setActiveLayers: setUrlActiveLayers,
     setFilter,
     setInspectedFeatureId,
+    setPinPosition,
   } = useUrlState();
 
   // Map state
@@ -87,19 +89,22 @@ export function MapContainer() {
     [number, number, number, number] | null
   >(null);
 
-  // Marker position for neighborhood centers
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
-
   // Searched address state - preserves exact address from search
   const [searchedAddress, setSearchedAddress] = useState<string | null>(null);
 
-  // Wrap clearInspection to also clear marker and search state
+  // Whether the open inspection was restored from a deep link rather than a
+  // user gesture — surfaces that would otherwise grab focus or move the sheet
+  // out from under the reader stay put when nobody asked for the panel.
+  const [autoOpened, setAutoOpened] = useState(false);
+
+  // Wrap clearInspection to also clear the pin and search state
   const clearInspection = useCallback(() => {
     clearInspectionBase();
-    setMarkerPosition(null);
+    setPinPosition(null);
     setSearchedAddress(null);
     setHighlightedBounds(null);
-  }, [clearInspectionBase]);
+    setAutoOpened(false);
+  }, [clearInspectionBase, setPinPosition]);
 
   // Get active layer configs
   const activeLayerConfigs = useMemo(() => getActiveLayerConfigs(), [getActiveLayerConfigs]);
@@ -121,19 +126,25 @@ export function MapContainer() {
   );
 
   const handleFeatureClick = useCallback(
-    (feature: InspectedFeature | null, clickPoint: [number, number] | null) => {
-      // Clear searched address when clicking directly on map
-      setSearchedAddress(null);
+    (
+      feature: InspectedFeature | null,
+      clickPoint: [number, number] | null,
+      options?: { restored?: boolean }
+    ) => {
+      // A deep-link restore re-reports state the URL already holds; only a real
+      // click invalidates the searched address.
+      if (!options?.restored) setSearchedAddress(null);
+      setAutoOpened(options?.restored === true);
       setInspectedFeature(feature);
 
-      // Set marker at the click location (or clear if no feature)
+      // Set the pin at the click location (or clear if no feature)
       if (feature && clickPoint) {
-        setMarkerPosition(clickPoint);
+        setPinPosition(clickPoint);
       } else {
-        setMarkerPosition(null);
+        setPinPosition(null);
       }
     },
-    [setInspectedFeature]
+    [setInspectedFeature, setPinPosition]
   );
 
   // Search handler
@@ -142,55 +153,25 @@ export function MapContainer() {
       // Clear any existing highlight
       setHighlightedBounds(null);
 
-      // Helper to query and inspect feature at location after map settles
+      // Helper to query and inspect feature at location after map settles.
+      // Address searches prefer the zoning parcel over overlays sitting above it.
       const inspectFeatureAtLocation = () => {
         if (!mapInstance) return;
 
-        // Convert lng/lat to screen coordinates
-        const point = mapInstance.project(result.center);
-
-        // Query features at this point, prioritizing zoning layers
-        const queryLayers = activeLayers.filter((id) => mapInstance.getLayer(id));
-        const features = mapInstance.queryRenderedFeatures(point, {
-          layers: queryLayers,
+        const feature = queryInspectableFeature(mapInstance, result.center, activeLayers, {
+          preferZoning: true,
         });
 
-        if (features.length > 0) {
-          // Prefer zoning layers for address searches
-          const zoningFeature = features.find(
-            (f) => f.layer?.id === 'zoning' || f.layer?.id === 'zoning_detailed'
-          );
-          const feature = zoningFeature || features[0];
-          const layerId = feature.layer?.id ?? 'unknown';
-
-          // Separate query for the institutions overlay — it has fill-opacity 0
-          // and a different layerId, so it's not the primary feature but we
-          // attach its data when the click point falls inside one.
-          const institutionFeature = mapInstance.getLayer(INSTITUTIONS_LAYER_ID)
-            ? mapInstance.queryRenderedFeatures(point, { layers: [INSTITUTIONS_LAYER_ID] })[0]
-            : undefined;
-          const institution = institutionFeature
-            ? (getInstitutionInfo(
-                institutionFeature.properties?.OVERLAY,
-                institutionFeature.properties?.DESCRIPTION
-              ) ?? undefined)
-            : undefined;
-
-          setInspectedFeature({
-            id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
-            layerId,
-            properties: feature.properties as Record<string, unknown>,
-            geometry: feature.geometry,
-            ...(institution && { institution }),
-          });
+        if (feature) {
+          setInspectedFeature(feature);
         } else {
           // Nothing inspectable here (zoning toggled off, water, outside
           // coverage). Clear the inspect target rather than leaving the
-          // previously inspected feature paired with the new marker point —
+          // previously inspected feature paired with the new pin point —
           // or an orphaned, undismissable pin. The neighborhood highlight
           // stays; it marks the searched area independently of the panel.
           setInspectedFeature(null);
-          setMarkerPosition(null);
+          setPinPosition(null);
           setSearchedAddress(null);
         }
       };
@@ -216,11 +197,11 @@ export function MapContainer() {
         setSearchedAddress(null);
       }
 
-      // Shared tail for every result type. The marker doubles as the
+      // Shared tail for every result type. The pin doubles as the
       // clickPoint for parcel/reverse-geocode lookups — without it they fall
       // back to the zoning polygon's centroid, which can sit in a neighboring
       // parcel (or reuse a stale point from an earlier map click).
-      setMarkerPosition(result.center);
+      setPinPosition(result.center);
       if (result.bbox) {
         fitBounds(result.bbox);
       } else {
@@ -228,15 +209,31 @@ export function MapContainer() {
       }
       waitAndInspect();
     },
-    [flyTo, fitBounds, mapInstance, activeLayers, setInspectedFeature]
+    [flyTo, fitBounds, mapInstance, activeLayers, setInspectedFeature, setPinPosition]
   );
 
-  // Clear neighborhood highlight when clicking on map (marker is managed by handleFeatureClick)
+  // Clear neighborhood highlight when clicking on map (the pin is managed by handleFeatureClick)
   const handleMapClick = useCallback(() => {
     if (highlightedBounds) {
       setHighlightedBounds(null);
     }
   }, [highlightedBounds]);
+
+  // Memoized so MapGL's listener and restore effects don't re-register on
+  // every render of this component (it re-renders on every map move).
+  const handleMapFeatureClick = useCallback(
+    (
+      feature: InspectedFeature | null,
+      clickPoint: [number, number] | null,
+      options?: { restored?: boolean }
+    ) => {
+      handleFeatureClick(feature, clickPoint, options);
+      // A restore reports state the URL already held; it isn't a map click, so
+      // it must not clear the neighborhood highlight a search just set.
+      if (!options?.restored) handleMapClick();
+    },
+    [handleFeatureClick, handleMapClick]
+  );
 
   // Base layer change handler (mutually exclusive). Parks and the institutions
   // overlay both ride along with zoning — they turn on when zoning turns on
@@ -290,16 +287,13 @@ export function MapContainer() {
         viewState={urlViewState}
         onViewStateChange={handleViewStateChange}
         onMapLoad={handleMapLoad}
-        onFeatureClick={(feature, clickPoint) => {
-          handleFeatureClick(feature, clickPoint);
-          handleMapClick();
-        }}
+        onFeatureClick={handleMapFeatureClick}
         activeLayers={activeLayers}
         layerConfigs={layers}
         isDark={resolvedTheme === 'dark'}
         inspectedFeature={inspectedFeature}
         highlightedBounds={highlightedBounds}
-        markerPosition={markerPosition}
+        pinPosition={pinPosition}
         showControls={!isMobile}
         showHoverTooltip={!isMobile}
       />
@@ -342,7 +336,8 @@ export function MapContainer() {
             onCloseInspect={clearInspection}
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
-            clickPoint={markerPosition}
+            clickPoint={pinPosition}
+            autoOpened={autoOpened}
           />
         </>
       ) : (
@@ -368,8 +363,9 @@ export function MapContainer() {
             isOpen={inspectedFeature !== null}
             layerConfigs={activeLayerConfigs}
             searchedAddress={searchedAddress}
-            clickPoint={markerPosition}
+            clickPoint={pinPosition}
             shareUrl={shareableUrl}
+            autoFocus={!autoOpened}
           />
         </>
       )}

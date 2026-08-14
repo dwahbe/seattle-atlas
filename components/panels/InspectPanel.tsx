@@ -30,6 +30,12 @@ interface InspectPanelProps {
   clickPoint?: [number, number] | null;
   /** Shareable URL — renders a share menu in the header when provided. */
   shareUrl?: string;
+  /**
+   * Whether opening the panel should pull focus into it. False when the panel
+   * opened without a user gesture (deep-link restore), where taking focus would
+   * yank it out of whatever the visitor is actually using.
+   */
+  autoFocus?: boolean;
 }
 
 export function InspectPanel({
@@ -41,6 +47,7 @@ export function InspectPanel({
   searchedAddress,
   clickPoint,
   shareUrl,
+  autoFocus = true,
 }: InspectPanelProps) {
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const panelRef = useRef<HTMLDivElement>(null);
@@ -51,10 +58,10 @@ export function InspectPanel({
   // Move focus into panel when a new feature is inspected
   const featureId = feature?.id;
   useEffect(() => {
-    if (isOpen && featureId != null && panelRef.current) {
+    if (autoFocus && isOpen && featureId != null && panelRef.current) {
       panelRef.current.focus();
     }
-  }, [isOpen, featureId]);
+  }, [autoFocus, isOpen, featureId]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {

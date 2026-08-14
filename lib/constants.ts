@@ -7,6 +7,16 @@ export const BIKE_LAYER_ID = 'bike_facilities';
 export const PARKS_LAYER_ID = 'parks_open_space';
 export const INSTITUTIONS_LAYER_ID = 'institutions';
 
+// Transit and bike infrastructure are render-only — clicking them produces an
+// uninsightful details panel (e.g. "Route 100002, Type: bus") — and the
+// institutions overlay is a silent enrichment source, so all are excluded from
+// inspect and hover queries.
+export const NON_INSPECTABLE_LAYER_IDS = new Set<string>([
+  ...TRANSIT_LAYER_IDS,
+  BIKE_LAYER_ID,
+  INSTITUTIONS_LAYER_ID,
+]);
+
 /** Filter id on each zoning base layer that the interactive legend toggles. */
 export const ZONING_FILTER_IDS: Record<string, string> = {
   zoning: 'zone_category',

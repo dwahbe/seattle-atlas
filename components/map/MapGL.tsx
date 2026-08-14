@@ -3,11 +3,11 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { initializeMapbox, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
+import { initializeMapbox, queryInspectableFeature, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
 import { HoverTooltip } from './HoverTooltip';
-import { BIKE_LAYER_ID, INSTITUTIONS_LAYER_ID, TRANSIT_LAYER_IDS } from '@/lib/constants';
-import { getInstitutionInfo } from '@/lib/institutions';
+import { NON_INSPECTABLE_LAYER_IDS } from '@/lib/constants';
 import { setupScrollZoomGate } from '@/lib/scroll-zoom-gate';
+import { parsePinParam } from '@/lib/url-state';
 import type { MapViewState, InspectedFeature, LayerConfig } from '@/types';
 
 interface HoverState {
@@ -21,13 +21,17 @@ interface MapGLProps {
   viewState: MapViewState;
   onViewStateChange: (state: MapViewState) => void;
   onMapLoad: (map: mapboxgl.Map) => void;
-  onFeatureClick: (feature: InspectedFeature | null, clickPoint: [number, number] | null) => void;
+  onFeatureClick: (
+    feature: InspectedFeature | null,
+    clickPoint: [number, number] | null,
+    options?: { restored?: boolean }
+  ) => void;
   activeLayers: string[];
   layerConfigs: LayerConfig[];
   isDark: boolean;
   inspectedFeature: InspectedFeature | null;
   highlightedBounds?: [number, number, number, number] | null;
-  markerPosition?: [number, number] | null;
+  pinPosition?: [number, number] | null;
   showControls?: boolean;
   showHoverTooltip?: boolean;
 }
@@ -37,14 +41,11 @@ const HIGHLIGHT_SOURCE_ID = 'neighborhood-highlight-source';
 const HIGHLIGHT_LAYER_ID = 'neighborhood-highlight-layer';
 const HIGHLIGHT_OUTLINE_LAYER_ID = 'neighborhood-highlight-outline';
 
-// Transit and bike infrastructure are render-only — clicking them
-// produces an uninsightful details panel (e.g. "Route 100002, Type: bus"),
-// so they're excluded from click + hover queries.
-const NON_INSPECTABLE_LAYER_IDS = new Set<string>([
-  ...TRANSIT_LAYER_IDS,
-  BIKE_LAYER_ID,
-  INSTITUTIONS_LAYER_ID,
-]);
+// The deep link's inspect target, read from the URL once at mount.
+interface RestoreTarget {
+  pin: [number, number];
+  featureId: string | null;
+}
 
 export function MapGL({
   viewState,
@@ -56,7 +57,7 @@ export function MapGL({
   isDark,
   inspectedFeature,
   highlightedBounds,
-  markerPosition,
+  pinPosition,
   showControls = true,
   showHoverTooltip = true,
 }: MapGLProps) {
@@ -72,6 +73,8 @@ export function MapGL({
   const [isLoaded, setIsLoaded] = useState(false);
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
   const previousInspectedRef = useRef<{ source: string; id: string | number } | null>(null);
+  const restoreTargetRef = useRef<RestoreTarget | null>(null);
+  const restoreAttemptedRef = useRef(false);
 
   // Initialize map
   useEffect(() => {
@@ -88,6 +91,16 @@ export function MapGL({
 
     initializeMapbox();
     isInitialized.current = true;
+
+    // Capture the deep link's inspect target from the URL once, before any
+    // interaction can change it. Reading the URL directly (rather than watching
+    // the pin prop) keeps the restore strictly a load-time operation: a pin set
+    // later by a click or a search can never trigger it.
+    const urlParams = new URLSearchParams(window.location.search);
+    const deepLinkPin = parsePinParam(urlParams.get('pin'));
+    restoreTargetRef.current = deepLinkPin
+      ? { pin: deepLinkPin, featureId: urlParams.get('inspect') || null }
+      : null;
 
     // Read the actual theme from the DOM class set by the pre-hydration script
     // in app/layout.tsx, not from the `isDark` prop. The prop is driven by
@@ -161,48 +174,13 @@ export function MapGL({
     map.current.setStyle(newStyle);
   }, [isDark]);
 
-  // Handle click events
+  // Handle click events. A click on empty space reports null, which clears the
+  // inspection — the restore below deliberately does not share that path.
   const handleClick = useCallback(
     (e: mapboxgl.MapMouseEvent) => {
       if (!map.current) return;
-
       const clickPoint: [number, number] = [e.lngLat.lng, e.lngLat.lat];
-      // Exclude transit/bike (render-only) and the institutions overlay
-      // (silent fill-opacity 0 enrichment layer) from the primary query.
-      const primaryLayers = activeLayers.filter(
-        (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.current?.getLayer(id)
-      );
-      const features = map.current.queryRenderedFeatures(e.point, {
-        layers: primaryLayers,
-      });
-
-      // Separate lookup for the institution at the click point.
-      const institutionFeature = map.current.getLayer(INSTITUTIONS_LAYER_ID)
-        ? map.current.queryRenderedFeatures(e.point, { layers: [INSTITUTIONS_LAYER_ID] })[0]
-        : undefined;
-      const institution = institutionFeature
-        ? (getInstitutionInfo(
-            institutionFeature.properties?.OVERLAY,
-            institutionFeature.properties?.DESCRIPTION
-          ) ?? undefined)
-        : undefined;
-
-      if (features.length > 0) {
-        const feature = features[0];
-        const layerId = feature.layer?.id ?? 'unknown';
-        onFeatureClick(
-          {
-            id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
-            layerId,
-            properties: feature.properties as Record<string, unknown>,
-            geometry: feature.geometry,
-            ...(institution && { institution }),
-          },
-          clickPoint
-        );
-      } else {
-        onFeatureClick(null, clickPoint);
-      }
+      onFeatureClick(queryInspectableFeature(map.current, clickPoint, activeLayers), clickPoint);
     },
     [activeLayers, onFeatureClick]
   );
@@ -267,6 +245,59 @@ export function MapGL({
       }
     };
   }, [isLoaded, handleClick, handleMouseMove, handleMouseLeave, handleDragStart]);
+
+  // Deep-link restore: a shared URL carries the pin and the inspected feature's
+  // id, but the feature object driving the panel is only ever rebuilt by a live
+  // map query — so once the first frame has fully rendered, query at the pin.
+  // This is not a synthetic click: a miss leaves the URL untouched (a click on
+  // empty space would clear it), and the URL's inspect id breaks ties so
+  // overlapping polygons resolve to the feature the sharer actually shared.
+  useEffect(() => {
+    if (!isLoaded || restoreAttemptedRef.current) return;
+    const mapInstance = map.current;
+    const target = restoreTargetRef.current;
+    if (!mapInstance || !target) return;
+
+    const runQuery = () => {
+      const feature = queryInspectableFeature(mapInstance, target.pin, activeLayers, {
+        expectedFeatureId: target.featureId,
+      });
+      // A miss (layer toggled off, category filtered out, tile failed) leaves
+      // the pin and inspect params standing — the recipient can still fix the
+      // filter or re-share; wiping them would destroy the shared link.
+      if (feature) onFeatureClick(feature, target.pin, { restored: true });
+    };
+
+    const restore = () => {
+      restoreAttemptedRef.current = true;
+
+      // queryRenderedFeatures is screen-space, so a pin outside the shared
+      // viewport (link shared after panning away) can't be read. Recenter on
+      // it and query once the move settles rather than silently giving up.
+      const point = mapInstance.project(target.pin);
+      const container = mapInstance.getContainer();
+      if (
+        point.x < 0 ||
+        point.y < 0 ||
+        point.x > container.clientWidth ||
+        point.y > container.clientHeight
+      ) {
+        mapInstance.once('idle', runQuery);
+        mapInstance.easeTo({ center: target.pin });
+        return;
+      }
+
+      runQuery();
+    };
+
+    // 'idle' fires only after the initial tiles — and the layers MapLayers
+    // adds in this same effect flush — have loaded and rendered, so the
+    // query sees them.
+    mapInstance.once('idle', restore);
+    return () => {
+      mapInstance.off('idle', restore);
+    };
+  }, [isLoaded, activeLayers, onFeatureClick]);
 
   // Handle inspected feature highlight
   useEffect(() => {
@@ -398,7 +429,7 @@ export function MapGL({
     };
   }, [isLoaded, highlightedBounds]);
 
-  // Handle marker for neighborhood centers
+  // Handle the pin marker (click / search / restored inspect point)
   useEffect(() => {
     // Remove existing marker
     if (markerRef.current) {
@@ -407,11 +438,11 @@ export function MapGL({
     }
 
     // Add new marker if position provided and map is ready
-    if (markerPosition && map.current) {
+    if (pinPosition && map.current) {
       const marker = new mapboxgl.Marker({
         color: HIGHLIGHT_COLOR,
       })
-        .setLngLat(markerPosition)
+        .setLngLat(pinPosition)
         .addTo(map.current);
 
       markerRef.current = marker;
@@ -423,7 +454,7 @@ export function MapGL({
         markerRef.current = null;
       }
     };
-  }, [markerPosition, isLoaded]);
+  }, [pinPosition, isLoaded]);
 
   // Get the layer config for the hovered feature
   const hoveredLayerConfig = hoverState

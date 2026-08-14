@@ -1,8 +1,9 @@
 'use client';
 
 import mapboxgl from 'mapbox-gl';
-import type { LayerConfig } from '@/types';
-import { HIGHLIGHT_COLOR } from '@/lib/constants';
+import type { InspectedFeature, LayerConfig } from '@/types';
+import { HIGHLIGHT_COLOR, INSTITUTIONS_LAYER_ID, NON_INSPECTABLE_LAYER_IDS } from '@/lib/constants';
+import { getInstitutionInfo } from '@/lib/institutions';
 import { buildColorExpression } from '@/lib/map-expressions';
 
 export {
@@ -33,6 +34,57 @@ export function initializeMapbox() {
   if (MAPBOX_TOKEN) {
     mapboxgl.accessToken = MAPBOX_TOKEN;
   }
+}
+
+// Query the rendered, inspectable layers at a lng/lat point and build the
+// InspectedFeature there (institution enrichment included) — the single
+// query-at-point implementation behind live clicks, address search, and the
+// deep-link restore. `expectedFeatureId` breaks ties toward a known feature
+// (the restore passes the URL's inspect id so overlapping polygons — e.g. a
+// park over zoning — resolve to what the sharer saw); `preferZoning` keeps the
+// address-search behavior of surfacing the zoning parcel over overlays.
+export function queryInspectableFeature(
+  map: mapboxgl.Map,
+  lngLat: [number, number],
+  activeLayers: string[],
+  options: { preferZoning?: boolean; expectedFeatureId?: string | null } = {}
+): InspectedFeature | null {
+  const point = map.project(lngLat);
+  const primaryLayers = activeLayers.filter(
+    (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.getLayer(id)
+  );
+  const features = map.queryRenderedFeatures(point, { layers: primaryLayers });
+  if (features.length === 0) return null;
+
+  const expected = options.expectedFeatureId
+    ? features.find((f) => String(f.id ?? f.properties?.id) === options.expectedFeatureId)
+    : undefined;
+  const zoning = options.preferZoning
+    ? features.find((f) => f.layer?.id === 'zoning' || f.layer?.id === 'zoning_detailed')
+    : undefined;
+  const feature = expected ?? zoning ?? features[0];
+  const layerId = feature.layer?.id ?? 'unknown';
+
+  // Separate lookup for the institutions overlay — it has fill-opacity 0 and
+  // is excluded from the primary query, but its data rides along when the
+  // point falls inside one.
+  const institutionFeature = map.getLayer(INSTITUTIONS_LAYER_ID)
+    ? map.queryRenderedFeatures(point, { layers: [INSTITUTIONS_LAYER_ID] })[0]
+    : undefined;
+  const institution = institutionFeature
+    ? (getInstitutionInfo(
+        institutionFeature.properties?.OVERLAY,
+        institutionFeature.properties?.DESCRIPTION
+      ) ?? undefined)
+    : undefined;
+
+  return {
+    id: feature.id ?? feature.properties?.id ?? `${layerId}-${Date.now()}`,
+    layerId,
+    properties: feature.properties as Record<string, unknown>,
+    geometry: feature.geometry,
+    ...(institution && { institution }),
+  };
 }
 
 // Get layer paint properties based on layer type and config

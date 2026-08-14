@@ -8,6 +8,8 @@ import {
   serializeLayersParam,
   parseFiltersParam,
   serializeFiltersParam,
+  parsePinParam,
+  serializePinParam,
   buildShareableUrl,
 } from '@/lib/url-state';
 import type { MapStateParam } from '@/lib/url-state';
@@ -22,6 +24,7 @@ const urlParsers = {
   layers: parseAsString, // No default - we handle it in parseLayersParam
   filters: parseAsString.withDefault(''),
   inspect: parseAsString.withDefault(''),
+  pin: parseAsString.withDefault(''),
   compare: parseAsBoolean.withDefault(false),
 } satisfies Record<MapStateParam, unknown>;
 
@@ -50,6 +53,8 @@ export function useUrlState() {
   );
 
   const inspectedFeatureId = params.inspect || null;
+  // The inspect marker / click point ([lng, lat]); see MapGL's deep-link restore.
+  const pinPosition = useMemo(() => parsePinParam(params.pin), [params.pin]);
   const compareMode = params.compare;
 
   // Setters
@@ -90,6 +95,13 @@ export function useUrlState() {
     [setParams]
   );
 
+  const setPinPosition = useCallback(
+    (position: [number, number] | null) => {
+      setParams({ pin: serializePinParam(position) });
+    },
+    [setParams]
+  );
+
   const setCompareMode = useCallback(
     (compare: boolean) => {
       setParams({ compare });
@@ -107,9 +119,10 @@ export function useUrlState() {
         layers: activeLayers,
         filters: parseFiltersParam(params.filters),
         inspectedFeatureId,
+        pinPosition,
         compare: compareMode,
       }),
-    [viewState, activeLayers, params.filters, inspectedFeatureId, compareMode]
+    [viewState, activeLayers, params.filters, inspectedFeatureId, pinPosition, compareMode]
   );
 
   return {
@@ -118,6 +131,7 @@ export function useUrlState() {
     activeLayers,
     filters,
     inspectedFeatureId,
+    pinPosition,
     compareMode,
     shareableUrl,
 
@@ -126,6 +140,7 @@ export function useUrlState() {
     setActiveLayers,
     setFilter,
     setInspectedFeatureId,
+    setPinPosition,
     setCompareMode,
   };
 }
