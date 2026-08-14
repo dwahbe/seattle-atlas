@@ -122,12 +122,10 @@ export function buildFilterExpression(
         inExpression = [
           'all',
           inExpression,
-          ...unselectedOverrides.map(
-            (o): mapboxgl.Expression => [
-              '!',
-              ['in', ['get', o.property], ['literal', o.matchValues]],
-            ]
-          ),
+          ...unselectedOverrides.map((o): mapboxgl.Expression => [
+            '!',
+            ['in', ['get', o.property], ['literal', o.matchValues]],
+          ]),
         ];
       }
       orConditions.push(inExpression);
