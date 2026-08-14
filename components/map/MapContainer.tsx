@@ -183,6 +183,15 @@ export function MapContainer() {
             geometry: feature.geometry,
             ...(institution && { institution }),
           });
+        } else {
+          // Nothing inspectable here (zoning toggled off, water, outside
+          // coverage). Clear the inspect target rather than leaving the
+          // previously inspected feature paired with the new marker point —
+          // or an orphaned, undismissable pin. The neighborhood highlight
+          // stays; it marks the searched area independently of the panel.
+          setInspectedFeature(null);
+          setMarkerPosition(null);
+          setSearchedAddress(null);
         }
       };
 
@@ -197,32 +206,27 @@ export function MapContainer() {
         mapInstance.once('moveend', onMoveEnd);
       };
 
-      // If it's a neighborhood with bounds, show the highlight and inspect at center
+      // Branch-specific state: neighborhood highlight and header text
       if (result.type === 'neighborhood' && result.bbox) {
         setHighlightedBounds(result.bbox);
-        setMarkerPosition(result.center); // Show pin at neighborhood center
         setSearchedAddress(result.name); // Show neighborhood name in header
-        fitBounds(result.bbox);
-        waitAndInspect(); // Query and show inspect panel for center location
       } else if (result.type === 'address') {
-        // For addresses, preserve the exact searched address
-        setSearchedAddress(result.name);
-        if (result.bbox) {
-          fitBounds(result.bbox);
-        } else {
-          flyTo(result.center, 17);
-        }
-        waitAndInspect();
+        setSearchedAddress(result.name); // Preserve the exact searched address
       } else {
-        // For other places
         setSearchedAddress(null);
-        if (result.bbox) {
-          fitBounds(result.bbox);
-        } else {
-          flyTo(result.center, 16);
-        }
-        waitAndInspect();
       }
+
+      // Shared tail for every result type. The marker doubles as the
+      // clickPoint for parcel/reverse-geocode lookups — without it they fall
+      // back to the zoning polygon's centroid, which can sit in a neighboring
+      // parcel (or reuse a stale point from an earlier map click).
+      setMarkerPosition(result.center);
+      if (result.bbox) {
+        fitBounds(result.bbox);
+      } else {
+        flyTo(result.center, result.type === 'address' ? 17 : 16);
+      }
+      waitAndInspect();
     },
     [flyTo, fitBounds, mapInstance, activeLayers, setInspectedFeature]
   );

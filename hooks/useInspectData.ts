@@ -43,7 +43,6 @@ export interface LocationData {
 interface InspectData {
   // Feature info
   feature: InspectedFeature | null;
-  featurePoint: [number, number] | null;
   isZoning: boolean;
   isTransit: boolean;
   isPark: boolean;
@@ -88,7 +87,7 @@ export function useInspectData(
   feature: InspectedFeature | null,
   layerConfigs: LayerConfig[],
   proposals: Proposal[],
-  /** Optional click point - used for reverse geocoding instead of centroid */
+  /** Optional click/search point - preferred over the feature centroid for all point-based fetches */
   clickPoint?: [number, number] | null
 ): InspectData {
   // Local state for fetched data
@@ -144,16 +143,27 @@ export function useInspectData(
     return getRepresentativePoint(feature.geometry);
   }, [feature]);
 
+  // Derived: the point all point-based lookups run against — the exact
+  // click/search point when available, falling back to the feature centroid.
+  // The centroid of a zoning polygon can sit in a different parcel entirely,
+  // so anything point-specific must prefer the real point. The lng/lat
+  // primitives exist so effects can depend on coordinate VALUES: `feature`
+  // (and thus `featurePoint`) gets a fresh identity on every inspect commit,
+  // and raw-array deps would re-fire every fetch on churn with unchanged
+  // coordinates.
+  const clickResolved = clickPoint || featurePoint;
+  const [resolvedLng, resolvedLat] = clickResolved ?? [null, null];
+
   // Derived: landmark detection (Space Needle)
   const landmark = useMemo<'space-needle' | null>(() => {
-    if (!isZoning) return null;
-    const point = clickPoint || featurePoint;
-    if (!point) return null;
-    if (isWithinRadius(SPACE_NEEDLE_COORD, point, SPACE_NEEDLE_RADIUS_METERS)) {
+    if (!isZoning || resolvedLng === null || resolvedLat === null) return null;
+    if (
+      isWithinRadius(SPACE_NEEDLE_COORD, [resolvedLng, resolvedLat], SPACE_NEEDLE_RADIUS_METERS)
+    ) {
       return 'space-needle';
     }
     return null;
-  }, [clickPoint, featurePoint, isZoning]);
+  }, [resolvedLng, resolvedLat, isZoning]);
 
   // Derived: related proposals
   const relatedProposals = useMemo(
@@ -161,13 +171,7 @@ export function useInspectData(
     [proposals, feature]
   );
 
-  // ---------------------------------------------------------------------------
-  // Fetch target keys — identify the coordinates each fetch group runs against.
-  // Two groups because walkscore/permits use the feature centroid, while
-  // location/parcel prefer the actual click point for sub-parcel accuracy.
-  // ---------------------------------------------------------------------------
-  const featureKey = featurePoint && isZoning ? `${featurePoint[0]},${featurePoint[1]}` : null;
-  const clickResolved = clickPoint || featurePoint;
+  // Fetch target key — resets fetched data whenever the resolved point changes.
   const clickKey = isZoning && clickResolved ? `${clickResolved[0]},${clickResolved[1]}` : null;
 
   // Reset fetched data + prime loading state whenever the fetch target changes.
@@ -175,21 +179,16 @@ export function useInspectData(
   // https://react.dev/reference/react/useState#storing-information-from-previous-renders
   // — this is preferable to resetting inside a useEffect because it avoids an
   // extra commit cycle (and avoids the react-hooks/set-state-in-effect lint).
-  const [prevFeatureKey, setPrevFeatureKey] = useState<string | null>(null);
   const [prevClickKey, setPrevClickKey] = useState<string | null>(null);
-
-  if (prevFeatureKey !== featureKey) {
-    setPrevFeatureKey(featureKey);
-    setWalkScore(null);
-    setPermits(null);
-    setIsLoadingWalkScore(featureKey !== null);
-    setIsLoadingPermits(featureKey !== null);
-  }
 
   if (prevClickKey !== clickKey) {
     setPrevClickKey(clickKey);
+    setWalkScore(null);
+    setPermits(null);
     setLocation(null);
     setParcelData(null);
+    setIsLoadingWalkScore(clickKey !== null);
+    setIsLoadingPermits(clickKey !== null);
     setIsLoadingParcel(clickKey !== null);
   }
 
@@ -199,12 +198,10 @@ export function useInspectData(
   // The `cancelled` guard prevents stale responses from rapid feature switching
   // landing on top of a newer feature's data.
   useEffect(() => {
-    if (!featurePoint || !isZoning) return;
-
-    const [lng, lat] = featurePoint;
+    if (!isZoning || resolvedLng === null || resolvedLat === null) return;
     let cancelled = false;
 
-    fetch(`/api/walkscore?lat=${lat}&lng=${lng}`)
+    fetch(`/api/walkscore?lat=${resolvedLat}&lng=${resolvedLng}`)
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setWalkScore(data);
@@ -221,16 +218,14 @@ export function useInspectData(
     return () => {
       cancelled = true;
     };
-  }, [featurePoint, isZoning]);
+  }, [resolvedLng, resolvedLat, isZoning]);
 
   // Effect: Fetch Permits. Loading state is primed by the render-time block above.
   useEffect(() => {
-    if (!featurePoint || !isZoning) return;
-
-    const [lng, lat] = featurePoint;
+    if (!isZoning || resolvedLng === null || resolvedLat === null) return;
     let cancelled = false;
 
-    fetch(`/api/permits?lat=${lat}&lng=${lng}&radius=300&limit=16`)
+    fetch(`/api/permits?lat=${resolvedLat}&lng=${resolvedLng}&radius=300&limit=16`)
       .then((res) => res.json())
       .then((data) => {
         if (!cancelled) setPermits(data);
@@ -247,19 +242,14 @@ export function useInspectData(
     return () => {
       cancelled = true;
     };
-  }, [featurePoint, isZoning]);
+  }, [resolvedLng, resolvedLat, isZoning]);
 
   // Effect: Fetch Location (reverse geocode).
-  // Use clickPoint if provided (more accurate), otherwise fall back to centroid.
   useEffect(() => {
-    if (!isZoning) return;
-    const point = clickPoint || featurePoint;
-    if (!point) return;
-
-    const [lng, lat] = point;
+    if (!isZoning || resolvedLng === null || resolvedLat === null) return;
     let cancelled = false;
 
-    reverseGeocode(lng, lat)
+    reverseGeocode(resolvedLng, resolvedLat)
       .then((result) => {
         if (!cancelled) setLocation(result);
       })
@@ -270,20 +260,15 @@ export function useInspectData(
     return () => {
       cancelled = true;
     };
-  }, [clickPoint, featurePoint, isZoning]);
+  }, [resolvedLng, resolvedLat, isZoning]);
 
   // Effect: Fetch Parcel Data from King County.
-  // Use clickPoint if available (more accurate), otherwise fall back to centroid.
   // Loading state is primed by the render-time block above.
   useEffect(() => {
-    if (!isZoning) return;
-    const point = clickPoint || featurePoint;
-    if (!point) return;
-
-    const [lng, lat] = point;
+    if (!isZoning || resolvedLng === null || resolvedLat === null) return;
     let cancelled = false;
 
-    fetch(`/api/parcel?lat=${lat}&lng=${lng}`)
+    fetch(`/api/parcel?lat=${resolvedLat}&lng=${resolvedLng}`)
       .then((res) => res.json())
       .then((data) => {
         if (cancelled) return;
@@ -305,11 +290,10 @@ export function useInspectData(
     return () => {
       cancelled = true;
     };
-  }, [clickPoint, featurePoint, isZoning]);
+  }, [resolvedLng, resolvedLat, isZoning]);
 
   return {
     feature,
-    featurePoint,
     isZoning,
     isTransit,
     isPark,
