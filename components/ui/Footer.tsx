@@ -20,12 +20,12 @@ export function Footer() {
               Seattle Atlas
             </span>
           </Link>
-          <nav className="flex w-full flex-wrap items-center justify-center gap-4 text-sm text-text-secondary sm:w-auto sm:justify-end">
+          <nav className="flex w-full flex-wrap items-center justify-center gap-x-0 gap-y-2 text-sm text-text-secondary sm:w-auto sm:justify-end">
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="hover:text-text-primary transition-colors"
+                className="inline-flex items-center justify-center px-2 hover:text-text-primary transition-colors"
               >
                 {link.label}
               </Link>

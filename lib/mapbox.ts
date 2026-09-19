@@ -3,6 +3,8 @@
 import mapboxgl from 'mapbox-gl';
 import type { InspectedFeature, LayerConfig } from '@/types';
 import {
+  BASE_BRIDGE_ANCHOR_LAYER_ID,
+  BASE_LIFTED_LAYER_IDS,
   BASE_WATER_LAYER_ID,
   HIGHLIGHT_COLOR,
   INSTITUTIONS_LAYER_ID,
@@ -103,6 +105,19 @@ export function queryInspectableFeature(
 export function isOverWater(map: mapboxgl.Map, point: mapboxgl.PointLike): boolean {
   if (!map.getLayer(BASE_WATER_LAYER_ID)) return false;
   return map.queryRenderedFeatures(point, { layers: [BASE_WATER_LAYER_ID] }).length > 0;
+}
+
+// Lift the base style's water (and the land structures drawn above it) to
+// just below the bridges, so the site's fills — inserted before `water` — end
+// up above surface roads and buildings but below water, bridges, and labels
+// (see BASE_LIFTED_LAYER_IDS). Returns false, moving nothing, when the style
+// has no bridge anchor (mid-swap, or an unexpected base style).
+export function restackBaseWater(map: mapboxgl.Map): boolean {
+  if (!map.getLayer(BASE_BRIDGE_ANCHOR_LAYER_ID)) return false;
+  for (const id of BASE_LIFTED_LAYER_IDS) {
+    if (map.getLayer(id)) map.moveLayer(id, BASE_BRIDGE_ANCHOR_LAYER_ID);
+  }
+  return true;
 }
 
 // Get layer paint properties based on layer type and config

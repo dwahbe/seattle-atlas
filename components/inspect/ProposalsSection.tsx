@@ -39,7 +39,7 @@ export function ProposalsSection({ proposals, compact = false }: ProposalsSectio
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-accent hover:underline"
+                  className="inline-flex items-center text-xs text-accent hover:underline"
                 >
                   {link.title} →
                 </a>

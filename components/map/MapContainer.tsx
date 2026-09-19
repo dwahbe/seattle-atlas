@@ -300,6 +300,7 @@ export function MapContainer() {
 
       {/* Map Layers Manager */}
       <MapLayers
+        isDark={resolvedTheme === 'dark'}
         map={mapInstance}
         layerConfigs={layers}
         activeLayers={activeLayers}

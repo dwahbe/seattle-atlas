@@ -2,8 +2,14 @@
 
 import { useEffect, useRef } from 'react';
 import mapboxgl, { type Map as MapboxMap } from 'mapbox-gl';
-import { getLayerPaint, getLayerLayout, buildFilterExpression } from '@/lib/mapbox';
-import { BASE_WATER_LAYER_ID } from '@/lib/constants';
+import {
+  getLayerPaint,
+  getLayerLayout,
+  buildFilterExpression,
+  restackBaseWater,
+} from '@/lib/mapbox';
+import { applyLabelClasses, type LabelStyleMemo, type LabelTheme } from '@/lib/map-labels';
+import { BASE_LAYER_IDS, BASE_WATER_LAYER_ID } from '@/lib/constants';
 import type { LayerConfig, FilterState } from '@/types';
 
 interface MapLayersProps {
@@ -11,17 +17,36 @@ interface MapLayersProps {
   layerConfigs: LayerConfig[];
   activeLayers: string[];
   filters: FilterState;
+  /** Picks the label inks while a base fill is active (see lib/map-labels.ts). */
+  isDark: boolean;
 }
 
-export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayersProps) {
+export function MapLayers({ map, layerConfigs, activeLayers, filters, isDark }: MapLayersProps) {
   const addedSources = useRef<Set<string>>(new Set());
   const addedLayers = useRef<Set<string>>(new Set());
+  // Whether the current base style has had its water lifted (see restackBaseWater).
+  const restackedRef = useRef(false);
+  // Theme the base labels are currently restyled for (null = untouched), plus
+  // the untouched paint to restore; both reset with the style.
+  const labelThemeRef = useRef<LabelTheme | null>(null);
+  const labelMemoRef = useRef<LabelStyleMemo>(new Map());
 
   // Add/remove layers based on active layers
   useEffect(() => {
     if (!map) return;
 
     const handleStyleLoad = () => {
+      // Lift the base water above the surface roads once per style, before any
+      // fill is placed relative to it. A false return means the style isn't
+      // there yet (mid-swap); style.load re-runs this.
+      if (!restackedRef.current) {
+        try {
+          if (restackBaseWater(map)) restackedRef.current = true;
+        } catch {
+          // Style mid-swap; style.load re-runs this
+        }
+      }
+
       // Style changes reset the map sources/layers, so prune stale caches
       for (const sourceId of addedSources.current) {
         if (!map.getSource(sourceId)) {
@@ -64,10 +89,11 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
       // Where a layer slots in: before the first active site layer of the same
       // kind (fill vs. line/circle) with a higher zOrder that's already on the
       // map. A fill with nothing above it goes beneath the base style's water
-      // fill, so water, piers, bridges, roads, and labels paint over the
-      // zoning/park tint and nothing colors the water (the city's zoning covers
-      // platted tidelands, and the parks source has lots under Puget Sound).
-      // A line or circle with nothing above it goes on top.
+      // fill — which restackBaseWater has lifted above the surface roads — so
+      // roads and buildings stay tinted under the fills while water, bridges,
+      // and labels paint over them, and nothing colors the water (the city's
+      // zoning covers platted tidelands, and the parks source has lots under
+      // Puget Sound). A line or circle with nothing above it goes on top.
       const findBeforeId = (current: LayerConfig): string | undefined => {
         const isFill = current.type === 'fill';
         for (const id of sortedActiveLayers) {
@@ -162,6 +188,21 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
           }
         }
       }
+
+      // The base labels draw above the tint now; while a base fill is active,
+      // apply the site's label design to them (see lib/map-labels.ts).
+      const baseFillActive = layerConfigs.some(
+        (l) => BASE_LAYER_IDS.includes(l.id) && activeLayers.includes(l.id) && map.getLayer(l.id)
+      );
+      const labelTheme = baseFillActive ? (isDark ? 'dark' : 'light') : null;
+      if (labelTheme !== labelThemeRef.current) {
+        try {
+          applyLabelClasses(map, labelTheme, labelMemoRef.current);
+          labelThemeRef.current = labelTheme;
+        } catch {
+          // Style mid-swap; style.load re-runs this
+        }
+      }
     };
 
     // Run the sync immediately. `addLayer`/`removeLayer`/`addSource` are safe
@@ -172,13 +213,20 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
     // setStyle, not on source loads).
     handleStyleLoad();
 
-    // Also listen for style.load event (for when style changes via setStyle)
-    map.on('style.load', handleStyleLoad);
+    // Also listen for style.load event (for when style changes via setStyle).
+    // A fresh style needs its water lifted again before fills are placed.
+    const onStyleLoad = () => {
+      restackedRef.current = false;
+      labelThemeRef.current = null;
+      labelMemoRef.current.clear();
+      handleStyleLoad();
+    };
+    map.on('style.load', onStyleLoad);
 
     return () => {
-      map.off('style.load', handleStyleLoad);
+      map.off('style.load', onStyleLoad);
     };
-  }, [map, activeLayers, layerConfigs]);
+  }, [map, activeLayers, layerConfigs, isDark]);
 
   // Apply filters to layers
   useEffect(() => {

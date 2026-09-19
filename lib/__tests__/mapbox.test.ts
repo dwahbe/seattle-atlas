@@ -7,8 +7,14 @@ import {
   resolveLegendItem,
   isOverWater,
   queryInspectableFeature,
+  restackBaseWater,
 } from '@/lib/mapbox';
-import { BASE_WATER_LAYER_ID } from '@/lib/constants';
+import { applyLabelClasses, fontStack, LABEL_CLASSES, type LabelStyleMemo } from '@/lib/map-labels';
+import {
+  BASE_BRIDGE_ANCHOR_LAYER_ID,
+  BASE_WATER_LAYER_ID,
+  MAP_LABEL_COLORS,
+} from '@/lib/constants';
 import { getLayerById } from '@/lib/layers';
 import { getZoneInfo } from '@/lib/zoning-info';
 
@@ -197,5 +203,184 @@ describe('isOverWater gate', () => {
       queryRenderedFeatures: () => [{}],
     } as unknown as mapboxgl.Map;
     expect(isOverWater(map, [0, 0])).toBe(false);
+  });
+});
+
+describe('restackBaseWater', () => {
+  test('moves water and the land structures to just below the first bridge layer, in order', () => {
+    const moves: [string, string][] = [];
+    const present = new Set([
+      BASE_WATER_LAYER_ID,
+      'land-structure-polygon',
+      'land-structure-line',
+      BASE_BRIDGE_ANCHOR_LAYER_ID,
+    ]);
+    const map = {
+      getLayer: (id: string) => (present.has(id) ? { id } : undefined),
+      moveLayer: (id: string, before: string) => moves.push([id, before]),
+    } as unknown as mapboxgl.Map;
+    expect(restackBaseWater(map)).toBe(true);
+    expect(moves).toEqual([
+      [BASE_WATER_LAYER_ID, BASE_BRIDGE_ANCHOR_LAYER_ID],
+      ['land-structure-polygon', BASE_BRIDGE_ANCHOR_LAYER_ID],
+      ['land-structure-line', BASE_BRIDGE_ANCHOR_LAYER_ID],
+    ]);
+  });
+
+  test('moves nothing and reports false without the bridge anchor', () => {
+    const moves: string[] = [];
+    const map = {
+      getLayer: (id: string) => (id === BASE_WATER_LAYER_ID ? { id } : undefined),
+      moveLayer: (id: string) => moves.push(id),
+    } as unknown as mapboxgl.Map;
+    expect(restackBaseWater(map)).toBe(false);
+    expect(moves).toEqual([]);
+  });
+});
+
+describe('applyLabelClasses', () => {
+  const rankColor = ['step', ['get', 'symbolrank'], 'hsl(220, 1%, 49%)', 11, 'hsl(220, 1%, 62%)'];
+  const regular = ['DIN Pro Regular', 'Arial Unicode MS Regular'];
+  const italic = ['DIN Pro Italic', 'Arial Unicode MS Regular'];
+  function fakeStyle() {
+    const layers = [
+      { id: 'water', type: 'fill', paint: { 'fill-color': 'hsl(220, 1%, 86%)' }, layout: {} },
+      {
+        id: 'road-label-simple',
+        type: 'symbol',
+        minzoom: 12,
+        paint: { 'text-color': 'hsl(220, 1%, 49%)', 'text-halo-width': 1 },
+        layout: { 'text-font': regular },
+      },
+      {
+        id: 'water-point-label',
+        type: 'symbol',
+        minzoom: 1,
+        paint: { 'text-color': 'hsl(220, 1%, 58%)' },
+        layout: { 'text-font': italic },
+      },
+      {
+        id: 'poi-label',
+        type: 'symbol',
+        minzoom: 6,
+        paint: { 'text-color': 'hsl(220, 1%, 62%)', 'text-halo-width': 0.5 },
+        layout: { 'text-font': italic },
+      },
+      {
+        id: 'settlement-subdivision-label',
+        type: 'symbol',
+        minzoom: 10,
+        maxzoom: 15,
+        paint: { 'text-color': rankColor, 'text-halo-width': 1 },
+        layout: { 'text-font': regular },
+      },
+      { id: 'some-other-symbol', type: 'symbol', paint: { 'text-color': 'red' }, layout: {} },
+    ];
+    const paint: Record<string, Record<string, unknown>> = Object.fromEntries(
+      layers.map((l) => [l.id, { ...l.paint }])
+    );
+    const layout: Record<string, Record<string, unknown>> = Object.fromEntries(
+      layers.map((l) => [l.id, { ...l.layout }])
+    );
+    const zoom: Record<string, [number, number]> = {};
+    const map = {
+      getStyle: () => ({ layers }),
+      setPaintProperty: (id: string, name: string, value: unknown) => {
+        paint[id][name] = value;
+      },
+      setLayoutProperty: (id: string, name: string, value: unknown) => {
+        layout[id][name] = value;
+      },
+      setLayerZoomRange: (id: string, min: number, max: number) => {
+        zoom[id] = [min, max];
+      },
+    } as unknown as mapboxgl.Map;
+    return { map, paint, layout, zoom };
+  }
+
+  test('every base label class is covered exactly once by the table', () => {
+    for (const id of [
+      'settlement-major-label',
+      'settlement-minor-label',
+      'settlement-subdivision-label',
+      'road-label-simple',
+      'waterway-label',
+      'water-line-label',
+      'water-point-label',
+      'poi-label',
+      'natural-point-label',
+      'natural-line-label',
+      'airport-label',
+      'state-label',
+      'country-label',
+      'continent-label',
+    ]) {
+      expect(LABEL_CLASSES.filter((c) => c.match.test(id)).map((c) => c.id)).toHaveLength(1);
+    }
+  });
+
+  test('applies ink, halo, weight, and zoom range per class and leaves other layers alone', () => {
+    const { map, paint, layout, zoom } = fakeStyle();
+    const memo: LabelStyleMemo = new Map();
+    applyLabelClasses(map, 'light', memo);
+    const light = MAP_LABEL_COLORS.light;
+    expect(paint['settlement-subdivision-label']).toEqual({
+      'text-color': light.primary,
+      'text-halo-width': 0,
+    });
+    expect(layout['settlement-subdivision-label']['text-font']).toEqual(fontStack('DIN Pro Bold'));
+    expect(zoom['settlement-subdivision-label']).toEqual([10, 16]);
+    expect(paint['road-label-simple']).toEqual({
+      'text-color': light.secondary,
+      'text-halo-width': 0,
+    });
+    expect(layout['road-label-simple']['text-font']).toEqual([
+      'DIN Pro Medium',
+      'Arial Unicode MS Regular',
+    ]);
+    expect(zoom['road-label-simple']).toEqual([13, 24]);
+    expect(paint['water-point-label']).toEqual({ 'text-color': light.water, 'text-halo-width': 0 });
+    expect(layout['water-point-label']['text-font']).toEqual(italic);
+    expect(zoom['poi-label']).toEqual([13, 24]);
+    expect(paint['water']).toEqual({ 'fill-color': 'hsl(220, 1%, 86%)' });
+    expect(paint['some-other-symbol']).toEqual({ 'text-color': 'red' });
+    expect([...memo.keys()]).toEqual([
+      'road-label-simple',
+      'water-point-label',
+      'poi-label',
+      'settlement-subdivision-label',
+    ]);
+  });
+
+  test('dark mode lifts streets and POIs to the primary ink', () => {
+    const { map, paint } = fakeStyle();
+    applyLabelClasses(map, 'dark', new Map());
+    expect(paint['road-label-simple']['text-color']).toBe(MAP_LABEL_COLORS.dark.primary);
+    expect(paint['poi-label']['text-color']).toBe(MAP_LABEL_COLORS.dark.primary);
+    expect(paint['settlement-subdivision-label']['text-color']).toBe(MAP_LABEL_COLORS.dark.primary);
+  });
+
+  test('switching theme keeps the originals, and null restores paint, font, and zoom ranges', () => {
+    const { map, paint, layout, zoom } = fakeStyle();
+    const memo: LabelStyleMemo = new Map();
+    applyLabelClasses(map, 'light', memo);
+    applyLabelClasses(map, 'dark', memo);
+    applyLabelClasses(map, null, memo);
+    expect(paint['settlement-subdivision-label']).toEqual({
+      'text-color': rankColor,
+      'text-halo-width': 1,
+    });
+    expect(layout['settlement-subdivision-label']['text-font']).toEqual(regular);
+    expect(zoom['settlement-subdivision-label']).toEqual([10, 15]);
+    expect(paint['road-label-simple']).toEqual({
+      'text-color': 'hsl(220, 1%, 49%)',
+      'text-halo-width': 1,
+    });
+    expect(zoom['road-label-simple']).toEqual([12, 24]);
+    expect(paint['water-point-label']).toEqual({
+      'text-color': 'hsl(220, 1%, 58%)',
+      'text-halo-width': undefined,
+    });
+    expect(memo.size).toBe(0);
   });
 });

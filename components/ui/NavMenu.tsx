@@ -81,7 +81,7 @@ export function NavMenu() {
                   onClick={() => setIsOpen(false)}
                   aria-current={isActive ? 'page' : undefined}
                   className={`
-                    block px-4 py-2.5 text-sm
+                    flex items-center px-4 py-2.5 text-sm
                     transition-colors
                     ${isActive ? 'text-accent bg-secondary-bg font-medium' : 'text-text-primary hover:bg-secondary-bg'}
                   `}

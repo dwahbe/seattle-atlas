@@ -34,7 +34,8 @@ const SMC_BASE_URL = 'https://library.municode.com/wa/seattle/codes/municipal_co
  * Comprehensive mapping of Seattle zone codes to human-readable information.
  * Heights and development standards from SMC Title 23.
  */
-const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
+/** Exported for the test that validates every entry; runtime code goes through getZoneInfo. */
+export const ZONE_INFO_MAP: Record<string, ZoneInfo> = {
   // Neighborhood Residential — the previous NR1/NR2/NR3 sub-zones were
   // collapsed into a single NR zone by Ordinance 127376 (One Seattle Plan
   // state-zoning compliance), effective Jan 21, 2026. SMC Ch. 23.44 was
@@ -809,12 +810,4 @@ export function getZoneInfo(zoneCode: string, designation?: string): ZoneInfo | 
   }
 
   return null;
-}
-
-/**
- * Get all known zone codes. Only consumed by tests, which use it to validate
- * every ZONE_INFO_MAP entry.
- */
-export function getAllZoneCodes(): string[] {
-  return Object.keys(ZONE_INFO_MAP);
 }

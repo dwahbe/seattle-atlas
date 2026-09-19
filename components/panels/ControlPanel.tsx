@@ -119,7 +119,7 @@ export function ControlPanel({
                 Seattle Atlas
               </h1>
             </Link>
-            <nav className="flex items-baseline gap-3 text-xs">
+            <nav className="-mr-1.5 flex items-baseline gap-0 text-xs">
               {NAV_LINKS.map((link) => {
                 const isActive = pathname === link.href;
                 return (
@@ -127,7 +127,7 @@ export function ControlPanel({
                     key={link.href}
                     href={link.href}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`transition-colors ${
+                    className={`inline-flex items-center px-1.5 transition-colors ${
                       isActive
                         ? 'text-accent font-medium'
                         : 'text-text-secondary hover:text-text-primary'

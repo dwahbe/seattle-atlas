@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'bun:test';
-import { getZoneInfo, getAllZoneCodes } from '../zoning-info';
+import { getZoneInfo, ZONE_INFO_MAP } from '../zoning-info';
 
 describe('getZoneInfo', () => {
   test('returns info for a direct match (NR)', () => {
@@ -184,28 +184,12 @@ describe('getZoneInfo', () => {
     expect(info!.notAllowedUses).toContain('Industrial');
   });
 
-  test('all zone codes have allowedUses and notAllowedUses', () => {
-    const codes = getAllZoneCodes();
-    for (const code of codes) {
+  test('every zone entry has allowedUses and notAllowedUses', () => {
+    for (const code of Object.keys(ZONE_INFO_MAP)) {
       const info = getZoneInfo(code);
       expect(info).not.toBeNull();
       expect(info!.allowedUses.length).toBeGreaterThan(0);
       expect(info!.notAllowedUses.length).toBeGreaterThan(0);
     }
-  });
-});
-
-describe('getAllZoneCodes', () => {
-  test('returns a non-empty array', () => {
-    const codes = getAllZoneCodes();
-    expect(codes.length).toBeGreaterThan(0);
-  });
-
-  test('includes NR', () => {
-    expect(getAllZoneCodes()).toContain('NR');
-  });
-
-  test('includes DOC2', () => {
-    expect(getAllZoneCodes()).toContain('DOC2');
   });
 });

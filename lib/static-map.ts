@@ -16,11 +16,9 @@
  * changes, re-run the script and push with scripts/upload-static-map-style.ts,
  * which updates this style in place (the id below stays the same).
  */
-/** The satellite variant the previews render from. Exported, with the light
- * variant, so scripts/upload-static-map-style.ts patches exactly these ids. */
+/** The Studio style the previews render from. Exported so
+ * scripts/upload-static-map-style.ts patches exactly this id. */
 export const STATIC_MAP_STYLE = 'dwahbe/cmq9vnkp4002901qz8bk094jy';
-/** Light-basemap variant: unused by the previews, published alongside. */
-export const STATIC_MAP_STYLE_LIGHT = 'dwahbe/cmq9vmz4w002l01qzbionfrik';
 
 export const STATIC_MAP_WIDTH = 800;
 export const STATIC_MAP_HEIGHT = 500;

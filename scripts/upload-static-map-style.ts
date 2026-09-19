@@ -2,13 +2,15 @@
  * Static Map Style Publish
  * ------------------------
  * Pushes the JSON emitted by generate-static-map-style.ts to the Studio
- * styles the site already references, via the Styles API's PATCH endpoint.
+ * style the site already references, via the Styles API's PATCH endpoint.
  * Updating in place keeps the style ids, so lib/static-map.ts needs no change
  * and the neighborhood previews pick the update up as their image cache turns.
  *
- * After each update the script re-reads the published and draft versions and
- * checks that the site's own layers (ids prefixed `seattle-atlas-`) are in the
- * published one, so a Studio-side "publish" step is never silently missed.
+ * The PATCH publishes immediately but leaves Studio's draft copy untouched, so
+ * the script writes the same body to the draft as well — otherwise a later
+ * "Publish" click in Studio would overwrite the live style with a stale draft.
+ * It then re-reads both versions and checks that the site's own layers (ids
+ * prefixed `seattle-atlas-`) are present in each.
  *
  * Needs MAPBOX_UPLOAD_TOKEN in .env.local with the styles:write scope (the
  * same secret token upload-parks-tileset.ts uses, with one more scope).
@@ -18,7 +20,7 @@
  */
 
 import { readFile } from 'node:fs/promises';
-import { STATIC_MAP_STYLE, STATIC_MAP_STYLE_LIGHT } from '../lib/static-map';
+import { STATIC_MAP_STYLE } from '../lib/static-map';
 import { mapboxFetch } from './lib/mapbox-api';
 
 const SITE_LAYER_PREFIX = 'seattle-atlas-';
@@ -29,11 +31,8 @@ interface StyleTarget {
 }
 
 const STYLES: StyleTarget[] = [
-  // Live: the satellite variant the neighborhood previews render from
-  // (STATIC_MAP_STYLE in lib/static-map.ts).
+  // The satellite style the neighborhood previews render from.
   { file: 'static-map-style-satellite.json', styleId: STATIC_MAP_STYLE },
-  // Published alongside it; not used by the previews.
-  { file: 'static-map-style.json', styleId: STATIC_MAP_STYLE_LIGHT },
 ];
 
 interface StyleDoc {
@@ -75,6 +74,14 @@ async function main() {
     });
     console.log(`ok (modified ${updated.modified})`);
 
+    process.stdout.write('  syncing Studio draft... ');
+    const draftUpdated = await mapboxFetch<StyleDoc>(token, `/styles/v1/${target.styleId}/draft`, {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    console.log(`ok (modified ${draftUpdated.modified})`);
+
     // `fresh` bypasses the Styles API's response cache so the check reads
     // what was just written.
     const fresh = { fresh: 'true' };
@@ -91,22 +98,23 @@ async function main() {
       fresh
     );
     const publishedOk = hasSiteLayers(published, siteLayerIds);
+    const draftOk = hasSiteLayers(draft, siteLayerIds);
     console.log(
       `  published: ${publishedOk ? 'has all site layers' : 'MISSING site layers'} (modified ${published.modified})`
     );
     console.log(
-      `  draft:     ${hasSiteLayers(draft, siteLayerIds) ? 'has all site layers' : 'MISSING site layers'} (modified ${draft.modified})`
+      `  draft:     ${draftOk ? 'has all site layers' : 'MISSING site layers'} (modified ${draft.modified})`
     );
-    if (!publishedOk) needsStudioPublish = true;
+    if (!publishedOk || !draftOk) needsStudioPublish = true;
   }
 
   if (needsStudioPublish) {
     console.log(
-      '\nACTION NEEDED: the API updated only the draft. Open the style in Mapbox Studio and publish it.'
+      '\nACTION NEEDED: a version is missing the site layers. Open the style in Mapbox Studio and check its draft and published state.'
     );
     process.exit(2);
   }
-  console.log('\nBoth styles are published with the current layers.');
+  console.log('\nThe style is published with the current layers, and its Studio draft matches.');
 }
 
 main().catch((err) => {
