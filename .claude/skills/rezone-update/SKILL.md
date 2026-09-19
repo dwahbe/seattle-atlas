@@ -10,5 +10,5 @@ Context: the One Seattle Plan "Centers & Corridors" legislation (transmitted to 
 1. Re-export the city's "Current Land Use Zoning Detail" dataset to the Mapbox tileset.
 2. Re-verify `valueOverrides.matchValues` in `data/layers.json` against the dataset's distinct `ZONING` values (ArcGIS REST query on the `Current_Land_Use_Zoning_Detail_2` FeatureServer). The `matchValues` strings must byte-match the tileset's `ZONING` values; `lib/__tests__/mapbox.test.ts` asserts each parses to a ≥240 ft SM designation.
 3. Update heights/FARs in `lib/zoning-info.ts` and the proposal entries in `data/proposals.json`.
-4. Re-run `bun scripts/generate-static-map-style.ts`, re-upload the style JSON to Mapbox Studio, publish it, and update the style id (`STATIC_MAP_STYLE`).
+4. Re-run `bun scripts/generate-static-map-style.ts`, then `bun scripts/upload-static-map-style.ts` to push both styles to Studio in place (the style ids, including `STATIC_MAP_STYLE`, do not change).
 5. Re-run `bun scripts/generate-og-map.ts` to refresh the social-card render, and commit the PNG.

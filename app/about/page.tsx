@@ -121,7 +121,7 @@ export default function AboutPage() {
                       2026 adoption of One Seattle Plan Ordinance 127376
                     </li>
                     <li>
-                      Public parks, greenbelts, and open space—488 parks covering 12.1% of
+                      Public parks, greenbelts, and open space—487 parks covering 11.2% of
                       Seattle&apos;s land area
                     </li>
                     <li>
@@ -312,7 +312,7 @@ export default function AboutPage() {
 
               <p className="text-xs text-text-tertiary mt-4">
                 Percentages reflect each category&apos;s share of Seattle&apos;s zoned land area.
-                Parks and open space (an additional 12.1%) render as a separate layer.
+                Parks and open space (an additional 11.2%) render as a separate layer.
               </p>
             </section>
 

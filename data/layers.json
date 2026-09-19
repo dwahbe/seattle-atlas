@@ -693,13 +693,13 @@
     "type": "fill",
     "zOrder": 2,
     "defaultVisible": true,
-    "description": "Public parks, greenbelts, and open space. 488 parks covering 12.1% of Seattle's land area. Not available for private development, regardless of underlying zoning.",
+    "description": "Public parks, greenbelts, and open space. 487 parks covering 11.2% of Seattle's land area. Not available for private development, regardless of underlying zoning.",
     "legend": [
       {
         "label": "Parks & Open Space",
         "color": "#4E9D70",
         "value": "park",
-        "percentage": 12.1
+        "percentage": 11.2
       }
     ],
     "paint": {

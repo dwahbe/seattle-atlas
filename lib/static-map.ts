@@ -13,11 +13,14 @@
  * to Mapbox Studio — the zoning overlay can't be injected per-request via
  * `addlayer` because the static renderer's internal fetch of the private
  * zoning tileset drops the Referer and gets 403'd. If the zoning legend
- * changes, re-run the script, re-upload, and update STATIC_MAP_STYLE.
+ * changes, re-run the script and push with scripts/upload-static-map-style.ts,
+ * which updates this style in place (the id below stays the same).
  */
-const STATIC_MAP_STYLE = 'dwahbe/cmq9vnkp4002901qz8bk094jy';
-/** Light-basemap variant (unused by the previews, published alongside the
- * satellite style): dwahbe/cmq9vmz4w002l01qzbionfrik */
+/** The satellite variant the previews render from. Exported, with the light
+ * variant, so scripts/upload-static-map-style.ts patches exactly these ids. */
+export const STATIC_MAP_STYLE = 'dwahbe/cmq9vnkp4002901qz8bk094jy';
+/** Light-basemap variant: unused by the previews, published alongside. */
+export const STATIC_MAP_STYLE_LIGHT = 'dwahbe/cmq9vmz4w002l01qzbionfrik';
 
 export const STATIC_MAP_WIDTH = 800;
 export const STATIC_MAP_HEIGHT = 500;

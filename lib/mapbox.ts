@@ -2,7 +2,12 @@
 
 import mapboxgl from 'mapbox-gl';
 import type { InspectedFeature, LayerConfig } from '@/types';
-import { HIGHLIGHT_COLOR, INSTITUTIONS_LAYER_ID, NON_INSPECTABLE_LAYER_IDS } from '@/lib/constants';
+import {
+  BASE_WATER_LAYER_ID,
+  HIGHLIGHT_COLOR,
+  INSTITUTIONS_LAYER_ID,
+  NON_INSPECTABLE_LAYER_IDS,
+} from '@/lib/constants';
 import { getInstitutionInfo } from '@/lib/institutions';
 import { buildColorExpression } from '@/lib/map-expressions';
 
@@ -50,6 +55,9 @@ export function queryInspectableFeature(
   options: { preferZoning?: boolean; expectedFeatureId?: string | null } = {}
 ): InspectedFeature | null {
   const point = map.project(lngLat);
+  // Water is painted above the fills, so a point on water has nothing to
+  // inspect even though the zoning/park polygons underneath still render.
+  if (isOverWater(map, point)) return null;
   const primaryLayers = activeLayers.filter(
     (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.getLayer(id)
   );
@@ -85,6 +93,16 @@ export function queryInspectableFeature(
     geometry: feature.geometry,
     ...(institution && { institution }),
   };
+}
+
+// Screen-point test against the base style's water fill — the same
+// rendered-feature query the inspect path uses, so "over water" is judged by
+// what is actually painted rather than by geometry. The site's fills sit
+// beneath that layer (see MapLayers), so a hit means nothing underneath is
+// visible to inspect. False when the style has no water layer.
+export function isOverWater(map: mapboxgl.Map, point: mapboxgl.PointLike): boolean {
+  if (!map.getLayer(BASE_WATER_LAYER_ID)) return false;
+  return map.queryRenderedFeatures(point, { layers: [BASE_WATER_LAYER_ID] }).length > 0;
 }
 
 // Get layer paint properties based on layer type and config

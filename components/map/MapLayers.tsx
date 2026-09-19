@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl, { type Map as MapboxMap } from 'mapbox-gl';
 import { getLayerPaint, getLayerLayout, buildFilterExpression } from '@/lib/mapbox';
+import { BASE_WATER_LAYER_ID } from '@/lib/constants';
 import type { LayerConfig, FilterState } from '@/types';
 
 interface MapLayersProps {
@@ -60,18 +61,30 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
         return (configA?.zOrder ?? 0) - (configB?.zOrder ?? 0);
       });
 
-      // Helper to find the first layer with a higher zOrder that's already on the map
-      const findBeforeId = (currentZOrder: number): string | undefined => {
+      // Where a layer slots in: before the first active site layer of the same
+      // kind (fill vs. line/circle) with a higher zOrder that's already on the
+      // map. A fill with nothing above it goes beneath the base style's water
+      // fill, so water, piers, bridges, roads, and labels paint over the
+      // zoning/park tint and nothing colors the water (the city's zoning covers
+      // platted tidelands, and the parks source has lots under Puget Sound).
+      // A line or circle with nothing above it goes on top.
+      const findBeforeId = (current: LayerConfig): string | undefined => {
+        const isFill = current.type === 'fill';
         for (const id of sortedActiveLayers) {
           const cfg = layerConfigs.find((l) => l.id === id);
-          if (cfg && cfg.zOrder > currentZOrder && map.getLayer(id)) {
+          if (
+            cfg &&
+            cfg.zOrder > current.zOrder &&
+            (cfg.type === 'fill') === isFill &&
+            map.getLayer(id)
+          ) {
             // Return the casing layer if it exists (casing is below the main line)
             const casingId = `${id}-casing`;
             if (map.getLayer(casingId)) return casingId;
             return id;
           }
         }
-        return undefined;
+        return isFill && map.getLayer(BASE_WATER_LAYER_ID) ? BASE_WATER_LAYER_ID : undefined;
       };
 
       // Add layers that are now active (in zOrder)
@@ -91,7 +104,7 @@ export function MapLayers({ map, layerConfigs, activeLayers, filters }: MapLayer
 
         // Add layer if not already added
         if (!addedLayers.current.has(layerId) && !map.getLayer(layerId)) {
-          const beforeId = findBeforeId(config.zOrder);
+          const beforeId = findBeforeId(config);
 
           // For line layers (transit routes), add a subtle casing layer for legibility
           if (config.type === 'line') {

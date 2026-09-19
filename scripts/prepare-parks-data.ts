@@ -5,7 +5,7 @@
  * and produces two artifacts:
  *
  *   1. data/seattle-parks-clean.geojson — cleaned, dissolved-by-park polygons
- *      ready to upload to Mapbox Studio as a new tileset.
+ *      pushed to the Mapbox tileset by scripts/upload-parks-tileset.ts.
  *
  *   2. data/parks-stats.json — city-wide aggregates used by the legend
  *      (total park count, total area, % of Seattle, largest park, counts by type).
@@ -45,6 +45,14 @@ const SEATTLE_BBOX = {
   east: -122.2244,
   north: 47.7341,
 };
+
+// Platted-but-never-filled tideland lots below Magnolia Bluff. SPR carries them
+// as parks (Magnolia Tidelands Park, Discovery Park Tidelands — ~480 acres over
+// 121 parcels), but they sit underwater at all but the lowest tides and are
+// reachable only by boat. Drawn on the map they read as a grid of rectangular
+// parks floating in Puget Sound, and their acreage would count against the
+// land-only denominator below. Matched on the normalized park name.
+const SUBMERGED_TIDELANDS_PATTERN = /\btidelands?\b/;
 
 // Sentinel placeholder date used by the source for "unknown". Epoch ms for
 // 2099-01-01. Any record with this value is treated as null.
@@ -370,7 +378,7 @@ interface ParksStats {
 
 function computeStats(
   cleaned: Feature<MultiPolygon, CleanParkProps>[],
-  rawParcelCount: number
+  keptParcelCount: number
 ): ParksStats {
   const totalAreaSqFt = cleaned.reduce((s, f) => s + f.properties.areaSqFt, 0);
   const totalAreaAcres = totalAreaSqFt / 43_560;
@@ -394,7 +402,7 @@ function computeStats(
       'https://data-seattlecitygis.opendata.arcgis.com/datasets/SeattleCityGIS::park-boundary-details',
     computedAt: new Date().toISOString(),
     totalParks: cleaned.length,
-    totalParcels: rawParcelCount,
+    totalParcels: keptParcelCount,
     totalAreaSqFt: Math.round(totalAreaSqFt),
     totalAreaAcres: Math.round(totalAreaAcres * 10) / 10,
     totalAreaSqMi: Math.round(totalAreaSqMi * 100) / 100,
@@ -428,16 +436,23 @@ async function main() {
 
   console.log('Dissolving + cleaning each group...');
   const cleaned: Feature<MultiPolygon, CleanParkProps>[] = [];
-  let skipped = 0;
+  let skippedOutside = 0;
+  const skippedSubmerged: string[] = [];
   for (const [key, group] of groups) {
+    if (SUBMERGED_TIDELANDS_PATTERN.test(key)) {
+      skippedSubmerged.push(group.displayName);
+      continue;
+    }
     const feature = dissolveGroup(key, group);
     if (feature) {
       cleaned.push(feature);
     } else {
-      skipped += 1;
+      skippedOutside += 1;
     }
   }
-  console.log(`  → ${cleaned.length} parks kept, ${skipped} skipped (outside Seattle bbox)\n`);
+  console.log(
+    `  → ${cleaned.length} parks kept, ${skippedOutside} skipped (outside Seattle bbox), ${skippedSubmerged.length} skipped (submerged tidelands: ${skippedSubmerged.join(', ') || 'none'})\n`
+  );
 
   // Sort largest-first. Mapbox preserves feature order, and larger polygons
   // on the bottom = less z-fighting for tiny overlaps.
@@ -448,13 +463,14 @@ async function main() {
     features: cleaned,
   };
 
-  const stats = computeStats(cleaned, raw.length);
+  const keptParcels = cleaned.reduce((s, f) => s + f.properties.parcelCount, 0);
+  const stats = computeStats(cleaned, keptParcels);
 
   const geojsonPath = path.join(dataDir, 'seattle-parks-clean.geojson');
   const statsPath = path.join(dataDir, 'parks-stats.json');
 
   await writeFile(geojsonPath, JSON.stringify(collection));
-  await writeFile(statsPath, JSON.stringify(stats, null, 2));
+  await writeFile(statsPath, JSON.stringify(stats, null, 2) + '\n');
 
   console.log('Done.\n');
   console.log('Outputs:');

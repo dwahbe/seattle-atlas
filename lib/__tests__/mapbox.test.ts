@@ -1,6 +1,14 @@
 import { describe, expect, test } from 'bun:test';
 import type { LayerConfig } from '@/types';
-import { getLayerPaint, buildFilterExpression, resolveLegendItem } from '@/lib/mapbox';
+import type mapboxgl from 'mapbox-gl';
+import {
+  getLayerPaint,
+  buildFilterExpression,
+  resolveLegendItem,
+  isOverWater,
+  queryInspectableFeature,
+} from '@/lib/mapbox';
+import { BASE_WATER_LAYER_ID } from '@/lib/constants';
 import { getLayerById } from '@/lib/layers';
 import { getZoneInfo } from '@/lib/zoning-info';
 
@@ -148,5 +156,46 @@ describe('resolveLegendItem', () => {
 
   test('returns null for unknown values', () => {
     expect(resolveLegendItem(zoning, { ZONELUT: 'NOPE' })).toBeNull();
+  });
+});
+
+describe('isOverWater gate', () => {
+  const zoningFeature = {
+    id: 1,
+    layer: { id: 'zoning' },
+    properties: { ZONELUT: 'NR' },
+    geometry: { type: 'Polygon', coordinates: [] },
+  };
+  const base = {
+    project: () => ({ x: 1, y: 1 }),
+    getLayer: (id: string) => (['zoning', BASE_WATER_LAYER_ID].includes(id) ? { id } : undefined),
+  };
+
+  test('queryInspectableFeature returns null over water even though zoning renders underneath', () => {
+    const waterMap = {
+      ...base,
+      queryRenderedFeatures: (_p: unknown, opts: { layers: string[] }) =>
+        opts.layers.includes(BASE_WATER_LAYER_ID)
+          ? [{ layer: { id: BASE_WATER_LAYER_ID } }]
+          : [zoningFeature],
+    } as unknown as mapboxgl.Map;
+    expect(isOverWater(waterMap, [1, 1])).toBe(true);
+    expect(queryInspectableFeature(waterMap, [-122.42, 47.64], ['zoning'])).toBeNull();
+
+    const landMap = {
+      ...base,
+      queryRenderedFeatures: (_p: unknown, opts: { layers: string[] }) =>
+        opts.layers.includes(BASE_WATER_LAYER_ID) ? [] : [zoningFeature],
+    } as unknown as mapboxgl.Map;
+    expect(isOverWater(landMap, [1, 1])).toBe(false);
+    expect(queryInspectableFeature(landMap, [-122.42, 47.64], ['zoning'])?.layerId).toBe('zoning');
+  });
+
+  test('isOverWater is false when the style has no water layer', () => {
+    const map = {
+      getLayer: () => undefined,
+      queryRenderedFeatures: () => [{}],
+    } as unknown as mapboxgl.Map;
+    expect(isOverWater(map, [0, 0])).toBe(false);
   });
 });

@@ -18,11 +18,16 @@ import { NEIGHBORHOOD_PAGES } from '@/data/neighborhood-pages';
 // Same day: site font switched to Instrument Sans (the intended Geist never
 // actually applied) — touches every page; neighborhood pages also got the
 // glued "Capitol Hillto" text fix.
+// 2026-09-19: parks layer drops the two submerged Magnolia tideland "parks"
+// (481 acres of platted lots under Puget Sound) — the park count and
+// coverage figures in the map legend tooltip and on /about changed.
+// Same day: the static map preview on every neighborhood page now draws water
+// over the zoning fills (published style updated).
 const LAST_MODIFIED = {
-  home: '2026-07-18',
+  home: '2026-09-19',
   seattleZoning: '2026-07-18',
-  about: '2026-07-18',
-  neighborhoods: '2026-07-18',
+  about: '2026-09-19',
+  neighborhoods: '2026-09-19',
 } as const;
 
 export default function sitemap(): MetadataRoute.Sitemap {

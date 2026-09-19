@@ -5,7 +5,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { initializeMapbox, queryInspectableFeature, MAP_STYLES, MAPBOX_TOKEN } from '@/lib/mapbox';
 import { HoverTooltip } from './HoverTooltip';
-import { NON_INSPECTABLE_LAYER_IDS } from '@/lib/constants';
+import { BASE_WATER_LAYER_ID, NON_INSPECTABLE_LAYER_IDS } from '@/lib/constants';
 import { setupScrollZoomGate } from '@/lib/scroll-zoom-gate';
 import { parsePinParam } from '@/lib/url-state';
 import type { MapViewState, InspectedFeature, LayerConfig } from '@/types';
@@ -190,11 +190,18 @@ export function MapGL({
     (e: mapboxgl.MapMouseEvent) => {
       if (!map.current) return;
 
-      const features = map.current.queryRenderedFeatures(e.point, {
-        layers: activeLayers.filter(
-          (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.current?.getLayer(id)
-        ),
+      const inspectable = activeLayers.filter(
+        (id) => !NON_INSPECTABLE_LAYER_IDS.has(id) && map.current?.getLayer(id)
+      );
+      // One hit-test that includes the base water fill: it paints above the
+      // site's fills, so when it is the topmost hit the point is on water and
+      // nothing underneath is visible to hover.
+      const hits = map.current.queryRenderedFeatures(e.point, {
+        layers: map.current.getLayer(BASE_WATER_LAYER_ID)
+          ? [...inspectable, BASE_WATER_LAYER_ID]
+          : inspectable,
       });
+      const features = hits[0]?.layer?.id === BASE_WATER_LAYER_ID ? [] : hits;
 
       map.current.getCanvas().style.cursor = features.length > 0 ? 'pointer' : '';
 

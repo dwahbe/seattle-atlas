@@ -21,7 +21,7 @@ interface LegendProps {
 }
 
 // Parks overlay the underlying zoning (a park is still designated NR, MIO,
-// etc.), so their 12.1% would double-count against the zoning totals. We
+// etc.), so their share would double-count against the zoning totals. We
 // surface the figure via a tooltip instead of showing it inline as a percentage.
 const PARKS_TOOLTIP = `Parks overlay zoning — ${parksStats.percentageOfSeattle}% of Seattle (${parksStats.totalParks} parks).`;
 

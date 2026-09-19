@@ -17,6 +17,15 @@ export const NON_INSPECTABLE_LAYER_IDS = new Set<string>([
   INSTITUTIONS_LAYER_ID,
 ]);
 
+/**
+ * The base style's water fill — light-v11 and dark-v11 both name it `water`.
+ * `MapLayers` inserts the site's fill layers beneath it, so zoning and park
+ * color never paint over water (the city's zoning covers platted tidelands off
+ * Magnolia, and the parks source has lots under Puget Sound), and inspect and
+ * hover treat a hit on it as empty space (see `isOverWater`).
+ */
+export const BASE_WATER_LAYER_ID = 'water';
+
 /** Filter id on each zoning base layer that the interactive legend toggles. */
 export const ZONING_FILTER_IDS: Record<string, string> = {
   zoning: 'zone_category',
